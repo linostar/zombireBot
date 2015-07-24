@@ -1,0 +1,2 @@
+# zombireBot
+Zombire IRC bot
