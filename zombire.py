@@ -24,14 +24,16 @@ import irc.bot
 import irc.strings
 
 import user_command, admin_command
+from db_access import Database
 
 class Zombire(irc.bot.SingleServerIRCBot):
 	def __init__(self):
 		self.read_config("config.yml")
+		self.dbc = Database(self.config)
 		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
-		self.uc = user_command.UserCommand()
-		self.ac = admin_command.AdminCommand(self.connection)
+		self.uc = user_command.UserCommand(self.connection, self.dbc)
+		self.ac = admin_command.AdminCommand(self.connection, self.dbc)
 
 	def read_config(self, filename):
 		if not os.path.exists(filename):
@@ -46,15 +48,16 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		c.join(self.config['channel'])
 
 	def on_privmsg(self, c, e):
-		c.privmsg(e.target, "Echo: " + str(e.arguments[0]))
 		command = re.match(r"admin\s+(.+)", str(e.arguments[0]), re.IGNORECASE).group(1).strip()
 		if command:
 			self.ac.execute(command)
 			return
 
 	def on_pubmsg(self, c, e):
-		c.privmsg(e.target, "Echo: " + str(e.arguments[0]))
-		command = re.match(r"\!admin\s+(.+)", str(e.arguments[0]), re.IGNORECASE).group(1).strip()
+		command = re.match(r"\!(register)", str(e.arguments[0]), re.IGNORECASE).group(1).strip()
+		if command:
+			self.uc.execute(e, command)
+			return
 
 def main():
 	print("Zombire bot is running. To stop the bot, press Ctrl+C.")

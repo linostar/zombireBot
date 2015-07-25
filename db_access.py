@@ -1,7 +1,8 @@
 import pymysql
 
 class Database:
-	def __init__(self):
+	def __init__(self, config):
+		self.config = config
 		self.connect()
 
 	def connect(self):
@@ -14,6 +15,10 @@ class Database:
 			print("Error: {}".format(err))
 			raise
 
+	def disconnect(self):
+		self.cur.close()
+		self.conn.close()
+
 	def query(self, expr):
 		try:
 			self.cur.execute(expr)
@@ -22,7 +27,8 @@ class Database:
 			raise
 
 	def is_registered(self, nick):
-		res = self.query("select from users where nick='{}'".format(nick))
+		res = self.query("select * from users where nick='{}'".format(nick))
+		print(res)
 		if res:
 			return True
 
@@ -32,3 +38,4 @@ class Database:
 				main_nick = nick
 			self.query("insert into `users` values ('', '{0}', '{1}', '{2}', 0)".format(
 			nick, main_nick, usertype))
+			return True
