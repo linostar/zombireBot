@@ -1,10 +1,15 @@
+# Bot password for admin commands
+admin_passwd: coolpass
+
 server: irc.example.com
 port: 6667
 nick: Zombire
 realname: Zombire
 nspass: coolpass
 # Be sure to put channel names inside quotes
-channels: [ "#zombire" ]
+channel: "#zombire"
+# possible values for channel_access: xop, levels, flags
+channel_accesstype: xop
 
 # MySQL database information
 db:

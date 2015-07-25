@@ -1,6 +1,6 @@
 import pymysql
 
-class database():
+class Database:
 	def __init__(self):
 		self.connect()
 

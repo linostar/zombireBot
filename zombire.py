@@ -17,17 +17,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import re
+
 import yaml
 import irc.bot
 import irc.strings
 
-from . import user
+import user_command, admin_command
 
-class zombire(irc.bot.SingleServerIRCBot):
+class Zombire(irc.bot.SingleServerIRCBot):
 	def __init__(self):
 		self.read_config("config.yml")
 		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
+		self.uc = user_command.UserCommand()
+		self.ac = admin_command.AdminCommand(self.connection)
 
 	def read_config(self, filename):
 		if not os.path.exists(filename):
@@ -39,16 +43,23 @@ class zombire(irc.bot.SingleServerIRCBot):
 	def on_welcome(self, c, e):
 		if self.config['nspass']:
 			self.connection.privmsg("nickserv", "identify {}".format(self.config['nspass']))
-		for chan in self.config['channels']:
-			c.join(chan)
+		c.join(self.config['channel'])
+
+	def on_privmsg(self, c, e):
+		c.privmsg(e.target, "Echo: " + str(e.arguments[0]))
+		command = re.match(r"admin\s+(.+)", str(e.arguments[0]), re.IGNORECASE).group(1).strip()
+		if command:
+			self.ac.execute(command)
+			return
 
 	def on_pubmsg(self, c, e):
-		self.connection.notice(e.source.nick, str(e.arguments[0]))
+		c.privmsg(e.target, "Echo: " + str(e.arguments[0]))
+		command = re.match(r"\!admin\s+(.+)", str(e.arguments[0]), re.IGNORECASE).group(1).strip()
 
 def main():
-	bot = zombire()
+	print("Zombire bot is running. To stop the bot, press Ctrl+C.")
+	bot = Zombire()
 	bot.start()
-	print("Zombire bot is running. To stop the bot, press Ctrl+C.\n")
 
 if __name__ == "__main__":
 	main()
