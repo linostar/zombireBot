@@ -19,6 +19,13 @@ class Database:
 		self.cur.close()
 		self.conn.close()
 
+	def query_select(self, expr, args=None):
+		try:
+			return self.cur.execute(expr, (args))
+		except Exception as err:
+			print("Error: {}".format(err))
+			raise
+
 	def query(self, expr):
 		try:
 			self.cur.execute(expr)
@@ -27,15 +34,13 @@ class Database:
 			raise
 
 	def is_registered(self, nick):
-		res = self.query("select * from users where nick='{}'".format(nick))
-		print(res)
-		if res:
+		if self.query_select("select * from `users` where `nick` = %s", nick.lower()):
 			return True
 
 	def register_user(self, nick, usertype, main_nick=None):
 		if not self.is_registered(nick):
 			if not main_nick:
 				main_nick = nick
-			self.query("insert into `users` values ('', '{0}', '{1}', '{2}', 0)".format(
-			nick, main_nick, usertype))
+			self.query("insert into `users` values (0, '{0}', '{1}', '{2}', 0)".format(
+			nick.lower(), main_nick.lower(), usertype))
 			return True

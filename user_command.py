@@ -1,14 +1,15 @@
-from random import random
+import random
 
 class UserCommand:
 	types = {'v': 'vampire', 'z': 'zombie'}
 
 	def __init__(self, conn, dbc):
+		random.seed()
 		self.connection = conn
 		self.dbc = dbc
 
 	def register(self, nick):
-		if round(random()):
+		if round(random.random()):
 			usertype = "v" # vampire
 		else:
 			usertype = "z" # zombie
