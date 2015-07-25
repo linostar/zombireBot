@@ -1,9 +1,27 @@
 #!/usr/bin/env python3
 
+#    Zombire IRC game bot
+#    Copyright (C) 2015  Linostar <linux.anas@gmail.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import os
 import yaml
 import irc.bot
 import irc.strings
+
+from . import user
 
 class zombire(irc.bot.SingleServerIRCBot):
 	def __init__(self):
@@ -30,8 +48,7 @@ class zombire(irc.bot.SingleServerIRCBot):
 def main():
 	bot = zombire()
 	bot.start()
+	print("Zombire bot is running. To stop the bot, press Ctrl+C.\n")
 
 if __name__ == "__main__":
 	main()
-
-
