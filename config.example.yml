@@ -1,0 +1,15 @@
+server: irc.example.com
+port: 6667
+nick: Zombire
+realname: Zombire
+nspass: coolpass
+# Be sure to put channel names inside quotes
+channels: [ "#zombire" ]
+
+# MySQL database information
+db:
+  host: localhost
+  port: 3306
+  user: zombire
+  pass: coolpass
+  database: zombiredb
