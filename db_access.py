@@ -16,8 +16,12 @@ class Database:
 			raise
 
 	def disconnect(self):
-		self.cur.close()
-		self.conn.close()
+		try:
+			self.cur.close()
+			self.conn.close()
+		except Exception as err:
+			print("Error: {}".format(err))
+			raise
 
 	def query_select(self, expr, args=None):
 		try:
@@ -44,3 +48,8 @@ class Database:
 			self.query("insert into `users` values (0, '{0}', '{1}', '{2}', 0)".format(
 			nick.lower(), main_nick.lower(), usertype))
 			return True
+
+	def get_status(self, nick):
+		if self.query_select("select `type` from `users` where `nick` = %s", (nick.lower())):
+			for row in self.cur:
+				return row[0]

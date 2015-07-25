@@ -1,7 +1,8 @@
 class AdminCommand:
-	def __init__(self, conn, dbc):
+	def __init__(self, conn, dbc, channel):
 		self.dbc = dbc
 		self.connection = conn
+		self.channel = channel
 
 	def quit(self, message=None):
 		if message:

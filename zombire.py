@@ -32,8 +32,8 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		self.dbc = Database(self.config)
 		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
-		self.uc = user_command.UserCommand(self.connection, self.dbc)
-		self.ac = admin_command.AdminCommand(self.connection, self.dbc)
+		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'])
+		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['channel'])
 
 	def read_config(self, filename):
 		if not os.path.exists(filename):
@@ -54,9 +54,13 @@ class Zombire(irc.bot.SingleServerIRCBot):
 			return
 
 	def on_pubmsg(self, c, e):
-		command = re.match(r"\!(register)", str(e.arguments[0]), re.IGNORECASE).group(1).strip()
-		if command:
-			self.uc.execute(e, command)
+		detected = re.match(r"\!(register)", str(e.arguments[0]), re.IGNORECASE)
+		if detected:
+			self.uc.execute(e, detected.group(1).strip())
+			return
+		detected = re.match(r"\!(status\s+.+)", str(e.arguments[0]), re.IGNORECASE)
+		if detected:
+			self.uc.execute(e, detected.group(1).strip())
 			return
 
 def main():
