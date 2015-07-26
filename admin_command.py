@@ -1,3 +1,5 @@
+import sys
+
 class AdminCommand:
 	def __init__(self, conn, dbc, passwd):
 		self.dbc = dbc
@@ -11,7 +13,7 @@ class AdminCommand:
 			self.connection.disconnect("I am going away to fill up my tanks. I will be back soon.")
 		self.dbc.disconnect()
 		print("Zombire bot has exited successfully.")
-		exit(0)
+		sys.exit(0)
 
 	def execute(self, event, command):
 		command = command.strip()

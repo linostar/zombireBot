@@ -16,6 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
 import os
 import re
 
@@ -41,7 +42,7 @@ class Zombire(irc.bot.SingleServerIRCBot):
 	def read_config(self, filename):
 		if not os.path.exists(filename):
 			print('Error: config.yml cannot be found.')
-			exit(1)
+			sys.exit(1)
 		with open(filename, 'r') as config_fd:
 			self.config = yaml.load(config_fd)
 
