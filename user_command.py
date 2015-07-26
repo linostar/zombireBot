@@ -27,13 +27,17 @@ class UserCommand:
 			self.connection.notice(nick, "You are already registered in the game.")
 
 	def status(self, nick):
-		st = self.dbc.get_status(nick)
-		if st == "v":
-			self.connection.privmsg(self.channel, "{} is a \x034vampire\x03.".format(nick))
-		elif st == "z":
-			self.connection.privmsg(self.channel, "{} is a \x033zombie\x03.".format(nick))
-		else:
+		res = self.dbc.get_status(nick)
+		if not res:
 			self.connection.privmsg(self.channel, "{} is not a registered player.".format(nick))
+			return
+		[usertype, mpower, points] = res
+		if usertype == "v":
+			colored_type = "4vampire"
+		elif usertype == "z":
+			colored_type = "3zombie"
+		self.connection.privmsg(self.channel, "{} is a \x03{}\x03. Maximum power: {}. Points: {}."
+				.format(nick, colored_type, mpower, points))
 
 	def execute(self, event, command):
 		command = command.strip()

@@ -50,9 +50,9 @@ class Database:
 			return True
 
 	def get_status(self, nick):
-		if self.query_select("select `type` from `users` where `nick` = %s", (nick.lower())):
+		if self.query_select("select `type`, `max_power`, `points` from `users` where `nick` = %s", (nick.lower())):
 			for row in self.cur:
-				return row[0]
+				return row
 
 	def get_players(self):
 		players = {}
