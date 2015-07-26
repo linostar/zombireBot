@@ -17,10 +17,12 @@ class UserCommand:
 	def register2(self, nick):
 		if round(random.random()):
 			usertype = "v" # vampire
+			icolor = "4"
 		else:
 			usertype = "z" # zombie
+			icolor = "3"
 		if self.dbc.register_user(nick, usertype, None):
-			self.connection.notice(nick, "You have successfully registered as a {}!".format(self.types[usertype]))
+			self.connection.notice(nick, "You have successfully registered as a \x03{}{}\x03!".format(icolor, self.types[usertype]))
 		else:
 			self.connection.notice(nick, "You are already registered in the game.")
 

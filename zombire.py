@@ -31,6 +31,8 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		self.read_config("config.yml")
 		self.dbc = Database(self.config)
 		self.players = self.dbc.get_players()
+		if not self.players:
+			self.players = {}
 		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'])
