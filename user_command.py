@@ -1,5 +1,7 @@
 import random
 
+from user import User
+
 class UserCommand:
 	types = {'v': 'vampire', 'z': 'zombie'}
 
@@ -10,6 +12,9 @@ class UserCommand:
 		self.channel = channel
 
 	def register(self, nick):
+		User.is_identified(self.connection, nick)
+
+	def register2(self, nick):
 		if round(random.random()):
 			usertype = "v" # vampire
 		else:
@@ -22,9 +27,9 @@ class UserCommand:
 	def status(self, nick):
 		st = self.dbc.get_status(nick)
 		if st == "v":
-			self.connection.privmsg(self.channel, "{} is a vampire.".format(nick))
+			self.connection.privmsg(self.channel, "{} is a \x034vampire\x03.".format(nick))
 		elif st == "z":
-			self.connection.privmsg(self.channel, "{} is a zombie.".format(nick))
+			self.connection.privmsg(self.channel, "{} is a \x033zombie\x03.".format(nick))
 		else:
 			self.connection.privmsg(self.channel, "{} is not a registered player.".format(nick))
 

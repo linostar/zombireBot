@@ -30,6 +30,7 @@ class Zombire(irc.bot.SingleServerIRCBot):
 	def __init__(self):
 		self.read_config("config.yml")
 		self.dbc = Database(self.config)
+		self.players = self.dbc.get_players()
 		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'])
@@ -47,18 +48,28 @@ class Zombire(irc.bot.SingleServerIRCBot):
 			self.connection.privmsg("nickserv", "identify {}".format(self.config['nspass']))
 		c.join(self.config['channel'])
 
+	def on_privnotice(self, c, e):
+		# checking for nickserv replies
+		args = e.arguments[0].lower()
+		if e.source.nick.lower() == "nickserv" and args.startswith("status "):
+			largs = args.split(" ")
+			if largs[2] == "3": # if user is identified to nickserv
+				self.players[largs[1]] = 1 
+				self.uc.register2(largs[1]) # proceed with the registration
+			return
+
 	def on_privmsg(self, c, e):
-		command = re.match(r"admin\s+(.+)", str(e.arguments[0]), re.IGNORECASE).group(1).strip()
-		if command:
-			self.ac.execute(command)
+		detected = re.match(r"admin\s+(.+)", e.arguments[0], re.IGNORECASE)
+		if detected:
+			self.ac.execute(detected.group(1).strip())
 			return
 
 	def on_pubmsg(self, c, e):
-		detected = re.match(r"\!(register)", str(e.arguments[0]), re.IGNORECASE)
+		detected = re.match(r"\!(register)", e.arguments[0], re.IGNORECASE)
 		if detected:
 			self.uc.execute(e, detected.group(1).strip())
 			return
-		detected = re.match(r"\!(status\s+.+)", str(e.arguments[0]), re.IGNORECASE)
+		detected = re.match(r"\!(status\s+.+)", e.arguments[0], re.IGNORECASE)
 		if detected:
 			self.uc.execute(e, detected.group(1).strip())
 			return

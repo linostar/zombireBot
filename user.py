@@ -1,4 +1,8 @@
 class User:
-	def __init__(self):
-		pass
+	@staticmethod
+	def is_online(conn, nick):
+		conn.whois(nick)
 
+	@staticmethod
+	def is_identified(conn, nick):
+		conn.privmsg("nickserv", "status {}".format(nick))

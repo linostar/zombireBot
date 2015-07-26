@@ -45,7 +45,7 @@ class Database:
 		if not self.is_registered(nick):
 			if not main_nick:
 				main_nick = nick
-			self.query("insert into `users` values (0, '{0}', '{1}', '{2}', 0)".format(
+			self.query("insert into `users` values (0, '{0}', '{1}', '{2}', 0, 3, 0)".format(
 			nick.lower(), main_nick.lower(), usertype))
 			return True
 
@@ -53,3 +53,11 @@ class Database:
 		if self.query_select("select `type` from `users` where `nick` = %s", (nick.lower())):
 			for row in self.cur:
 				return row[0]
+
+	def get_players(self):
+		players = {}
+		if self.query_select("select `nick` from `users`", (None)):
+			for row in self.cur:
+				if row:
+					players[row[0]] = 1
+			return players

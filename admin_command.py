@@ -8,7 +8,7 @@ class AdminCommand:
 		if message:
 			self.connection.disconnect(message)
 		else:
-			self.connection.disconnect("Going away to fill up my tanks. will be back soon.")
+			self.connection.disconnect("I am going away to fill up my tanks. I will be back soon.")
 		self.dbc.disconnect()
 		print("Zombire bot has exited successfully.")
 		exit(0)
