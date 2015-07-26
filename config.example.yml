@@ -1,17 +1,23 @@
+## Admin settings
 # Bot password for admin commands
 admin_passwd: coolpass
 
+## IRC settings
 server: irc.example.com
 port: 6667
 nick: Zombire
 realname: Zombire
 nspass: coolpass
-# Be sure to put channel names inside quotes
+# Be sure to put the channel name inside quotes
 channel: "#zombire"
-# possible values for channel_access: xop, levels, flags
+# possible values for channel_accesstype: xop, levels, flags
 channel_accesstype: xop
+# if bot can change channel access, it will not allow nicks in one nickserv group to 
+# register more than once
+# WARNING: make sure the bot has really the ability to change the access before setting this to true
+bot_can_change_channel_access: false
 
-# MySQL database information
+## MySQL database settings
 db:
   host: localhost
   port: 3306
