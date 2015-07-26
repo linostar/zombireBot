@@ -1,8 +1,8 @@
 class AdminCommand:
-	def __init__(self, conn, dbc, channel):
+	def __init__(self, conn, dbc, passwd):
 		self.dbc = dbc
 		self.connection = conn
-		self.channel = channel
+		self.passwd = passwd
 
 	def quit(self, message=None):
 		if message:
@@ -13,8 +13,12 @@ class AdminCommand:
 		print("Zombire bot has exited successfully.")
 		exit(0)
 
-	def execute(self, command):
+	def execute(self, event, command):
 		command = command.strip()
+		if not command.startswith(self.passwd + " "):
+			self.connection.notice(event.source.nick, "Error: Wrong admin password.")
+			return
+		command = command[len(self.passwd):].lstrip()
 		first_space = command.find(" ")
 		if first_space == -1:
 			cmd = command.lower()

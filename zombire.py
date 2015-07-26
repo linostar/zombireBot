@@ -36,7 +36,7 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'])
-		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['channel'])
+		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['admin_passwd'])
 
 	def read_config(self, filename):
 		if not os.path.exists(filename):
@@ -63,7 +63,7 @@ class Zombire(irc.bot.SingleServerIRCBot):
 	def on_privmsg(self, c, e):
 		detected = re.match(r"admin\s+(.+)", e.arguments[0], re.IGNORECASE)
 		if detected:
-			self.ac.execute(detected.group(1).strip())
+			self.ac.execute(e, detected.group(1).strip())
 			return
 
 	def on_pubmsg(self, c, e):
