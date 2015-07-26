@@ -32,8 +32,6 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		self.read_config("config.yml")
 		self.dbc = Database(self.config)
 		self.players = self.dbc.get_players()
-		if not self.players:
-			self.players = {}
 		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'])
@@ -56,9 +54,8 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		args = e.arguments[0].lower()
 		if e.source.nick.lower() == "nickserv" and args.startswith("status "):
 			largs = args.split(" ")
-			if largs[2] == "3": # if user is identified to nickserv
-				self.players[largs[1]] = 1 
-				self.uc.register2(largs[1]) # proceed with the registration
+			if largs[2] == "3": # if user is identified to nickserv 
+				self.uc.register2(largs[1], self.players) # proceed with the registration
 			return
 
 	def on_privmsg(self, c, e):
@@ -72,9 +69,17 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		if detected:
 			self.uc.execute(e, detected.group(1).strip())
 			return
+		detected = re.match(r"\!(unregister)", e.arguments[0], re.IGNORECASE)
+		if detected:
+			self.uc.execute(e, detected.group(1).strip(), self.players)
+			return
 		detected = re.match(r"\!(status\s+.+)", e.arguments[0], re.IGNORECASE)
 		if detected:
 			self.uc.execute(e, detected.group(1).strip())
+			return
+		detected = re.match(r"\!(fight\s+.+)", e.arguments[0], re.IGNORECASE)
+		if detected:
+			self.uc.execute(e, detected.group(1).strip(), self.players)
 			return
 
 def main():
