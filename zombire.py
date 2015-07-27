@@ -28,8 +28,8 @@ import user_command, admin_command
 from db_access import Database
 
 class Zombire(irc.bot.SingleServerIRCBot):
-	def __init__(self):
-		self.read_config("config.yml")
+	def __init__(self, config_file):
+		self.read_config(config_file)
 		self.dbc = Database(self.config)
 		self.players = self.dbc.get_players()
 		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
@@ -75,16 +75,16 @@ class Zombire(irc.bot.SingleServerIRCBot):
 			return
 		detected = re.match(r"\!(status\s+.+)", e.arguments[0], re.IGNORECASE)
 		if detected:
-			self.uc.execute(e, detected.group(1).strip())
+			self.uc.execute(e, detected.group(1).strip(), self.players)
 			return
-		detected = re.match(r"\!(fight\s+.+)", e.arguments[0], re.IGNORECASE)
+		detected = re.match(r"\!(attack\s+.+)", e.arguments[0], re.IGNORECASE)
 		if detected:
 			self.uc.execute(e, detected.group(1).strip(), self.players)
 			return
 
 def main():
 	print("Zombire bot is running. To stop the bot, press Ctrl+C.")
-	bot = Zombire()
+	bot = Zombire("config.yml")
 	bot.start()
 
 if __name__ == "__main__":

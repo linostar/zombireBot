@@ -22,7 +22,7 @@ class UserCommand:
 			usertype = "z" # zombie
 			icolor = "3"
 		if self.dbc.register_user(nick, usertype, None):
-			players[nick] = {'type': usertype, 'power': 3, 'mpower': 3, 'points': 10, 'bonus': 0}
+			players[nick] = {'type': usertype, 'hp': 10, 'mp': 3, 'mmp': 3, 'score': 0, 'bonus': 0}
 			self.connection.notice(nick, "You have successfully registered as a \x03{}{}\x03!".format(
 				icolor, self.types[usertype]))
 		else:
@@ -37,30 +37,41 @@ class UserCommand:
 		else:
 			self.connection.notice(nick, "Error: you are not registered in this game.")
 
-	def status(self, nick):
-		res = self.dbc.get_status(nick)
-		if not res:
+	def status(self, nick, players):
+		if not nick.lower() in players:
 			self.connection.privmsg(self.channel, "{} is not a registered player.".format(nick))
 			return
-		[usertype, mpower, points, bonus] = res
-		if usertype == "v":
+		p = players[nick.lower()]
+		[utype, hp, mp, mmp, score, bonus] = [p['type'], p['hp'], p['mp'], p['mmp'],
+		p['score'], p['bonus']]
+		if utype == "v":
 			colored_type = "4vampire"
-		elif usertype == "z":
+		elif utype == "z":
 			colored_type = "3zombie"
-		self.connection.privmsg(self.channel, "{} is a \x03{}\x03. Maximum power: {}. Points: {}."
-				.format(nick, colored_type, mpower, points))
+		self.connection.privmsg(self.channel, "{} is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}."
+				.format(nick, colored_type, hp, mp, mmp, score))
 
-	def fight(self, source, target, players):
-		if not target in players:
+	def attack(self, source, target, players):
+		if not target.lower() in players:
 			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
 				source, target))
-		elif not source in players:
-			self.connection.privmsg(self.channel, "{}: you are not registered in this game.".format(source))
-		elif players[source]['type'] == players[target]['type']:
-			self.connection.privmsg(self.channel, "{}: You can't fight a {} like yourself.".format(
-				source, self.types[players[source]['type']]))
+		elif not source.lower() in players:
+			self.connection.privmsg(self.channel, "{}: you are not registered in this game."
+				.format(source))
+		elif players[source.lower()]['type'] == players[target.lower()]['type']:
+			self.connection.privmsg(self.channel, "{}: You can't attack a {} like yourself.".format(
+				source, self.types[players[source.lower()]['type']]))
+		elif players[source.lower()]['mp'] > 0:
+			players[source.lower()]['mp'] -= 1
+			if players[source.lower()]['type'] == "v":
+				self.connection.privmsg(self.channel, "Attack succeeded. " +
+					"\x034{}\x03 sucked 2 HP of blood from \x033{}\x03.".format(source, target))
+			else:
+				self.connection.privmsg(self.channel, "Attack succeeded. " +
+					"\x033{}\x03 ate 2 HP of brains from \x034{}\x03.".format(source, target))
 		else:
-			self.connection.privmsg(self.channel, "Fighting to be implemented soon!")
+			self.connection.privmsg(self.channel, "{}: You don't have enough MP to attack other players."
+				.format(source))
 
 	def execute(self, event, command, players={}):
 		command = command.strip()
@@ -76,6 +87,6 @@ class UserCommand:
 		if cmd == "unregister":
 			self.unregister(event.source.nick.lower(), players)
 		if cmd == "status" and len(args) == 1:
-			self.status(args[0])
-		if cmd == "fight" and len(args) == 1:
-			self.fight(event.source.nick.lower(), args[0], players)
+			self.status(args[0], players)
+		if cmd == "attack" and len(args) == 1:
+			self.attack(event.source.nick, args[0], players)

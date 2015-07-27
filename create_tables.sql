@@ -7,8 +7,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `nick` varchar(64) NOT NULL,
   `main_nick` varchar(64) NOT NULL,
   `type` varchar(1) NOT NULL,
-  `points` int NOT NULL DEFAULT 10,
-  `max_power` smallint NOT NULL DEFAULT 3,
+  `hp` smallint NOT NULL DEFAULT 10,
+  `mmp` smallint NOT NULL DEFAULT 3,
+  `score` int NOT NULL DEFAULT 0,
   `bonus` smallint NOT NULL DEFAULT 0,
   PRIMARY KEY(`userid`)
 ) ENGINE=MyISAM	DEFAULT CHARSET=utf8;
