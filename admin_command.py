@@ -6,7 +6,8 @@ class AdminCommand:
 		self.connection = conn
 		self.passwd = passwd
 
-	def quit(self, message=None):
+	def quit(self, players, message=None):
+		self.dbc.save(players)
 		if message:
 			self.connection.disconnect(message)
 		else:
@@ -15,7 +16,7 @@ class AdminCommand:
 		print("Zombire bot has exited successfully.")
 		sys.exit(0)
 
-	def execute(self, event, command):
+	def execute(self, event, command, players={}):
 		command = command.strip()
 		if not command.startswith(self.passwd + " "):
 			self.connection.notice(event.source.nick, "Error: Wrong admin password.")
@@ -29,4 +30,4 @@ class AdminCommand:
 			cmd = command[0:first_space].lower()
 			args = command[first_space:].lstrip()
 		if cmd == "quit":
-			self.quit(args)
+			self.quit(players, args)

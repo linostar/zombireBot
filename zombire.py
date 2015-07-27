@@ -61,7 +61,7 @@ class Zombire(irc.bot.SingleServerIRCBot):
 	def on_privmsg(self, c, e):
 		detected = re.match(r"admin\s+(.+)", e.arguments[0], re.IGNORECASE)
 		if detected:
-			self.ac.execute(e, detected.group(1).strip())
+			self.ac.execute(e, detected.group(1).strip(), self.players)
 			return
 
 	def on_pubmsg(self, c, e):

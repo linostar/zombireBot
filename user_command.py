@@ -62,7 +62,10 @@ class UserCommand:
 			self.connection.privmsg(self.channel, "{}: You can't attack a {} like yourself.".format(
 				source, self.types[players[source.lower()]['type']]))
 		elif players[source.lower()]['mp'] > 0:
+			players[source.lower()]['hp'] += 2
+			players[target.lower()]['hp'] -= 2
 			players[source.lower()]['mp'] -= 1
+			players[source.lower()]['score'] += 1
 			if players[source.lower()]['type'] == "v":
 				self.connection.privmsg(self.channel, "Attack succeeded. " +
 					"\x034{}\x03 sucked 2 HP of blood from \x033{}\x03.".format(source, target))

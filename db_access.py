@@ -23,6 +23,13 @@ class Database:
 			print("Error: {}".format(err))
 			raise
 
+	def save(self, players):
+		for nick in players:
+			p = players[nick]
+			self.query(("update `users` set `type` = '{p[type]}', `hp` = {p[hp]}, `mmp` = {p[mmp]}, " +
+				"`score` = {p[score]}, `bonus` = {p[bonus]} where `nick` = '{nick}'").format(p=p, nick=nick))
+		return True
+
 	def query_select(self, expr, args=None):
 		try:
 			return self.cur.execute(expr, (args))
