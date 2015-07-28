@@ -31,6 +31,12 @@ class User:
 		return True
 
 	@staticmethod
+	def donate(source, target, players):
+		players[source.lower()]['hp'] -= 2
+		players[target.lower()]['hp'] += 1
+		players[source.lower()]['mp'] -= 1
+
+	@staticmethod
 	def battle(source, target, players):
 		random.seed()
 		p1 = players[source.lower()]

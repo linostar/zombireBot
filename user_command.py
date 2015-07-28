@@ -60,7 +60,7 @@ class UserCommand:
 			self.connection.privmsg(self.channel, "{}: you are not registered in this game."
 				.format(source))
 		elif players[source.lower()]['type'] == players[target.lower()]['type']:
-			self.connection.privmsg(self.channel, "{}: You can't attack a {} like yourself.".format(
+			self.connection.privmsg(self.channel, "{}: You cannot attack a {} like yourself.".format(
 				source, self.types[players[source.lower()]['type']]))
 		elif players[source.lower()]['mp'] > 0:
 			[dice1, dice2, res] = User.battle(source, target, players)
@@ -89,9 +89,33 @@ class UserCommand:
 					self.connection.privmsg(self.channel, ("{} has lost all of his/her HP " +
 						"and has been transformed to a \x03{}\x03.").format(source, newtype))
 			else: # res == 0
-				self.connection.privmsg(self.channel, "\x02It is a draw.\x02 No one has been hurt.")
+				self.connection.privmsg(self.channel, "\x02It is a tie.\x02 No one has been hurt.")
 		else:
 			self.connection.privmsg(self.channel, "{}: You don't have enough MP to attack other players."
+				.format(source))
+
+	def heal(self, source, target, players):
+		if not target.lower() in players:
+			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
+				source, target))
+		elif not source.lower() in players:
+			self.connection.privmsg(self.channel, "{}: you are not registered in this game."
+				.format(source))
+		elif source.lower() == target.lower():
+			self.connection.privmsg(self.channel, "{}: You cannot heal yourself.".format(source))
+		elif players[source.lower()]['type'] != players[target.lower()]['type']:
+			self.connection.privmsg(self.channel, "{}: You cannot heal your enemy.".format(
+				source))
+		elif players[source.lower()]['mp'] > 0 and players[source.lower()]['hp'] > 2:
+			User.donate(source, target, players)
+			color = 4 if players[source.lower()]['type'] == "v" else 3
+			self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 sacrificed 2 HP to heal an ally. " +
+				"\x03{0}{2}\x03 received 1 HP.").format(color, source, target))
+		elif players[source.lower()]['mp'] > 0:
+			self.connection.privmsg(self.channel, "{}: You need at least 3 HP to be able to heal others."
+				.format(source))
+		else:
+			self.connection.privmsg(self.channel, "{}: You don't have enough MP to heal other players."
 				.format(source))
 
 	def execute(self, event, command, players={}):
@@ -111,3 +135,5 @@ class UserCommand:
 			self.status(args[0], players)
 		if cmd == "attack" and len(args) == 1:
 			self.attack(event.source.nick, args[0], players)
+		if cmd == "heal" and len(args) == 1:
+			self.heal(event.source.nick, args[0], players)
