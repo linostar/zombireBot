@@ -4,6 +4,7 @@ from user import User
 
 class UserCommand:
 	types = {'v': 'vampire', 'z': 'zombie'}
+	colored_types = {'v': '4vampire', 'z': '3zombie'}
 
 	def __init__(self, conn, dbc, channel):
 		random.seed()
@@ -16,15 +17,13 @@ class UserCommand:
 
 	def register2(self, nick, players):
 		if round(random.random()):
-			usertype = "v" # vampire
-			icolor = "4"
+			utype = "v" # vampire
 		else:
-			usertype = "z" # zombie
-			icolor = "3"
-		if self.dbc.register_user(nick, usertype, None):
-			players[nick] = {'type': usertype, 'hp': 10, 'mp': 3, 'mmp': 3, 'score': 0, 'bonus': 0}
-			self.connection.notice(nick, "You have successfully registered as a \x03{}{}\x03!".format(
-				icolor, self.types[usertype]))
+			utype = "z" # zombie
+		if self.dbc.register_user(nick, utype, None):
+			players[nick] = {'type': utype, 'hp': 10, 'mp': 3, 'mmp': 3, 'score': 0, 'bonus': 0}
+			self.connection.notice(nick, "You have successfully registered as a \x03{}\x03!".format(
+				self.colored_types[utype]))
 		else:
 			self.connection.notice(nick, "You are already registered in the game.")
 
@@ -44,12 +43,8 @@ class UserCommand:
 		p = players[nick.lower()]
 		[utype, hp, mp, mmp, score, bonus] = [p['type'], p['hp'], p['mp'], p['mmp'],
 		p['score'], p['bonus']]
-		if utype == "v":
-			colored_type = "4vampire"
-		elif utype == "z":
-			colored_type = "3zombie"
 		self.connection.privmsg(self.channel, "{} is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}."
-				.format(nick, colored_type, hp, mp, mmp, score))
+				.format(nick, self.colored_types[utype], hp, mp, mmp, score))
 
 	def attack(self, source, target, players):
 		if not target.lower() in players:
@@ -62,16 +57,33 @@ class UserCommand:
 			self.connection.privmsg(self.channel, "{}: You can't attack a {} like yourself.".format(
 				source, self.types[players[source.lower()]['type']]))
 		elif players[source.lower()]['mp'] > 0:
-			players[source.lower()]['hp'] += 2
-			players[target.lower()]['hp'] -= 2
-			players[source.lower()]['mp'] -= 1
-			players[source.lower()]['score'] += 1
-			if players[source.lower()]['type'] == "v":
-				self.connection.privmsg(self.channel, "Attack succeeded. " +
-					"\x034{}\x03 sucked 2 HP of blood from \x033{}\x03.".format(source, target))
-			else:
-				self.connection.privmsg(self.channel, "Attack succeeded. " +
-					"\x033{}\x03 ate 2 HP of brains from \x034{}\x03.".format(source, target))
+			[dice1, dice2, res] = User.battle(source, target, players)
+			self.connection.privmsg(self.channel, ("{} threw the dice and got \x02{}\x02. " +
+				"{} threw the dice and got \x02{}\x02.").format(source, dice1, target, dice2))
+			if res > 0:
+				if players[source.lower()]['type'] == "v":
+					self.connection.privmsg(self.channel, "\x02Attack succeeded.\x02 " +
+						"\x034{}\x03 sucked \x02{} HP\x02 of blood from \x033{}\x03.".format(source, res, target))
+				else:
+					self.connection.privmsg(self.channel, "\x02Attack succeeded.\x02 " +
+						"\x033{}\x03 ate \x02{} HP\x02 of brains from \x034{}\x03.".format(source, res, target))
+				if User.transform(target, players):
+					newtype = self.colored_types[players[target.lower()]['type']]
+					self.connection.privmsg(self.channel, ("{} has lost all of his/her HP " +
+						"and has been transformed to a \x03{}\x03.").format(target, newtype))
+			elif res < 0:
+				if players[source.lower()]['type'] == "v":
+					self.connection.privmsg(self.channel, "\x02Attack failed.\x02 " +
+						"\x033{}\x03 ate \x02{} HP\x02 of brains from \x034{}\x03.".format(target, -res, source))
+				else:
+					self.connection.privmsg(self.channel, "\x02Attack failed.\x02 " +
+						"\x034{}\x03 sucked \x02{} HP\x02 of blood from \x033{}\x03.".format(target, -res, source))
+				if User.transform(source, players):
+					newtype = self.colored_types[players[source.lower()]['type']]
+					self.connection.privmsg(self.channel, ("{} has lost all of his/her HP " +
+						"and has been transformed to a \x03{}\x03.").format(source, newtype))
+			else: # res == 0
+				self.connection.privmsg(self.channel, "\x02It is a draw.\x02 No one has been hurt.")
 		else:
 			self.connection.privmsg(self.channel, "{}: You don't have enough MP to attack other players."
 				.format(source))
