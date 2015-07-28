@@ -51,6 +51,6 @@ class User:
 		players[source.lower()]['hp'] += diff_dice
 		players[target.lower()]['hp'] -= diff_dice
 		players[source.lower()]['mp'] -= 1
-		if dice1 - dice2 > 0:
+		if diff_dice > 0:
 			players[source.lower()]['score'] += 1
 		return [dice1, dice2, diff_dice]

@@ -65,22 +65,25 @@ class Zombire(irc.bot.SingleServerIRCBot):
 			return
 
 	def on_pubmsg(self, c, e):
-		detected = re.match(r"\!(register)", e.arguments[0], re.IGNORECASE)
-		if detected:
-			self.uc.execute(e, detected.group(1).strip())
-			return
-		detected = re.match(r"\!(unregister)", e.arguments[0], re.IGNORECASE)
-		if detected:
-			self.uc.execute(e, detected.group(1).strip(), self.players)
-			return
-		detected = re.match(r"\!(status\s+.+)", e.arguments[0], re.IGNORECASE)
-		if detected:
-			self.uc.execute(e, detected.group(1).strip(), self.players)
-			return
-		detected = re.match(r"\!(attack\s+.+)", e.arguments[0], re.IGNORECASE)
-		if detected:
-			self.uc.execute(e, detected.group(1).strip(), self.players)
-			return
+		re_exprs = (r"\!(register)", r"\!(unregister)", r"\!(status\s+.+)",
+			r"\!(attack\s+.+)", r"\!(assist\s+.+)")
+		for expr in re_exprs:
+			try:
+				detected = re.match(expr, e.arguments[0], re.IGNORECASE)
+				raise DetectedException
+			except DetectedException:
+				if detected:
+					self.uc.execute(e, detected.group(1).strip(), self.players)
+					return
+
+
+class DetectedException(Exception):
+	def __init__(self, value=None):
+		self.value = value
+
+	def __str__(self):
+		return repr(self.value)
+
 
 def main():
 	print("Zombire bot is running. To stop the bot, press Ctrl+C.")
