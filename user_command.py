@@ -16,12 +16,12 @@ class UserCommand:
 		User.is_identified(self.connection, nick)
 
 	def register2(self, nick, players):
-		if round(random.random()):
+		if random.random() > User.ratio_of_types(players):
 			utype = "v" # vampire
 		else:
 			utype = "z" # zombie
 		if self.dbc.register_user(nick, utype, None):
-			players[nick] = {'type': utype, 'hp': 10, 'mp': 3, 'mmp': 3, 'score': 0, 'bonus': 0}
+			players[nick] = {'type': utype, 'hp': 10, 'mp': 6, 'mmp': 6, 'score': 0, 'bonus': 0}
 			self.connection.notice(nick, "You have successfully registered as a \x03{}\x03!".format(
 				self.colored_types[utype]))
 		else:
@@ -43,8 +43,14 @@ class UserCommand:
 		p = players[nick.lower()]
 		[utype, hp, mp, mmp, score, bonus] = [p['type'], p['hp'], p['mp'], p['mmp'],
 		p['score'], p['bonus']]
-		self.connection.privmsg(self.channel, "{} is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}."
-				.format(nick, self.colored_types[utype], hp, mp, mmp, score))
+		if bonus % 10 == 1:
+			bonus_text = "Bonus: +20% attack/defense."
+		elif bonus % 10 == 2:
+			bonus_text = "Bonus: -20% attack/defense."
+		else:
+			bonus_text = ""
+		self.connection.privmsg(self.channel, "{} is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}"
+				.format(nick, self.colored_types[utype], hp, mp, mmp, score, bonus_text))
 
 	def attack(self, source, target, players):
 		if not target.lower() in players:

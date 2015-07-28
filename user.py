@@ -10,6 +10,16 @@ class User:
 		conn.privmsg("nickserv", "status {}".format(nick))
 
 	@staticmethod
+	def ratio_of_types(players):
+		num_v = 0
+		num_z = 0
+		num_v = sum(num_v + 1 for nick in players if players[nick]['type'] == "v")
+		num_z = sum(num_z + 1 for nick in players if players[nick]['type'] == "z")
+		if num_v or num_z:
+			return num_v / (num_v + num_z)
+		return 0.5
+
+	@staticmethod
 	def transform(nick, players):
 		if players[nick.lower()]['hp'] > 0:
 			return False
