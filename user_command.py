@@ -118,7 +118,7 @@ class UserCommand:
 			self.connection.privmsg(self.channel, "{}: You don't have enough MP to heal other players."
 				.format(source))
 
-	def execute(self, event, command, players={}):
+	def execute(self, event, command, players):
 		command = command.strip()
 		first_space = command.find(" ")
 		if first_space == -1:
