@@ -8,8 +8,13 @@ class Schedule:
 	loop = True
 	last_hour_mp = -1
 	last_hour_bonus = -1
-	bonus_texts = ('Luck smiled on the following players and gave them \x0230% boost\x02 on attack/defense: ', 
-		'Luck frowned on the following players and gave them \x0230% penalty\x02 on attack/defense: ')
+	bonus_vars = []
+	bonus_texts = ("The following players found \x02{}\x02. Upon consuming it, they temporarily gained \x0230%\x02 boost on attack/defense: ", 
+		"The following players \x02{}\x02. Due to that, they temporarily lost \x0230%\x02 of their attack/defense: ")
+	bonus_vars.append(("a Red Bull", "a Mega Potion", "Elixir", "a Super Vaccine", 
+		"a delicious Honeypot", "a Rainbow Cake"))
+	bonus_vars.append(("caught swine flu", "got bitten by a venomous snake", "got stinged by a wasp", 
+		"got attacked by a wolf", "suffered from Vitamin C deficiency"))
 
 	def __init__(self, conn, dbc, channel, players):
 		random.seed()
@@ -50,13 +55,16 @@ class Schedule:
 					bonus_choice = random.choice(bonus_types)
 					if bonus_choice in (1, 2):
 						list_nicks = self.bonus_random_players(bonus_choice)
-						self.connection.privmsg(self.channel, self.bonus_texts[bonus_choice - 1])
+						self.connection.privmsg(self.channel, self.bonus_texts[bonus_choice - 1].
+							format(self.bonus_vars[bonus_choice - 1]))
 						self.connection.privmsg(self.channel, "\x02" + list_nicks + "\x02")
 					elif bonus_choice == 3:
 						[list_nicks1, list_nicks2] = self.bonus_random_players(3)
-						self.connection.privmsg(self.channel, self.bonus_texts[0])
+						self.connection.privmsg(self.channel, self.bonus_texts[0].format(
+							self.bonus_vars[0]))
 						self.connection.privmsg(self.channel, "\x02" + list_nicks1 + "\x02")
-						self.connection.privmsg(self.channel, self.bonus_texts[1])
+						self.connection.privmsg(self.channel, self.bonus_texts[1].format(
+							self.bonus_vars[1]))
 						self.connection.privmsg(self.channel, "\x02" + list_nicks2 + "\x02")
 					else:
 						pass # no bonus
