@@ -24,8 +24,8 @@ import yaml
 import irc.bot
 import irc.strings
 
-import user_command, admin_command, schedule
-from db_access import Database
+from zombirelib import user_command, admin_command, schedule
+from zombirelib.db_access import Database
 
 class Zombire(irc.bot.SingleServerIRCBot):
 	def __init__(self, config_file):
@@ -94,7 +94,7 @@ class DetectedException(Exception):
 
 def main():
 	print("Zombire bot is running. To stop the bot, press Ctrl+C.")
-	bot = Zombire("config.yml")
+	bot = Zombire("conf/config.yml")
 	bot.start()
 
 if __name__ == "__main__":

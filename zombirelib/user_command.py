@@ -1,6 +1,6 @@
 import random
 
-from user import User
+from .user import User
 
 class UserCommand:
 	types = {'v': 'vampire', 'z': 'zombie'}
