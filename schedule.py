@@ -4,6 +4,7 @@ import time
 
 class Schedule:
 	loop = True
+	last_hour = -1
 
 	def __init__(self, conn, channel, players):
 		self.connection = conn
@@ -14,9 +15,11 @@ class Schedule:
 
 	def regenerate_mp(self):
 		while self.loop:
+			now_hour = datetime.datetime.now().hour
 			now_min = datetime.datetime.now().minute
 			now_sec = datetime.datetime.now().second
-			if now_min == 0 and now_sec >= 0 and now_sec < 6:
+			if now_min == 0 and now_sec >= 0 and now_sec < 6 and self.last_hour != now_hour:
+				self.last_hour = now_hour
 				for nick in self.players:
 					self.players[nick]['mp'] = self.players[nick]['mmp']
 				self.connection.privmsg(self.channel, "\x02One hour has passed, " +
