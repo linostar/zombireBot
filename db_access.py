@@ -19,6 +19,9 @@ class Database:
 		try:
 			self.cur.close()
 			self.conn.close()
+		except pymysql.err.OperationalError as e:
+			if e[0] == 2013:
+				pass # sql connection already lost, nothing to close
 		except Exception as err:
 			print("Error: {}".format(err))
 			raise
@@ -33,6 +36,9 @@ class Database:
 	def query_select(self, expr, args=None):
 		try:
 			return self.cur.execute(expr, (args))
+		except pymysql.err.OperationalError as e:
+			if e[0] == 2013:
+				self.connect()
 		except Exception as err:
 			print("Error: {}".format(err))
 			raise
@@ -40,6 +46,9 @@ class Database:
 	def query(self, expr):
 		try:
 			self.cur.execute(expr)
+		except pymysql.err.OperationalError as e:
+			if e[0] == 2013:
+				self.connect()
 		except Exception as err:
 			print("Error: {}".format(err))
 			raise
