@@ -61,7 +61,7 @@ class Database:
 		if not self.is_registered(nick):
 			if not main_nick:
 				main_nick = nick
-			self.query("insert into `users` values (0, '{0}', '{1}', '{2}', 10, 6, 0, 0)"
+			self.query("insert into `users` values (0, '{0}', '{1}', '{2}', 10, 5, 0, 0)"
 				.format(nick.lower(), main_nick.lower(), usertype))
 			return True
 

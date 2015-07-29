@@ -34,7 +34,7 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		self.players = self.dbc.get_players()
 		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
-		self.sched = schedule.Schedule(self.connection, self.config['channel'], self.players)
+		self.sched = schedule.Schedule(self.connection, self.dbc, self.config['channel'], self.players)
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'])
 		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['admin_passwd'], 
 			self.sched)

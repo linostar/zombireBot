@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `main_nick` varchar(64) NOT NULL,
   `type` varchar(1) NOT NULL,
   `hp` smallint NOT NULL DEFAULT 10,
-  `mmp` smallint NOT NULL DEFAULT 6,
+  `mmp` smallint NOT NULL DEFAULT 5,
   `score` int NOT NULL DEFAULT 0,
   `bonus` smallint NOT NULL DEFAULT 0,
   PRIMARY KEY(`userid`)

@@ -1,6 +1,10 @@
 import random
 
 class User:
+	CUMULATIVE = 5
+	MMP_MAX = 10
+	MMP_MIN = 1
+
 	@staticmethod
 	def is_online(conn, nick):
 		conn.whois(nick)
@@ -21,42 +25,62 @@ class User:
 
 	@staticmethod
 	def transform(nick, players):
-		if players[nick.lower()]['hp'] > 0:
+		if players[nick]['hp'] > 0:
 			return False
-		if players[nick.lower()]['type'] == "v":
-			players[nick.lower()]['type'] = "z"
+		if players[nick]['type'] == "v":
+			players[nick]['type'] = "z"
 		else:
-			players[nick.lower()]['type'] = "v"
-		players[nick.lower()]['hp'] = 10
+			players[nick]['type'] = "v"
+		players[nick]['hp'] = 10
 		return True
 
 	@staticmethod
 	def donate(source, target, players):
-		players[source.lower()]['hp'] -= 2
-		players[target.lower()]['hp'] += 1
-		players[source.lower()]['mp'] -= 1
+		players[source]['hp'] -= 2
+		players[target]['hp'] += 1
+		players[source]['mp'] -= 1
 
 	@staticmethod
 	def battle(source, target, players):
 		random.seed()
-		p1 = players[source.lower()]
-		p2 = players[target.lower()]
+		p1 = players[source]
+		p2 = players[target]
 		if p1['bonus'] % 10 == 1:
-			dice1 = int(random.random() * 4) + 3 # +20% winning chance
+			dice1 = int(random.random() * 4) + 3 # +30% winning chance
 		elif p1['bonus'] % 10 == 2:
-			dice1 = int(random.random() * 4) + 1 # -20% winning chance
+			dice1 = int(random.random() * 4) + 1 # -30% winning chance
 		else:
 			dice1 = int(random.random() * 6) + 1 # normal winning chance
 		if p2['bonus'] % 10 == 1:
-			dice2 = int(random.random() * 4) + 3 # +20% winning chance
+			dice2 = int(random.random() * 4) + 3 # +30% winning chance
 		elif p2['bonus'] % 10 == 2:
-			dice2 = int(random.random() * 4) + 1 # -20% winning chance
+			dice2 = int(random.random() * 4) + 1 # -30% winning chance
 		else:
 			dice2 = int(random.random() * 6) + 1 # normal winning chance
 		diff_dice = dice1 - dice2
-		players[source.lower()]['hp'] += diff_dice
-		players[target.lower()]['hp'] -= diff_dice
-		players[source.lower()]['mp'] -= 1
+		players[source]['hp'] += diff_dice
+		players[target]['hp'] -= diff_dice
+		players[source]['mp'] -= 1
 		if diff_dice > 0:
-			players[source.lower()]['score'] += 1
+			players[source]['score'] += 1
 		return [dice1, dice2, diff_dice]
+
+	@staticmethod
+	def redetermine_mmp(result, nick, players):
+		if result > 0:
+			players[nick]['bonus'] += 10
+			if (players[nick]['bonus'] % 100) // 10 == User.CUMULATIVE:
+				players[nick]['bonus'] -= User.CUMULATIVE * 10
+				if players[nick]['mmp'] < User.MMP_MAX:
+					players[nick]['mmp'] += 1
+					return 1
+		elif result < 0:
+			players[nick]['bonus'] += 100
+			if players[nick]['bonus'] // 100 == User.CUMULATIVE:
+				players[nick]['bonus'] -= User.CUMULATIVE * 100
+				if players[nick]['mmp'] > User.MMP_MIN:
+					players[nick]['mmp'] -= 1
+					return -1
+		else:
+			# reset the cumulation to zero
+			players[nick]['bonus'] %= 10

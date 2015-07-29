@@ -8,12 +8,13 @@ class Schedule:
 	loop = True
 	last_hour_mp = -1
 	last_hour_bonus = -1
-	bonus_texts = ('Luck smiled on the following players and gave them \x0220% boost\x02 on attack/defense: ', 
-		'Luck frowned on the following players and gave them \x0220% penalty\x02 on attack/defense: ')
+	bonus_texts = ('Luck smiled on the following players and gave them \x0230% boost\x02 on attack/defense: ', 
+		'Luck frowned on the following players and gave them \x0230% penalty\x02 on attack/defense: ')
 
-	def __init__(self, conn, channel, players):
+	def __init__(self, conn, dbc, channel, players):
 		random.seed()
 		self.connection = conn
+		self.dbc = dbc
 		self.channel = channel
 		self.players = players
 		regenerate_thread = threading.Thread(target=self.regenerate_mp)
@@ -43,7 +44,7 @@ class Schedule:
 				self.last_hour_bonus = now_hour
 				self.clear_bonus()
 				if now_hour % 3 == 0: #every 3 hours
-					# types of bonuses: 0 for nothing, 1 for +20%, 2 for -20%, 3 for 1 & 2
+					# types of bonuses: 0 for nothing, 1 for +30%, 2 for -30%, 3 for 1 & 2
 					# probab of choosing: 0: 10%, 1: 40%, 2: 40%, 3: 10%
 					bonus_types = [0] + [1] * 4 + [2] * 4 + [3]
 					bonus_choice = random.choice(bonus_types)
@@ -59,6 +60,8 @@ class Schedule:
 						self.connection.privmsg(self.channel, "\x02" + list_nicks2 + "\x02")
 					else:
 						pass # no bonus
+				# save new stats after regenerate_mp and give_bonus
+				self.dbc.save(self.players)
 			time.sleep(5)
 
 	def bonus_random_players(self, btype):
