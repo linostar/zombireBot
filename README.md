@@ -17,3 +17,4 @@ mysql -u <mysql_user> -D <mysql_db> -p < create_tables.sql
 6. Run: `python3 zombire.py` and enjoy!
 
 ## How to Play
+(To be added soon)
