@@ -65,8 +65,8 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		for expr in re_exprs:
 			try:
 				detected = re.match(expr, e.arguments[0], re.IGNORECASE)
-				raise DetectedException
-			except DetectedException:
+				raise DetectedCommand
+			except DetectedCommand:
 				if detected:
 					self.ac.execute(e, detected.group(1).strip(), self.players)
 					return
@@ -77,19 +77,16 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		for expr in re_exprs:
 			try:
 				detected = re.match(expr, e.arguments[0], re.IGNORECASE)
-				raise DetectedException
-			except DetectedException:
+				raise DetectedCommand
+			except DetectedCommand:
 				if detected:
 					self.uc.execute(e, detected.group(1).strip(), self.players)
 					return
 
 
-class DetectedException(Exception):
-	def __init__(self, value=None):
-		self.value = value
-
-	def __str__(self):
-		return repr(self.value)
+class DetectedCommand(Exception):
+	# dummy custom Exception, used for simplifying parsing commands
+	pass
 
 
 def main():

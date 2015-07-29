@@ -63,6 +63,14 @@ class User:
 		players[source]['mp'] -= 1
 		if diff_dice > 0:
 			players[source]['score'] += 1
+		if players[source]['hp'] < 0:
+			players[target]['hp'] += players[source]['hp']
+			diff_dice += players[source]['hp']
+			players[source]['hp'] = 0
+		if players[target]['hp'] < 0:
+			players[source]['hp'] += players[target]['hp']
+			diff_dice += players[target]['hp']
+			players[target]['hp'] = 0
 		return [dice1, dice2, diff_dice]
 
 	@staticmethod

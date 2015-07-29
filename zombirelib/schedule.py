@@ -45,26 +45,26 @@ class Schedule:
 			now_hour = datetime.datetime.now().hour
 			now_min = datetime.datetime.now().minute
 			now_sec = datetime.datetime.now().second
-			if now_min == 0 and now_sec >= 6 and now_sec < 10 and self.last_hour_bonus != now_hour:
+			if now_min == 1 and now_sec >= 6 and now_sec < 10 and self.last_hour_bonus != now_hour:
 				self.last_hour_bonus = now_hour
 				self.clear_bonus()
 				if now_hour % 3 == 0: #every 3 hours
 					# types of bonuses: 0 for nothing, 1 for +30%, 2 for -30%, 3 for 1 & 2
-					# probab of choosing: 0: 10%, 1: 40%, 2: 40%, 3: 10%
+					# probab of choosing bonuses: 0: 10%, 1: 40%, 2: 40%, 3: 10%
 					bonus_types = [0] + [1] * 4 + [2] * 4 + [3]
 					bonus_choice = random.choice(bonus_types)
 					if bonus_choice in (1, 2):
 						list_nicks = self.bonus_random_players(bonus_choice)
 						self.connection.privmsg(self.channel, self.bonus_texts[bonus_choice - 1].
-							format(self.bonus_vars[bonus_choice - 1]))
+							format(random.choice(self.bonus_vars[bonus_choice - 1])))
 						self.connection.privmsg(self.channel, "\x02" + list_nicks + "\x02")
 					elif bonus_choice == 3:
 						[list_nicks1, list_nicks2] = self.bonus_random_players(3)
 						self.connection.privmsg(self.channel, self.bonus_texts[0].format(
-							self.bonus_vars[0]))
+							random.choice(self.bonus_vars[0])))
 						self.connection.privmsg(self.channel, "\x02" + list_nicks1 + "\x02")
 						self.connection.privmsg(self.channel, self.bonus_texts[1].format(
-							self.bonus_vars[1]))
+							random.choice(self.bonus_vars[1])))
 						self.connection.privmsg(self.channel, "\x02" + list_nicks2 + "\x02")
 					else:
 						pass # no bonus
