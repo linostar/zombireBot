@@ -3,6 +3,8 @@ import datetime
 import pymysql
 
 class Database:
+	NUM_TOPSCORES = 10
+
 	def __init__(self, config):
 		self.config = config
 		self.connect()
@@ -94,3 +96,21 @@ class Database:
 		now_date = datetime.date.today().strftime("%Y-%m-%d")
 		self.query("insert into `highscores` values (0, '{0}', '{1}', {2}, '{3}')".format(
 			nick, utype, score, now_date))
+
+	def get_topscores(self):
+		scores = []
+		if self.query_select("select `nick`, `type`, `score` from `highscores` " + 
+			"order by `score` desc limit %s", (Database.NUM_TOPSCORES)):
+			for row in self.cur:
+				if row:
+					scores.append(row)
+		return scores
+
+	def get_admin_topscores(self):
+		scores = []
+		if self.query_select("select `nick`, `type`, `score`, `date` from `highscores` " +
+			"order by `score` desc limit %s", (Database.NUM_TOPSCORES)):
+			for row in self.cur:
+				if row:
+					scores.append(row)
+		return scores

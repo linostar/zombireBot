@@ -5,6 +5,7 @@ from .utils import Utils
 
 class UserCommand:
 	types = {'v': 'vampire', 'z': 'zombie'}
+	colors = {'v': 4, 'z': 3}
 	colored_types = {'v': '4vampire', 'z': '3zombie'}
 
 	def __init__(self, conn, dbc, channel):
@@ -12,6 +13,9 @@ class UserCommand:
 		self.connection = conn
 		self.dbc = dbc
 		self.channel = channel
+
+	def howtoplay(self, nick):
+		self.connection.notice(nick, "See: " + Utils.HOW_TO_PLAY)
 
 	def register(self, nick):
 		User.is_identified(self.connection, nick)
@@ -52,6 +56,17 @@ class UserCommand:
 			bonus_text = ""
 		self.connection.privmsg(self.channel, "{} is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}"
 				.format(nick, self.colored_types[utype], hp, mp, mmp, score, bonus_text))
+
+	def topscores(self):
+		msg = ""
+		scores = self.dbc.get_topscores()
+		if scores:
+			for i in range(len(scores)):
+				msg += "{}- \x03{}{}\x03 \x02({})\x02. ".format(i+1, self.colors[scores[i][1]], scores[i][0],
+					scores[i][2])
+			self.connection.privmsg(self.channel, msg)
+		else:
+			self.connection.privmsg(self.channel, "No topscores yet.")
 
 	def attack(self, source, target, players):
 		if not source.lower() in players:
@@ -178,3 +193,7 @@ class UserCommand:
 			self.list_players("v", players)
 		elif cmd == "zombies" and not args:
 			self.list_players("z", players)
+		elif cmd == "topscores" and not args:
+			self.topscores()
+		elif cmd == "howtoplay" and not args:
+			self.howtoplay(event.source.nick)

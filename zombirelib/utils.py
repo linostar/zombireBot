@@ -2,6 +2,7 @@ import math
 
 class Utils:
 	MAX_MSG_LENGTH = 220
+	HOW_TO_PLAY = "https://linostar.github.io/ZombireBot"
 
 	@staticmethod
 	def cut_to_chunks(msg):
