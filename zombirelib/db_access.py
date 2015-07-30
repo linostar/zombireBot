@@ -42,6 +42,7 @@ class Database:
 
 	def query_select(self, expr, args=None):
 		try:
+			self.conn.ping(reconnect=True)
 			return self.cur.execute(expr, (args))
 		except pymysql.err.OperationalError as e:
 			if e[0] == 2013:
@@ -52,6 +53,7 @@ class Database:
 
 	def query(self, expr):
 		try:
+			self.conn.ping(reconnect=True)
 			self.cur.execute(expr)
 		except pymysql.err.OperationalError as e:
 			if e[0] == 2013:
