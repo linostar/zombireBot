@@ -1,3 +1,5 @@
+import datetime
+
 import pymysql
 
 class Database:
@@ -27,6 +29,9 @@ class Database:
 			raise
 
 	def save(self, players):
+		if not players:
+			self.query("delete from `users`")
+			return True
 		for nick in players:
 			p = players[nick]
 			self.query(("update `users` set `type` = '{p[type]}', `hp` = {p[hp]}, `mmp` = {p[mmp]}, " +
@@ -84,3 +89,8 @@ class Database:
 					players[row[0]] = {'type': row[1], 'hp': row[2], 'mp': row[3], 
 					'mmp': row[3], 'score': row[4], 'bonus': row[5]}
 		return players
+
+	def add_highscore(self, nick, utype, score):
+		now_date = datetime.date.today().strftime("%Y-%m-%d")
+		self.query("insert into `highscores` values (0, '{0}', '{1}', {2}, '{3}')".format(
+			nick, utype, score, now_date))

@@ -92,3 +92,14 @@ class User:
 		else:
 			# reset the cumulation to zero
 			players[nick]['bonus'] %= 10
+
+	@staticmethod
+	def check_if_round_ended(players):
+		len_vamp = len([nick for nick in players if players[nick]['type'] == "v"])
+		if len(players) > 0:
+			if (not len_vamp) or len_vamp == len(players):
+				return max(players, key=lambda nick: players[nick]['score'])
+
+	@staticmethod
+	def reset_players(players):
+		players.clear()

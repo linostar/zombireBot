@@ -8,8 +8,8 @@ class AdminCommand:
 		self.sched = sched
 
 	def quit(self, players, message=None):
-		self.dbc.save(players)
 		self.sched.stop()
+		self.dbc.save(players)
 		if message:
 			self.connection.disconnect(message)
 		else:

@@ -14,7 +14,6 @@ class UserCommand:
 		self.channel = channel
 
 	def register(self, nick):
-		self.connection.privmsg(self.channel, ".".join([str(x) for x in range(300)]))
 		User.is_identified(self.connection, nick)
 
 	def register2(self, nick, players):
@@ -79,6 +78,8 @@ class UserCommand:
 					newtype = self.colored_types[players[target.lower()]['type']]
 					self.connection.privmsg(self.channel, ("{} has lost all of his/her HP " +
 						"and has been transformed to a \x03{}\x03.").format(target, newtype))
+					if self.check_end(players):
+						return
 			elif res < 0: # attack failed
 				if players[source.lower()]['type'] == "v":
 					self.connection.privmsg(self.channel, "\x02Attack failed.\x02 " +
@@ -90,6 +91,8 @@ class UserCommand:
 					newtype = self.colored_types[players[source.lower()]['type']]
 					self.connection.privmsg(self.channel, ("{} has lost all of his/her HP " +
 						"and has been transformed to a \x03{}\x03.").format(source, newtype))
+					if self.check_end(players):
+						return
 			else: # res == 0 (it's a tie)
 				self.connection.privmsg(self.channel, "\x02It is a tie.\x02 No one has been hurt.")
 			# check if the max MP is eligible to increase/decrease
@@ -130,11 +133,27 @@ class UserCommand:
 				.format(source))
 
 	def list_players(self, utype, players):
-		self.connection.privmsg(self.channel, "The current \x03{}s\x03 are: ".format(
-			self.colored_types[utype]))
 		zombires = [nick for nick in players if players[nick]['type'] == utype]
-		for chunk in Utils.cut_to_chunks(", ".join(zombires)):
-			self.connection.privmsg(self.channel, chunk)
+		if zombires:
+			self.connection.privmsg(self.channel, "The current \x03{}s\x03 are: ".format(
+				self.colored_types[utype]))
+			for chunk in Utils.cut_to_chunks(", ".join(zombires)):
+				self.connection.privmsg(self.channel, "\x02{}\x02".format(chunk))
+		else:
+			self.connection.privmsg(self.channel, "No \x03{}s\x03 at the moment.".format(
+				self.colored_types[utype]))
+
+	def check_end(self, players):
+		winner = User.check_if_round_ended(players)
+		if winner:
+			self.dbc.add_highscore(winner, players[winner]['type'], players[winner]['score'])
+			self.connection.privmsg(self.channel, "\x02Game set.\x02 The \x03{}s\x03 have won!"
+				.format(self.colored_types[players[winner]['type']]))
+			self.connection.privmsg(self.channel, ("\x02{}\x02 is the highscorer in this round, " +
+				"with a score of \x02{}\x02.").format(winner, players[winner]['score']))
+			User.reset_players(players)
+			self.dbc.save(players)
+			return True
 
 	def execute(self, event, command, players):
 		command = command.strip()
