@@ -76,7 +76,7 @@ class UserCommand:
 						"\x033{}\x03 ate \x02{} HP\x02 of brains from \x034{}\x03.".format(source, res, target))
 				if User.transform(target.lower(), players):
 					newtype = self.colored_types[players[target.lower()]['type']]
-					self.connection.privmsg(self.channel, ("{} has lost all of his/her HP " +
+					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
 						"and has been transformed to a \x03{}\x03.").format(target, newtype))
 					if self.check_end(players):
 						return
@@ -89,7 +89,7 @@ class UserCommand:
 						"\x034{}\x03 sucked \x02{} HP\x02 of blood from \x033{}\x03.".format(target, -res, source))
 				if User.transform(source.lower(), players):
 					newtype = self.colored_types[players[source.lower()]['type']]
-					self.connection.privmsg(self.channel, ("{} has lost all of his/her HP " +
+					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
 						"and has been transformed to a \x03{}\x03.").format(source, newtype))
 					if self.check_end(players):
 						return
