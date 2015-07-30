@@ -21,17 +21,39 @@ class AdminCommand:
 		print("Zombire bot has exited successfully.")
 		sys.exit(0)
 
-	def admin_topscores(self, nick):
+	def admin_topscores(self, sender):
 		scores = self.dbc.get_admin_topscores()
 		if scores:
 			i = 1
-			self.connection.notice(nick, "#{0}Player{0}Type{0}Score{0}Date".format(self.TAB))
+			self.connection.notice(sender, "#{0}Player{0}Type{0}Score{0}Date".format(self.TAB))
 			for s in scores:
-				self.connection.notice(nick, "{1}{0}{2}{0}{3}{0}{4}{0}{5}".format(
+				self.connection.notice(sender, "{1}{0}{2}{0}{3}{0}{4}{0}{5}".format(
 					self.TAB, i, s[0], self.types[s[1]], s[2], s[3]))
 				i += 1
 		else:
-			self.connection.notice(nick, "No topscores yet.")
+			self.connection.notice(sender, "No topscores yet.")
+
+	def kick(self, sender, players, targets):
+		if players:
+			target_list = targets.split(" ")
+			for nick in target_list:
+				if nick:
+					if nick in players:
+						del players[nick]
+						self.connection.notice(sender, "\x02{}\x02 has been removed from the game."
+							.format(nick))
+					else:
+						self.connection.notice(sender, "Error: \x02{}\x02 is not registered in the game."
+							.format(nick))
+			self.dbc.save(players)
+		else:
+			self.connection.notice(sender, "There are no players currently in the game.")
+
+	def stats(self, sender, players):
+		nb_all = len(players)
+		nb_v = len([nick for nick in players if players[nick]['type'] == "v"])
+		self.connection.notice(sender, ("{} current player(s), of which {} are \x034vampire(s)\x03 " +
+			"and {} are \x033zombie(s)\x03.").format(nb_all, nb_v, nb_all - nb_v))
 
 	def execute(self, event, command, players):
 		command = command.strip()
@@ -48,5 +70,11 @@ class AdminCommand:
 			args = command[first_space:].lstrip()
 		if cmd == "quit":
 			self.quit(players, args)
-		elif cmd == "topscores":
+		elif cmd == "topscores" and not args:
 			self.admin_topscores(event.source.nick)
+		elif cmd == "kick" and args:
+			self.kick(event.source.nick, players, args.strip().lower())
+		elif cmd == "stats" and not args:
+			self.stats(event.source.nick, players)
+		else:
+			self.connection.notice(e.source.nick, "Error in command syntax.")
