@@ -54,12 +54,12 @@ class UserCommand:
 				.format(nick, self.colored_types[utype], hp, mp, mmp, score, bonus_text))
 
 	def attack(self, source, target, players):
-		if not target.lower() in players:
-			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
-				source, target))
-		elif not source.lower() in players:
+		if not source.lower() in players:
 			self.connection.privmsg(self.channel, "{}: you are not registered in this game."
 				.format(source))
+		elif not target.lower() in players:
+			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
+				source, target))
 		elif players[source.lower()]['type'] == players[target.lower()]['type']:
 			self.connection.privmsg(self.channel, "{}: You cannot attack a {} like yourself.".format(
 				source, self.types[players[source.lower()]['type']]))
