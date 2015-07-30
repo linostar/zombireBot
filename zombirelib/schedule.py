@@ -45,7 +45,7 @@ class Schedule:
 			now_hour = datetime.datetime.now().hour
 			now_min = datetime.datetime.now().minute
 			now_sec = datetime.datetime.now().second
-			if now_min == 1 and now_sec >= 6 and now_sec < 10 and self.last_hour_bonus != now_hour:
+			if now_min == 1 and now_sec >= 0 and now_sec < 10 and self.last_hour_bonus != now_hour:
 				self.last_hour_bonus = now_hour
 				self.clear_bonus()
 				if now_hour % 3 == 0: #every 3 hours
