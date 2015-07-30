@@ -47,6 +47,7 @@ class Schedule:
 			now_sec = datetime.datetime.now().second
 			if now_min == 1 and now_sec >= 0 and now_sec < 10 and self.last_hour_bonus != now_hour:
 				self.last_hour_bonus = now_hour
+				self.connection.privmsg(self.channel, "Bonus temporary effects have now disappeared.")
 				self.clear_bonus()
 				if now_hour % 3 == 0: #every 3 hours
 					# types of bonuses: 0 for nothing, 1 for +30%, 2 for -30%, 3 for 1 & 2

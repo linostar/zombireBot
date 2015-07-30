@@ -73,7 +73,7 @@ class Zombire(irc.bot.SingleServerIRCBot):
 
 	def on_pubmsg(self, c, e):
 		re_exprs = (r"\!(register)", r"\!(unregister)", r"\!(status\s+.+)",
-			r"\!(attack\s+.+)", r"\!(heal\s+.+)")
+			r"\!(attack\s+.+)", r"\!(heal\s+.+)", r"\!(vampires|zombies)")
 		for expr in re_exprs:
 			try:
 				detected = re.match(expr, e.arguments[0], re.IGNORECASE)

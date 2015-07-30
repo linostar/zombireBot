@@ -1,6 +1,7 @@
 import random
 
 from .user import User
+from .utils import Utils
 
 class UserCommand:
 	types = {'v': 'vampire', 'z': 'zombie'}
@@ -13,6 +14,7 @@ class UserCommand:
 		self.channel = channel
 
 	def register(self, nick):
+		self.connection.privmsg(self.channel, ".".join([str(x) for x in range(300)]))
 		User.is_identified(self.connection, nick)
 
 	def register2(self, nick, players):
@@ -127,6 +129,13 @@ class UserCommand:
 			self.connection.privmsg(self.channel, "{}: You don't have enough MP to heal other players."
 				.format(source))
 
+	def list_players(self, utype, players):
+		self.connection.privmsg(self.channel, "The current \x03{}s\x03 are: ".format(
+			self.colored_types[utype]))
+		zombires = [nick for nick in players if players[nick]['type'] == utype]
+		for chunk in Utils.cut_to_chunks(", ".join(zombires)):
+			self.connection.privmsg(self.channel, chunk)
+
 	def execute(self, event, command, players):
 		command = command.strip()
 		first_space = command.find(" ")
@@ -136,13 +145,17 @@ class UserCommand:
 		else:
 			cmd = command[0:first_space].lower()
 			args = command[first_space:].lstrip().split(" ")
-		if cmd == "register":
+		if cmd == "register" and not args:
 			self.register(event.source.nick.lower())
-		if cmd == "unregister":
+		elif cmd == "unregister" and not args:
 			self.unregister(event.source.nick.lower(), players)
-		if cmd == "status" and len(args) == 1:
+		elif cmd == "status" and len(args) == 1:
 			self.status(args[0], players)
-		if cmd == "attack" and len(args) == 1:
+		elif cmd == "attack" and len(args) == 1:
 			self.attack(event.source.nick, args[0], players)
-		if cmd == "heal" and len(args) == 1:
+		elif cmd == "heal" and len(args) == 1:
 			self.heal(event.source.nick, args[0], players)
+		elif cmd == "vampires" and not args:
+			self.list_players("v", players)
+		elif cmd == "zombies" and not args:
+			self.list_players("z", players)
