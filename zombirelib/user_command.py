@@ -208,7 +208,7 @@ class UserCommand:
 			self.list_players("v", players)
 		elif cmd == "zombies" and not args:
 			self.list_players("z", players)
-		elif cmd == "topscores" and not args:
+		elif (cmd == "topscores" or cmd == "highscores") and not args:
 			self.topscores()
 		elif cmd == "howtoplay" and not args:
 			self.howtoplay(event.source.nick)

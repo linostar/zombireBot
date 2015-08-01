@@ -70,7 +70,7 @@ class AdminCommand:
 			args = command[first_space:].lstrip()
 		if cmd == "quit":
 			self.quit(players, args)
-		elif cmd == "topscores" and not args:
+		elif (cmd == "topscores" or cmd == "highscores") and not args:
 			self.admin_topscores(event.source.nick)
 		elif cmd == "kick" and args:
 			self.kick(event.source.nick, players, args.strip().lower())
