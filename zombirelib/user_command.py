@@ -8,11 +8,12 @@ class UserCommand:
 	colors = {'v': 4, 'z': 3}
 	colored_types = {'v': '4vampire', 'z': '3zombie'}
 
-	def __init__(self, conn, dbc, channel):
+	def __init__(self, conn, dbc, channel, access):
 		random.seed()
 		self.connection = conn
 		self.dbc = dbc
 		self.channel = channel
+		self.access = access
 
 	def howtoplay(self, nick):
 		self.connection.notice(nick, "See: " + Utils.HOW_TO_PLAY)
@@ -20,7 +21,7 @@ class UserCommand:
 	def register(self, nick):
 		User.is_identified(self.connection, nick)
 
-	def register2(self, nick, players):
+	def register2(self, nick, channels, players):
 		if random.random() > User.ratio_of_types(players):
 			utype = "v" # vampire
 		else:
@@ -29,6 +30,13 @@ class UserCommand:
 			players[nick] = {'type': utype, 'hp': 10, 'mp': 5, 'mmp': 5, 'score': 0, 'bonus': 0}
 			self.connection.notice(nick, "You have successfully registered as a \x03{}\x03!".format(
 				self.colored_types[utype]))
+			if self.access == "xop":
+				self.connection.privmsg("chanserv", "vop {} add {}".format(self.channel, nick))
+			elif self.access == "levels":
+				self.connection.privmsg("chanserv", "access {} add {} 3".format(self.channel, nick))
+			else: # everything else is considered 'flags'
+				self.connection.privmsg("chanserv", "flags {} {} +V".format(self.channel, nick))
+			self.connection.privmsg("chanserv", "sync {}".format(self.channel))
 		else:
 			self.connection.notice(nick, "You are already registered in the game.")
 
@@ -37,6 +45,13 @@ class UserCommand:
 			if self.dbc.unregister_user(nick):
 				del players[nick]
 				self.connection.notice(nick, "You have been removed from the game.")
+				if self.access == "xop":
+					self.connection.privmsg("chanserv", "vop {} del {}".format(self.channel, nick))
+				elif self.access == "levels":
+					self.connection.privmsg("chanserv", "access {} del {} 3".format(self.channel, nick))
+				else: # everything else is considered 'flags'
+					self.connection.privmsg("chanserv", "flags {} {} -V".format(self.channel, nick))
+				self.connection.privmsg("chanserv", "sync {}".format(self.channel))
 				return True
 		else:
 			self.connection.notice(nick, "Error: you are not registered in this game.")

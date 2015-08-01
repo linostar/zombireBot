@@ -35,7 +35,8 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
 		self.sched = schedule.Schedule(self.connection, self.dbc, self.config['channel'], self.players)
-		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'])
+		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'], 
+			self.config['channel_accesstype'])
 		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['admin_passwd'], 
 			self.sched)
 
@@ -57,7 +58,7 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		if e.source.nick.lower() == "nickserv" and args.startswith("status "):
 			largs = args.split(" ")
 			if largs[2] == "3": # if user is identified to nickserv 
-				self.uc.register2(largs[1], self.players) # proceed with the registration
+				self.uc.register2(largs[1], self.channels, self.players) # proceed with the registration
 			return
 
 	def on_privmsg(self, c, e):
