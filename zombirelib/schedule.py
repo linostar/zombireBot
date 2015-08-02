@@ -44,7 +44,7 @@ class Schedule:
 
 	def give_bonus(self):
 		while self.loop:
-			if self.players:
+			if len(self.players) > 1:
 				now_hour = datetime.datetime.now().hour
 				now_min = datetime.datetime.now().minute
 				now_sec = datetime.datetime.now().second

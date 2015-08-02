@@ -12,10 +12,6 @@ nspass: coolpass
 channel: "#zombire"
 # possible values for channel_accesstype: xop, levels, flags
 channel_accesstype: xop
-# if bot can change channel access, it will not allow nicks in one nickserv group to 
-# register more than once
-# WARNING: make sure the bot has really the ability to change the access before setting this to true
-bot_can_change_channel_access: false
 
 ## MySQL database settings
 db:

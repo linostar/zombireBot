@@ -2,7 +2,7 @@ import random
 
 class User:
 	CUMULATIVE = 5
-	MMP_MAX = 10
+	MMP_MAX = 60
 	MMP_MIN = 1
 
 	@staticmethod

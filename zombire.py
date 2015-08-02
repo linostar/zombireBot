@@ -25,6 +25,7 @@ import irc.bot
 import irc.strings
 
 from zombirelib import user_command, admin_command, schedule
+from zombirelib.utils import Utils
 from zombirelib.db_access import Database
 
 class Zombire(irc.bot.SingleServerIRCBot):
@@ -54,12 +55,41 @@ class Zombire(irc.bot.SingleServerIRCBot):
 
 	def on_privnotice(self, c, e):
 		# checking for nickserv replies
-		args = e.arguments[0].lower()
-		if e.source.nick.lower() == "nickserv" and args.startswith("status "):
-			largs = args.split(" ")
+		if e.source.nick.lower() == "nickserv" and e.arguments[0].lower().startswith("status "):
+			largs = e.arguments[0].lower().split(" ")
 			if largs[2] == "3": # if user is identified to nickserv 
 				self.uc.register2(largs[1], self.channels, self.players) # proceed with the registration
 			return
+		# retrieving chanserv access list for channel
+		elif e.source.nick.lower() == "chanserv":
+			args = e.arguments[0]
+			if Utils.cs_list == 2:
+				detected = re.match(r"channel access list", args, re.IGNORECASE)
+				if detected:
+					Utils.reg_list2 = []
+					return
+				detected = re.match(r"\d+\.\s+(\w+)\s+", args, re.IGNORECASE)
+				if detected:
+					Utils.reg_list2.append(detected.group(1).strip().lower())
+					return
+				detected = re.match(r"end of access list", args, re.IGNORECASE)
+				if detected:
+					Utils.cs_list = 0
+					return
+			elif Utils.cs_list == 1:
+				detected = re.match(r"channel access list", args, re.IGNORECASE)
+				if detected:
+					Utils.reg_list1 = []
+					return
+				detected = re.match(r"\d+\.\s+(\w+)\s+", args, re.IGNORECASE)
+				if detected:
+					Utils.reg_list1.append(detected.group(1).strip().lower())
+					return
+				detected = re.match(r"end of access list", args, re.IGNORECASE)
+				if detected:
+					Utils.cs_list = 2
+					self.uc.register3(Utils.registering_nick, self.channels, self.players)
+					return
 
 	def on_privmsg(self, c, e):
 		re_exprs = (r"admin\s+(.+)",)
@@ -82,7 +112,22 @@ class Zombire(irc.bot.SingleServerIRCBot):
 				raise DetectedCommand
 			except DetectedCommand:
 				if detected:
-					self.uc.execute(e, detected.group(1).strip(), self.players)
+					detected_command = detected.group(1).strip()
+					if detected_command.lower().startswith(("unregister", "attack", "heal")):
+						# user needs to be registered to use those commands
+						for chname, chobj in self.channels.items():
+							voiced_users = list(chobj.voiced()) + list(chobj.opers()) + list(chobj.halfops())
+						nick = e.source.nick
+						if nick in voiced_users and nick.lower() in self.players:
+							self.uc.execute(e, detected_command, self.players)
+						elif nick in voiced_users:
+							self.connection.notice(nick, "Error: Please change your nick " +
+								"to the one you have registered in the game with.")
+						else:
+							self.connection.notice(nick, "Error: You are not registered, " +
+								"or you did not identify your nick.")
+					else:
+						self.uc.execute(e, detected_command, self.players)
 					return
 
 

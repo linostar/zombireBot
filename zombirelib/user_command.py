@@ -22,23 +22,39 @@ class UserCommand:
 		User.is_identified(self.connection, nick)
 
 	def register2(self, nick, channels, players):
-		if random.random() > User.ratio_of_types(players):
-			utype = "v" # vampire
-		else:
-			utype = "z" # zombie
-		if self.dbc.register_user(nick, utype, None):
-			players[nick] = {'type': utype, 'hp': 10, 'mp': 5, 'mmp': 5, 'score': 0, 'bonus': 0}
-			self.connection.notice(nick, "You have successfully registered as a \x03{}\x03!".format(
-				self.colored_types[utype]))
+		
+			Utils.cs_list = 1
+			Utils.registering_nick = nick
 			if self.access == "xop":
+				self.connection.privmsg("chanserv", "vop {} list".format(self.channel))
 				self.connection.privmsg("chanserv", "vop {} add {}".format(self.channel, nick))
+				self.connection.privmsg("chanserv", "vop {} list".format(self.channel))
 			elif self.access == "levels":
+				self.connection.privmsg("chanserv", "access {} list".format(self.channel))
 				self.connection.privmsg("chanserv", "access {} add {} 3".format(self.channel, nick))
+				self.connection.privmsg("chanserv", "access {} list".format(self.channel))
 			else: # everything else is considered 'flags'
+				self.connection.privmsg("chanserv", "flags {}".format(self.channel))
 				self.connection.privmsg("chanserv", "flags {} {} +V".format(self.channel, nick))
+				self.connection.privmsg("chanserv", "flags {}".format(self.channel))
 			self.connection.privmsg("chanserv", "sync {}".format(self.channel))
-		else:
+			
+	def register3(self, nick, channels, players):
+		# approve the registration or not
+		if sorted(Utils.reg_list1) == sorted(Utils.reg_list2):
 			self.connection.notice(nick, "You are already registered in the game.")
+		else:
+			if random.random() > User.ratio_of_types(players):
+				utype = "v" # vampire
+			else:
+				utype = "z" # zombie
+			if self.dbc.register_user(nick, utype, None):
+				players[nick] = {'type': utype, 'hp': 10, 'mp': 5, 'mmp': 5, 'score': 0, 'bonus': 0}
+				self.connection.notice(nick, "You have successfully registered as a \x03{}\x03!"
+					.format(self.colored_types[utype]))
+			else:
+				self.connection.notice(nick, "Error in registration. Try again later.")
+		Utils.registering_nick = ""
 
 	def unregister(self, nick, players):
 		if nick in players:
@@ -48,7 +64,7 @@ class UserCommand:
 				if self.access == "xop":
 					self.connection.privmsg("chanserv", "vop {} del {}".format(self.channel, nick))
 				elif self.access == "levels":
-					self.connection.privmsg("chanserv", "access {} del {} 3".format(self.channel, nick))
+					self.connection.privmsg("chanserv", "access {} del {}".format(self.channel, nick))
 				else: # everything else is considered 'flags'
 					self.connection.privmsg("chanserv", "flags {} {} -V".format(self.channel, nick))
 				self.connection.privmsg("chanserv", "sync {}".format(self.channel))
