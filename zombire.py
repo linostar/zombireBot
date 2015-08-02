@@ -38,8 +38,8 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		self.sched = schedule.Schedule(self.connection, self.dbc, self.config['channel'], self.players)
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'], 
 			self.config['channel_accesstype'])
-		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['admin_passwd'], 
-			self.sched)
+		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['channel'], 
+			self.config['admin_passwd'], self.config['channel_accesstype'], self.sched)
 
 	def read_config(self, filename):
 		if not os.path.exists(filename):

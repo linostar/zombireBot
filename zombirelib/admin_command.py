@@ -4,10 +4,12 @@ class AdminCommand:
 	TAB = "    "
 	types = {'v': 'vampire', 'z': 'zombie'}
 
-	def __init__(self, conn, dbc, passwd, sched):
+	def __init__(self, conn, dbc, channel, passwd, access, sched):
 		self.dbc = dbc
 		self.connection = conn
+		self.channel = channel
 		self.passwd = passwd
+		self.access = access
 		self.sched = sched
 
 	def quit(self, players, message=None):
@@ -40,6 +42,13 @@ class AdminCommand:
 				if nick:
 					if nick in players:
 						del players[nick]
+						if self.access == "xop":
+							self.connection.privmsg("chanserv", "vop {} del {}".format(self.channel, nick))
+						elif self.access == "levels":
+							self.connection.privmsg("chanserv", "access {} del {}".format(self.channel, nick))
+						else: # everything else is considered 'flags'
+							self.connection.privmsg("chanserv", "flags {} {} -V".format(self.channel, nick))
+						self.connection.privmsg("chanserv", "sync {}".format(self.channel))
 						self.connection.notice(sender, "\x02{}\x02 has been removed from the game."
 							.format(nick))
 					else:

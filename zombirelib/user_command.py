@@ -145,11 +145,11 @@ class UserCommand:
 			got_new_mmp = User.redetermine_mmp(res, source.lower(), players)
 			if got_new_mmp: new_mmp = players[source.lower()]['mmp']
 			if got_new_mmp == 1:
-				self.connection.privmsg(self.channel, ("After {} cumulative successful attacks, {} received " +
-					"a power-up, and his maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source, new_mmp))
+				self.connection.privmsg(self.channel, ("After {} successful attacks in a row, {} received " +
+					"a level-up, and his maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source, new_mmp))
 			elif got_new_mmp == -1:
-				self.connection.privmsg(self.channel, ("After {} cumulative failed attacks, {} received " +
-					"a power-down, and his maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source, new_mmp))
+				self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
+					"a level-down, and his maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source, new_mmp))
 		else:
 			self.connection.privmsg(self.channel, "{}: You don't have enough MP to attack other players."
 				.format(source))
