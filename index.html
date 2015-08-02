@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Zombirebot by linostar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Zombirebot</h1>
+      <h2 class="project-tagline">Zombire IRC bot</h2>
+      <a href="https://github.com/linostar/zombireBot" class="btn">View on GitHub</a>
+      <a href="https://github.com/linostar/zombireBot/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/linostar/zombireBot/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="zombirebot" class="anchor" href="#zombirebot" aria-hidden="true"><span class="octicon octicon-link"></span></a>ZombireBot</h1>
+
+<p>Zombire IRC bot: a multiplayer mini-RPG battle game between zombies and vampires.</p>
+
+<h2>
+<a id="prerequisites-in-irc-environment" class="anchor" href="#prerequisites-in-irc-environment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prerequisites in IRC environment</h2>
+
+<p>ZombireBot works properly if run on Rizon IRC network. It would also work on other IRC networks that use Anope services.</p>
+
+<h2>
+<a id="how-to-install" class="anchor" href="#how-to-install" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to Install</h2>
+
+<ol>
+<li><p>You need <code>Python3</code> and <code>pip3</code> installed on your system.</p></li>
+<li><p>Run: <code>pip3 install -r requirements.txt</code></p></li>
+<li><p>Register the bot nick on the IRC network you want it to run on, and gives it the ability to change the channel access.</p></li>
+<li><p>Copy <code>conf/config.example.yml</code> to <code>conf/config.yml</code> and change the configuration parameters to your needs.</p></li>
+<li><p>Create the mysql database and user, then run:</p></li>
+</ol>
+
+<pre><code>mysql -u &lt;mysql_user&gt; -D &lt;mysql_db&gt; -p &lt; conf/create_tables.sql
+</code></pre>
+
+<p>Finally, run: <code>python3 zombire.py</code> and enjoy!</p>
+
+<h2>
+<a id="how-to-play" class="anchor" href="#how-to-play" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to Play</h2>
+
+<p>Vampires and zombies are trying to annihilate and destroy each other. Every player joining the game will be either a vampire or a zombie at random. Vampires can attack zombies only, and vice versa. Furthermore, vampires can heal vampires only, and zombies can heal zombies only.</p>
+
+<p>Each player has the following stats:</p>
+
+<ul>
+<li>
+<strong>HP :</strong>  those are the health points (they have no maximum limit per player)</li>
+<li>
+<strong>MP :</strong>  those represent how many remaining actions the player can do in the current hour</li>
+<li>
+<strong>Maximum MP :</strong>  those are the maximum actions per hour for the player</li>
+<li>
+<strong>Score :</strong>  each successful attack will gives the player 1 point in score</li>
+<li>
+<strong>Bonus :</strong>  if present, it will give a positive or negative boost to the player attack/defense</li>
+</ul>
+
+<p>Each player upon registration will have an HP of 10, and an MP and Maximum MP of 5.</p>
+
+<p>Each player can take two types of <strong>actions</strong> against other players. Both actions will consume 1 MP from the player stats:</p>
+
+<ul>
+<li>
+<strong>!attack :</strong>  Both players (attacker and target) will throw a dice each. The difference in dice numbers will be subtracted from the loser's HP and added to the winner's HP. In case of a tie, nothing happens. <strong>If a player's HP reaches 0, he/she will transform automatically to the opposite type (vampire -&gt; zombie or zombie -&gt; vampire)</strong>. Players cannot attack players of the same type.</li>
+<li>
+<strong>!heal :</strong>  The player will sacrifice 2 HP to give an ally 1 HP. The player needs at least 3 HP to make this action. Players cannot heal players of the opposite type.</li>
+</ul>
+
+<p><strong>Each one hour</strong>, the MP of all players will be regenerated and filled up to their respective Maximum MP.</p>
+
+<p><strong>About Maximum MP</strong>, if a player makes 5 successful attacks in a row (with no ties in between), his/her Maximum MP will go up by 1 point. However, if he/she makes 5 failed attacks in row, his/her Maximum MP will go down by 1 point.</p>
+
+<p><strong>Concerning bonus</strong>, every 3 hours, some players may find random items or get affected by random objects, leading to a temporary positive or negative effect on their attack/defense. The bonus effect will last for 1 hour only.</p>
+
+<p><strong>The game will end</strong> when all players become vampires, or all players become zombies. The highscorer player will have his/her name added to the highscore table, and the round will end removing all players from the game. To participate in a new round, the players will have to type the <code>!register</code> command again.</p>
+
+<h3>
+<a id="list-of-user-commands" class="anchor" href="#list-of-user-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>List of user commands</h3>
+
+<ul>
+<li>
+<strong>!howtoplay :</strong>  displays a link to this page</li>
+<li>
+<strong>!register :</strong>  transforms te player into a vampire or a zombie and let him/her participate in the game</li>
+<li>
+<strong>!unregister :</strong>  removes the player from the game</li>
+<li>
+<strong>!attack <em>player</em> :</strong>  lets the player attack a player of the opposite type (an enemy)</li>
+<li>
+<strong>!heal <em>player</em> :</strong>  lets the player heal a player of the same type (an ally)</li>
+<li>
+<strong>!status <em>player</em> :</strong>  displays the stats of the mentioned player</li>
+<li>
+<strong>!vampires :</strong>  lists all vampires in the current round</li>
+<li>
+<strong>!zombies :</strong>  lists all zombies in the current round</li>
+<li>
+<strong>!topscores</strong> or <strong>!highscores :</strong>  displays the top 10 highscores in the game</li>
+</ul>
+
+<h3>
+<a id="list-of-admin-commands" class="anchor" href="#list-of-admin-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>List of admin commands</h3>
+
+<p>All admin commands are in the following syntax:</p>
+
+<pre><code>/msg &lt;botname&gt; admin &lt;admin_passwd&gt; &lt;command&gt; ...
+</code></pre>
+
+<p>where <code>&lt;botname&gt;</code> is the registered nick used by the bot, and <code>&lt;admin_passwd&gt;</code> is the one configured in <code>config.yml</code> file.</p>
+
+<p>The possible commands are:</p>
+
+<ul>
+<li>
+<strong>quit <em>message</em> :</strong>  makes the bot disconnect (<em>message</em> is optional and will appear in the bot quitting message)</li>
+<li>
+<strong>kick <em>player</em> :</strong>  removes <code>player</code> from the game</li>
+<li>
+<strong>stats :</strong>  displays the total of vampires and zombies in the current round</li>
+<li>
+<strong>topscores</strong> or <strong>highscores :</strong>  displays the top 10 highscores with more details</li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/linostar/zombireBot">Zombirebot</a> is maintained by <a href="https://github.com/linostar">linostar</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
