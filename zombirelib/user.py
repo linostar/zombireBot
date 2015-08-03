@@ -39,6 +39,7 @@ class User:
 		players[source]['hp'] -= 2
 		players[target]['hp'] += 1
 		players[source]['mp'] -= 1
+		players[source]['score'] += 1
 
 	@staticmethod
 	def battle(source, target, players):
@@ -62,7 +63,7 @@ class User:
 		players[target]['hp'] -= diff_dice
 		players[source]['mp'] -= 1
 		if diff_dice > 0:
-			players[source]['score'] += 1
+			players[source]['score'] += 2
 		if players[source]['hp'] < 0:
 			players[target]['hp'] += players[source]['hp']
 			diff_dice += players[source]['hp']
