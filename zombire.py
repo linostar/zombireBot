@@ -119,8 +119,8 @@ class Zombire(irc.bot.SingleServerIRCBot):
 							voiced_users = list(chobj.voiced()) + list(chobj.opers()) + list(chobj.halfops())
 						nick = e.source.nick
 						nick2 = nick.replace("[", "..").replace("]", ",,")
-						voiced_users = map(lambda x: x.replace("[", "..").replace("]", ",,"), voiced_users)
-						if nick2 in voiced_users and nick2.lower() in list(self.players):
+						voiced_users = map(lambda x: x.replace("[", "..").replace("]", ",,").lower(), voiced_users)
+						if nick2.lower() in voiced_users and nick2.lower() in list(self.players):
 							self.uc.execute(e, detected_command, self.players)
 						elif nick in voiced_users:
 							self.connection.notice(nick, "Error: Please change your nick " +

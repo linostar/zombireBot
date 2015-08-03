@@ -127,7 +127,7 @@ class UserCommand:
 					self.connection.privmsg(self.channel, "\x02Attack succeeded.\x02 " +
 						"\x033{}\x03 ate \x02{} HP\x02 of brains from \x034{}\x03.".format(source, res, target))
 				if User.transform(target2.lower(), players):
-					newtype = self.colored_types[players[target.lower()]['type']]
+					newtype = self.colored_types[players[target2.lower()]['type']]
 					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
 						"and has been transformed to a \x03{}\x03.").format(target, newtype))
 					if self.check_end(players):
@@ -140,7 +140,7 @@ class UserCommand:
 					self.connection.privmsg(self.channel, "\x02Attack failed.\x02 " +
 						"\x034{}\x03 sucked \x02{} HP\x02 of blood from \x033{}\x03.".format(target, -res, source))
 				if User.transform(source2.lower(), players):
-					newtype = self.colored_types[players[source.lower()]['type']]
+					newtype = self.colored_types[players[source2.lower()]['type']]
 					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
 						"and has been transformed to a \x03{}\x03.").format(source, newtype))
 					if self.check_end(players):
