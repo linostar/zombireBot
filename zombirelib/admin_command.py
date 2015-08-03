@@ -30,7 +30,7 @@ class AdminCommand:
 			self.connection.notice(sender, "#{0}Player{0}Type{0}Score{0}Date".format(self.TAB))
 			for s in scores:
 				self.connection.notice(sender, "{1}{0}{2}{0}{3}{0}{4}{0}{5}".format(
-					self.TAB, i, s[0], self.types[s[1]], s[2], s[3]))
+					self.TAB, i, s[0].replace("..", "[").replace(",,", "]"), self.types[s[1]], s[2], s[3]))
 				i += 1
 		else:
 			self.connection.notice(sender, "No topscores yet.")
@@ -39,9 +39,10 @@ class AdminCommand:
 		if players:
 			target_list = targets.split(" ")
 			for nick in target_list:
+				nick2 = nick.replace("[", "..").replace("]", ",,")
 				if nick:
-					if nick in players:
-						del players[nick]
+					if nick2 in players:
+						del players[nick2]
 						if self.access == "xop":
 							self.connection.privmsg("chanserv", "vop {} del {}".format(self.channel, nick))
 						elif self.access == "levels":

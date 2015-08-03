@@ -39,7 +39,7 @@ class Zombire(irc.bot.SingleServerIRCBot):
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'], 
 			self.config['channel_accesstype'])
 		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['channel'], 
-			self.config['admin_passwd'], self.config['channel_accesstype'], self.sched)
+			str(self.config['admin_passwd']), self.config['channel_accesstype'], self.sched)
 
 	def read_config(self, filename):
 		if not os.path.exists(filename):
@@ -118,14 +118,16 @@ class Zombire(irc.bot.SingleServerIRCBot):
 						for chname, chobj in self.channels.items():
 							voiced_users = list(chobj.voiced()) + list(chobj.opers()) + list(chobj.halfops())
 						nick = e.source.nick
-						if nick in voiced_users and nick.lower() in self.players:
+						nick2 = nick.replace("[", "..").replace("]", ",,")
+						voiced_users = map(lambda x: x.replace("[", "..").replace("]", ",,"), voiced_users)
+						if nick2 in voiced_users and nick2.lower() in list(self.players):
 							self.uc.execute(e, detected_command, self.players)
 						elif nick in voiced_users:
 							self.connection.notice(nick, "Error: Please change your nick " +
 								"to the one you have registered in the game with.")
 						else:
 							self.connection.notice(nick, "Error: You are not registered, " +
-								"or you did not identify your nick.")
+								"or you did not identify to your nick.")
 					else:
 						self.uc.execute(e, detected_command, self.players)
 					return
