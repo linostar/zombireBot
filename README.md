@@ -67,3 +67,4 @@ The possible commands are:
 - **kick _player_ :**  removes `player` from the game
 - **stats :**  displays the total of vampires and zombies in the current round
 - **topscores** or **highscores :**  displays the top 10 highscores with more details
+- **clearscores :**  deletes all entries from the highscore table

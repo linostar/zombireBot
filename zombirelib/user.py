@@ -81,6 +81,45 @@ class User:
 		return [dice1, dice2, diff_dice]
 
 	@staticmethod
+	def ambush(source, target1, target2, players):
+		random.seed()
+		p0 = players[source]
+		p1 = players[target1]
+		p2 = players[target2]
+		if p0['bonus'] % 10 == 1:
+			dice0 = random.randint(3, 6) + random.randint(3, 6)
+		elif p0['bonus'] % 10 == 2:
+			dice0 = random.randint(1, 4) + random.randint(1, 4)
+		else:
+			dice0 = random.randint(1, 6) + random.randint(1, 6)
+		if p1['bonus'] % 10 == 1:
+			dice1 = random.randint(3, 6)
+		elif p1['bonus'] % 10 == 2:
+			dice1 = random.randint(1, 4)
+		else:
+			dice1 = random.randint(1, 6)
+		if p2['bonus'] % 10 == 1:
+			dice2 = random.randint(3, 6)
+		elif p2['bonus'] % 10 == 2:
+			dice2 = random.randint(1, 4)
+		else:
+			dice2 = random.randint(1, 6)
+		# check for ambush result
+		players[source]['mp'] -= 2
+		diff_dices = dice0 - dice1 - dice2
+		if diff_dices > 0:
+			players[source]['score'] += 3
+			players[source]['hp'] += 6
+			players[target1]['hp'] = max(players[target1]['hp'] - 3, 0)
+			players[target2]['hp'] = max(players[target2]['hp'] - 3, 0)
+		elif diff_dices < 0:
+			players[source]['hp'] -= 6
+			players[target1]['hp'] += 3
+			players[target1]['hp'] += 3
+		return diff_dices
+
+
+	@staticmethod
 	def redetermine_mmp(result, nick, players):
 		if result > 0:
 			players[nick]['bonus'] -= (players[nick]['bonus'] // 100) * 100

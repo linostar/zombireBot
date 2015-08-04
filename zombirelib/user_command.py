@@ -164,12 +164,12 @@ class UserCommand:
 	def heal(self, source, target, players):
 		source2 = source.replace("[", "..").replace("]", ",,")
 		target2 = target.replace("[", "..").replace("]", ",,")
-		if not target2.lower() in players:
-			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
-				source, target))
-		elif not source2.lower() in players:
+		if not source2.lower() in players:
 			self.connection.privmsg(self.channel, "{}: you are not registered in this game."
 				.format(source))
+		elif not target2.lower() in players:
+			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
+				source, target))
 		elif source2.lower() == target2.lower():
 			self.connection.privmsg(self.channel, "{}: You cannot heal yourself.".format(source))
 		elif players[source2.lower()]['type'] != players[target2.lower()]['type']:
@@ -186,6 +186,76 @@ class UserCommand:
 		else:
 			self.connection.privmsg(self.channel, "{}: You don't have enough MP to heal other players."
 				.format(source))
+
+	def ambush(self, source, ftarget, starget, players):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		ftarget2 = ftarget.replace("[", "..").replace("]", ",,")
+		starget2 = starget.replace("[", "..").replace("]", ",,")
+		if not source2.lower() in players:
+			self.connection.privmsg(self.channel, "{}: you are not registered in this game."
+				.format(source))
+		elif not ftarget2.lower() in players:
+			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
+				source, ftarget))
+		elif not starget2.lower() in players:
+			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
+				source, starget))
+		elif ftarget2.lower() == starget2.lower():
+			self.connection.privmsg(self.channel, "{}: You need to specify two different players."
+				.format(source))
+		elif players[source2.lower()]['type'] == players[ftarget2.lower()]['type'] or \
+		players[ftarget2.lower()]['type'] != players[starget2.lower()]['type']:
+			self.connection.privmsg(self.channel, "{}: You cannot attack {}s like yourself.".format(
+				source, self.types[players[source2.lower()]['type']]))
+		elif players[source2.lower()]['mp'] < 1:
+			self.connection.privmsg(self.channel, "{}: You need at least 2 MP to be able to ambush others."
+				.format(source))
+		elif players[source2.lower()]['hp'] < 6:
+			self.connection.privmsg(self.channel, "{}: You need at least 6 HP to be able to ambush others."
+				.format(source))
+		else: # ambush
+			res = User.ambush(source2.lower(), ftarget2.lower(), starget2.lower(), players)
+			if res > 0:
+				self.connection.privmsg(self.channel, ("\x03{3}{0}\x03 successfully ambushed " +
+					"\x03{4}{1}\x03 and \x03{4}{2}\x03. \x03{3}{0}\x03 gained \x026 HP\x02 " +
+					"while the other two lost \x023 HP\x02 each.").format(source, ftarget, starget,
+					self.colors[players[source2.lower()]['type']], 
+					self.colors[players[ftarget2.lower()]['type']]))
+				if User.transform(ftarget2.lower(), players):
+					newtype = self.colored_types[players[ftarget2.lower()]['type']]
+					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
+						"and has been transformed to a \x03{}\x03.").format(ftarget, newtype))
+					if self.check_end(players):
+						return
+				if User.transform(starget2.lower(), players):
+					newtype = self.colored_types[players[starget2.lower()]['type']]
+					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
+						"and has been transformed to a \x03{}\x03.").format(starget, newtype))
+					if self.check_end(players):
+						return
+			elif res < 0:
+				self.connection.privmsg(self.channel, ("\x03{3}{0}\x03's ambush miserably failed " +
+					"against \x03{4}{1}\x03 and \x03{4}{2}\x03. \x03{3}{0}\x03 lost \x026 HP\x02 " +
+					"while the other two gained \x023 HP\x02 each.").format(source, ftarget, starget,
+					self.colors[players[source2.lower()]['type']], 
+					self.colors[players[ftarget2.lower()]['type']]))
+				if User.transform(source2.lower(), players):
+					newtype = self.colored_types[players[source2.lower()]['type']]
+					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
+						"and has been transformed to a \x03{}\x03.").format(source, newtype))
+					if self.check_end(players):
+						return
+			else:
+				self.connection.privmsg(self.channel, "\x02It is a tie.\x02 No one has been hurt.")
+			# check if the max MP is eligible to increase/decrease
+			got_new_mmp = User.redetermine_mmp(res, source2.lower(), players)
+			if got_new_mmp: new_mmp = players[source2.lower()]['mmp']
+			if got_new_mmp == 1:
+				self.connection.privmsg(self.channel, ("After {} successful attacks in a row, {} received " +
+					"a level-up, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source, new_mmp))
+			elif got_new_mmp == -1:
+				self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
+					"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source, new_mmp))
 
 	def list_players(self, utype, players):
 		zombires = [nick.replace("..", "[").replace(",,", "]") for nick in players if players[nick]['type'] == utype]
@@ -220,6 +290,7 @@ class UserCommand:
 		else:
 			cmd = command[0:first_space].lower()
 			args = command[first_space:].lstrip().split(" ")
+			args = list(filter(lambda x: x.strip(), args))
 		if cmd == "register" and not args:
 			self.register(event.source.nick.lower())
 		elif cmd == "unregister" and not args:
@@ -230,6 +301,8 @@ class UserCommand:
 			self.attack(event.source.nick, args[0], players)
 		elif cmd == "heal" and len(args) == 1:
 			self.heal(event.source.nick, args[0], players)
+		elif cmd == "ambush" and len(args) == 2:
+			self.ambush(event.source.nick, args[0], args[1], players)
 		elif cmd == "vampires" and not args:
 			self.list_players("v", players)
 		elif cmd == "zombies" and not args:
