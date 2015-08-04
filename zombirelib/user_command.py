@@ -53,6 +53,8 @@ class UserCommand:
 			players[nick2] = {'type': utype, 'hp': 10, 'mp': 5, 'mmp': 5, 'score': 0, 'bonus': 0}
 			self.connection.notice(nick, "You have successfully registered as a \x03{}\x03!"
 				.format(self.colored_types[utype]))
+			if len(players) == 1:
+				self.connection.privmsg(self.channel, "\x02A new round of the Game has started!\x02")
 		else:
 			self.connection.notice(nick, "Error in registration. A probable cause is " +
 				"that you are already registered.")
