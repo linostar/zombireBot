@@ -26,22 +26,29 @@ Each player has the following stats:
 - **HP :**  those are the health points (they have no maximum limit per player)
 - **MP :**  those represent how many remaining actions the player can do in the current hour
 - **Maximum MP :**  those are the maximum actions per hour for the player
-- **Score :**  a successful attack will be awarded with 2 score points, while a healing gives 1 score point
+- **Score :**  score points awarded for healings and successful attacks
 - **Bonus :**  if present, it will give a positive or negative boost to the player attack/defense
 
 Each player upon registration will have an HP of 10, and an MP and Maximum MP of 5.
 
-Each player can take two types of **actions** against other players. Both actions will consume 1 MP from the player stats:
-- **!attack :**  Both players (attacker and target) will throw a dice each. The difference in dice numbers will be subtracted from the loser's HP and added to the winner's HP. In case of a tie, nothing happens. **If a player's HP reaches 0, he/she will transform automatically to the opposite type (vampire -> zombie or zombie -> vampire)**. Players cannot attack players of the same type.
-- **!heal :**  The player will sacrifice 2 HP to give an ally 1 HP. The player needs at least 3 HP to make this action. Players cannot heal players of the opposite type.
+Each player can take 3 types of **actions** against other players:
+- **!attack :**  Both players (attacker and target) will throw a dice each. The difference in dice numbers will be subtracted from the loser's HP and added to the winner's HP. In case of a tie, nothing happens. **If a player's HP reaches 0, he/she will transform automatically to the opposite type (vampire -> zombie or zombie -> vampire)**. Players cannot attack players of the same type. This action consumes 1 MP from the attacking player.
+- **!heal :**  The player will sacrifice 2 HP to give an ally 1 HP. The player needs at least 3 HP to make this action. Players cannot heal players of the opposite type. This action consumes 1 MP from the healing player.
+- **!ambush :**  Player will attack 2 enemies simultaneously. If the ambush succeeds, he/she will gain 6 HP and the other two will loose 3 HP each. If not, he/she will loose 6 HP and the other two gain 3 HP each. The player needs at least 6 HP to make this action, and it will consume 2 MP from his/her stats.
 
 **Each one hour**, the MP of all players will be regenerated and filled up to their respective Maximum MP.
 
-**About Maximum MP**, if a player makes 5 successful attacks in a row (with no ties in between), his/her Maximum MP will go up by 1 point. However, if he/she makes 5 failed attacks in row, his/her Maximum MP will go down by 1 point.
+**About Maximum MP**, if a player makes 5 successful attacks/ambushes in a row (with no ties in between), his/her Maximum MP will go up by 1 point. However, if he/she makes 5 failed attacks/ambushes in row, his/her Maximum MP will go down by 1 point.
 
 **Concerning bonus**, every 3 hours, some players may find random items or get affected by random objects, leading to a temporary positive or negative effect on their attack/defense. The bonus effect will last for 1 hour only.
 
-**The game will end** when all players become vampires, or all players become zombies. The highscorer player will have his/her name added to the highscore table, and the round will end removing all players from the game. To participate in a new round, the players will have to type the `!register` command again.
+**Scoring:**
+- a healing gives 1 score point
+- a successful attack gives 2 score points
+- a successful ambush gives 3 points
+
+**End of Round:**
+The game will end when all players become vampires, or all players become zombies. The highscorer player will have his/her name added to the highscore table, and the round will end removing all players from the game. To participate in a new round, the players will have to type the `!register` command again.
 
 ### List of user commands
 - **!howtoplay :**  displays a link to this page
@@ -49,6 +56,7 @@ Each player can take two types of **actions** against other players. Both action
 - **!unregister :**  removes the player from the game
 - **!attack _player_ :**  lets the player attack a player of the opposite type (an enemy)
 - **!heal _player_ :**  lets the player heal a player of the same type (an ally)
+- **!ambush _player1_ player2_ :**  lets the player attack 2 enemy players simultaneously
 - **!status _player_ :**  displays the stats of the mentioned player
 - **!vampires :**  lists all vampires in the current round
 - **!zombies :**  lists all zombies in the current round
