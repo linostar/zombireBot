@@ -35,6 +35,10 @@ class AdminCommand:
 		else:
 			self.connection.notice(sender, "No topscores yet.")
 
+	def clearscores(self, sender):
+		self.dbc.clear_scores()
+		self.connection.notice(sender, "Highscores table has been cleared.")
+
 	def kick(self, sender, players, targets):
 		if players:
 			target_list = targets.split(" ")
@@ -86,5 +90,7 @@ class AdminCommand:
 			self.kick(event.source.nick, players, args.strip().lower())
 		elif cmd == "stats" and not args:
 			self.stats(event.source.nick, players)
+		elif cmd == "clearscores" and not args:
+			self.clearscores(event.source.nick)
 		else:
 			self.connection.notice(e.source.nick, "Error in command syntax.")

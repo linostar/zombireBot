@@ -116,3 +116,6 @@ class Database:
 				if row:
 					scores.append(row)
 		return scores
+
+	def clear_scores(self):
+		self.query("delete from `highscores`")
