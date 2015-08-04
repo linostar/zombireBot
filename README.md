@@ -73,7 +73,7 @@ where `<botname>` is the registered nick used by the bot, and `<admin_passwd>` i
 The possible commands are:
 
 - **quit _message_ :**  makes the bot disconnect (*message* is optional and will appear in the bot quitting message)
-- **kick _player_ :**  removes `player` from the game
+- **kick _player(s)_ :**  removes player(s) from the game (you can specify a list of players separated by spaces)
 - **stats :**  displays the total of vampires and zombies in the current round
 - **topscores** or **highscores :**  displays the top 10 highscores with more details
 - **clearscores :**  deletes all entries from the highscore table

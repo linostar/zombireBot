@@ -53,12 +53,12 @@ class AdminCommand:
 							self.connection.privmsg("chanserv", "access {} del {}".format(self.channel, nick))
 						else: # everything else is considered 'flags'
 							self.connection.privmsg("chanserv", "flags {} {} -V".format(self.channel, nick))
-						self.connection.privmsg("chanserv", "sync {}".format(self.channel))
 						self.connection.notice(sender, "\x02{}\x02 has been removed from the game."
 							.format(nick))
 					else:
 						self.connection.notice(sender, "Error: \x02{}\x02 is not registered in the game."
 							.format(nick))
+			self.connection.privmsg("chanserv", "sync {}".format(self.channel))
 			self.dbc.save(players)
 		else:
 			self.connection.notice(sender, "There are no players currently in the game.")
