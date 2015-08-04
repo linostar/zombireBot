@@ -22,21 +22,20 @@ class UserCommand:
 		User.is_identified(self.connection, nick)
 
 	def register2(self, nick, channels, players):
-		
-			Utils.cs_list = 1
+			#Utils.cs_list = 1
 			Utils.registering_nick = nick
 			if self.access == "xop":
-				self.connection.privmsg("chanserv", "vop {} list".format(self.channel))
+				#self.connection.privmsg("chanserv", "vop {} list".format(self.channel))
 				self.connection.privmsg("chanserv", "vop {} add {}".format(self.channel, nick))
-				self.connection.privmsg("chanserv", "vop {} list".format(self.channel))
+				#self.connection.privmsg("chanserv", "vop {} list".format(self.channel))
 			elif self.access == "levels":
-				self.connection.privmsg("chanserv", "access {} list".format(self.channel))
+				#self.connection.privmsg("chanserv", "access {} list".format(self.channel))
 				self.connection.privmsg("chanserv", "access {} add {} 3".format(self.channel, nick))
-				self.connection.privmsg("chanserv", "access {} list".format(self.channel))
+				#self.connection.privmsg("chanserv", "access {} list".format(self.channel))
 			else: # everything else is considered 'flags'
-				self.connection.privmsg("chanserv", "flags {}".format(self.channel))
+				#self.connection.privmsg("chanserv", "flags {}".format(self.channel))
 				self.connection.privmsg("chanserv", "flags {} {} +V".format(self.channel, nick))
-				self.connection.privmsg("chanserv", "flags {}".format(self.channel))
+				#self.connection.privmsg("chanserv", "flags {}".format(self.channel))
 			self.connection.privmsg("chanserv", "sync {}".format(self.channel))
 			
 	def register3(self, nick, channels, players):

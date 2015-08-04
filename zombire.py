@@ -99,34 +99,39 @@ class Zombire(CustomSingleServerIRCBot):
 			return
 		# retrieving chanserv access list for channel
 		elif e.source.nick.lower() == "chanserv":
-			args = e.arguments[0]
-			if Utils.cs_list == 2:
-				detected = re.match(r"channel access list", args, re.IGNORECASE)
+			if Utils.registering_nick:
+				args = e.arguments[0]
+				detected = re.match(r"all user modes on", args, re.IGNORECASE)
 				if detected:
-					Utils.reg_list2 = []
-					return
-				detected = re.match(r"\d+\.\s+(\w+)\s+", args, re.IGNORECASE)
-				if detected:
-					Utils.reg_list2.append(detected.group(1).strip().lower())
-					return
-				detected = re.match(r"end of access list", args, re.IGNORECASE)
-				if detected:
-					Utils.cs_list = 0
-					return
-			elif Utils.cs_list == 1:
-				detected = re.match(r"channel access list", args, re.IGNORECASE)
-				if detected:
-					Utils.reg_list1 = []
-					return
-				detected = re.match(r"\d+\.\s+(\w+)\s+", args, re.IGNORECASE)
-				if detected:
-					Utils.reg_list1.append(detected.group(1).strip().lower())
-					return
-				detected = re.match(r"end of access list", args, re.IGNORECASE)
-				if detected:
-					Utils.cs_list = 2
 					self.uc.register3(Utils.registering_nick, self.channels, self.players)
 					return
+			# if Utils.cs_list == 2:
+			# 	detected = re.match(r"channel access list", args, re.IGNORECASE)
+			# 	if detected:
+			# 		Utils.reg_list2 = []
+			# 		return
+			# 	detected = re.match(r"\d+\.\s+(\w+)\s+", args, re.IGNORECASE)
+			# 	if detected:
+			# 		Utils.reg_list2.append(detected.group(1).strip().lower())
+			# 		return
+			# 	detected = re.match(r"end of access list", args, re.IGNORECASE)
+			# 	if detected:
+			# 		Utils.cs_list = 0
+			# 		return
+			# elif Utils.cs_list == 1:
+			# 	detected = re.match(r"channel access list", args, re.IGNORECASE)
+			# 	if detected:
+			# 		Utils.reg_list1 = []
+			# 		return
+			# 	detected = re.match(r"\d+\.\s+(\w+)\s+", args, re.IGNORECASE)
+			# 	if detected:
+			# 		Utils.reg_list1.append(detected.group(1).strip().lower())
+			# 		return
+			# 	detected = re.match(r"end of access list", args, re.IGNORECASE)
+			# 	if detected:
+			# 		Utils.cs_list = 2
+			# 		self.uc.register3(Utils.registering_nick, self.channels, self.players)
+			# 		return
 
 	def on_privmsg(self, c, e):
 		re_exprs = (r"admin\s+(.+)",)

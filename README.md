@@ -26,7 +26,7 @@ Each player has the following stats:
 - **HP :**  those are the health points (they have no maximum limit per player)
 - **MP :**  those represent how many remaining actions the player can do in the current hour
 - **Maximum MP :**  those are the maximum actions per hour for the player
-- **Score :**  each successful attack will gives the player 1 point in score
+- **Score :**  a successful attack will be awarded with 2 score points, while a healing gives 1 score point
 - **Bonus :**  if present, it will give a positive or negative boost to the player attack/defense
 
 Each player upon registration will have an HP of 10, and an MP and Maximum MP of 5.

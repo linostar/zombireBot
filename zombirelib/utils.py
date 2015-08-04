@@ -2,10 +2,10 @@ import math
 
 class Utils:
 	MAX_MSG_LENGTH = 220
-	HOW_TO_PLAY = "https://linostar.github.io/ZombireBot"
+	HOW_TO_PLAY = "https://linostar.github.io/zombireBot"
 	cs_list = 0
-	reg_list1 = []
-	reg_list2 = []
+	#reg_list1 = []
+	#reg_list2 = []
 	registering_nick = ""
 
 	@staticmethod
