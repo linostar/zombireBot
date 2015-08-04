@@ -77,6 +77,7 @@ class User:
 	@staticmethod
 	def redetermine_mmp(result, nick, players):
 		if result > 0:
+			players[nick]['bonus'] -= (players[nick]['bonus'] // 100) * 100
 			players[nick]['bonus'] += 10
 			if (players[nick]['bonus'] % 100) // 10 == User.CUMULATIVE:
 				players[nick]['bonus'] -= User.CUMULATIVE * 10
@@ -84,6 +85,7 @@ class User:
 					players[nick]['mmp'] += 1
 					return 1
 		elif result < 0:
+			players[nick]['bonus'] -= ((players[nick]['bonus'] % 100) // 10) * 10
 			players[nick]['bonus'] += 100
 			if players[nick]['bonus'] // 100 == User.CUMULATIVE:
 				players[nick]['bonus'] -= User.CUMULATIVE * 100

@@ -87,7 +87,7 @@ class Schedule:
 			list_nicks = ", ".join(rand_sample)
 			for nick in rand_sample:
 				self.players[nick]['bonus'] += btype
-			list_nicks = map(lambda x: x.replace("..", "[").replace(",,", "]"), list_nicks)
+			list_nicks = list_nicks.replace("..", "[").replace(",,", "]")
 			return list_nicks
 		else: # btype == 3
 			half1 = random.sample(list(self.players), len(self.players) // 2)
@@ -100,8 +100,8 @@ class Schedule:
 				self.players[nick]['bonus'] += 1
 			for nick in rand_sample2:
 				self.players[nick]['bonus'] += 2
-			list_nicks1 = map(lambda x: x.replace("..", "[").replace(",,", "]"), list_nicks1)
-			list_nicks2 = map(lambda x: x.replace("..", "[").replace(",,", "]"), list_nicks2)
+			list_nicks1 = list_nicks1.replace("..", "[").replace(",,", "]")
+			list_nicks2 = list_nicks2.replace("..", "[").replace(",,", "]")
 			return [list_nicks1, list_nicks2]
 
 	def clear_bonus(self):
