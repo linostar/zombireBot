@@ -45,9 +45,10 @@ Each player can take 3 types of **actions** against other players:
 **Scoring:**
 - a healing gives 1 score point
 - a successful attack gives 2 score points
-- a successful ambush gives 3 points
+- a successful ambush gives 3 score points
 
 **End of Round:**
+
 The game will end when all players become vampires, or all players become zombies. The highscorer player will have his/her name added to the highscore table, and the round will end removing all players from the game. To participate in a new round, the players will have to type the `!register` command again.
 
 ### List of user commands
@@ -56,7 +57,7 @@ The game will end when all players become vampires, or all players become zombie
 - **!unregister :**  removes the player from the game
 - **!attack _player_ :**  lets the player attack a player of the opposite type (an enemy)
 - **!heal _player_ :**  lets the player heal a player of the same type (an ally)
-- **!ambush _player1_ player2_ :**  lets the player attack 2 enemy players simultaneously
+- **!ambush _player1_ _player2_ :**  lets the player attack 2 enemy players simultaneously
 - **!status _player_ :**  displays the stats of the mentioned player
 - **!vampires :**  lists all vampires in the current round
 - **!zombies :**  lists all zombies in the current round
