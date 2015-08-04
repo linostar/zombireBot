@@ -207,7 +207,7 @@ class UserCommand:
 		players[ftarget2.lower()]['type'] != players[starget2.lower()]['type']:
 			self.connection.privmsg(self.channel, "{}: You cannot attack {}s like yourself.".format(
 				source, self.types[players[source2.lower()]['type']]))
-		elif players[source2.lower()]['mp'] < 1:
+		elif players[source2.lower()]['mp'] < 2:
 			self.connection.privmsg(self.channel, "{}: You need at least 2 MP to be able to ambush others."
 				.format(source))
 		elif players[source2.lower()]['hp'] < 6:
