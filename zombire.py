@@ -18,9 +18,11 @@
 
 import sys
 import os
+import time
 import re
 
 import yaml
+import irc.client
 import irc.bot
 import irc.strings
 
@@ -28,12 +30,47 @@ from zombirelib import user_command, admin_command, schedule
 from zombirelib.utils import Utils
 from zombirelib.db_access import Database
 
-class Zombire(irc.bot.SingleServerIRCBot):
+
+class CustomConnection(irc.client.ServerConnection):
+	def privmsg(self, target, text):
+		flood_event = schedule.Schedule.get_event()
+		flood_event.wait()
+		super().privmsg(target, text)
+
+	def notice(self, target, text):
+		flood_event = schedule.Schedule.get_event()
+		flood_event.wait()
+		super().notice(target, text)
+
+
+class CustomReactor(irc.client.Reactor):
+	def server(self):
+		c = CustomConnection(self)
+		with self.mutex:
+			self.connections.append(c)
+		return c
+
+
+class CustomSimpleIRCClient(irc.client.SimpleIRCClient):
+	def __init__(self):
+		self.reactor = CustomReactor()
+		self.connection = self.reactor.server()
+		self.dcc_connections = []
+		self.reactor.add_global_handler("all_events", self._dispatcher, -10)
+		self.reactor.add_global_handler("dcc_disconnect", self._dcc_disconnect, -10)
+
+
+class CustomSingleServerIRCBot(irc.bot.SingleServerIRCBot, CustomSimpleIRCClient):
+	def __init__(self, server_list, nickname, realname, reconnection_interval=60, **connect_params):
+		irc.bot.SingleServerIRCBot.__init__(self, server_list, nickname, realname, reconnection_interval=60)
+
+
+class Zombire(CustomSingleServerIRCBot):
 	def __init__(self, config_file):
 		self.read_config(config_file)
 		self.dbc = Database(self.config)
 		self.players = self.dbc.get_players()
-		irc.bot.SingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
+		CustomSingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
 		self.sched = schedule.Schedule(self.connection, self.dbc, self.config['channel'], self.players)
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'], 
@@ -119,7 +156,8 @@ class Zombire(irc.bot.SingleServerIRCBot):
 							voiced_users = list(chobj.voiced()) + list(chobj.opers()) + list(chobj.halfops())
 						nick = e.source.nick
 						nick2 = nick.replace("[", "..").replace("]", ",,")
-						voiced_users = map(lambda x: x.replace("[", "..").replace("]", ",,").lower(), voiced_users)
+						voiced_users = map(lambda x: x.replace("[", "..").replace("]", ",,").lower(), 
+							voiced_users)
 						if nick2.lower() in voiced_users and nick2.lower() in list(self.players):
 							self.uc.execute(e, detected_command, self.players)
 						elif nick in voiced_users:

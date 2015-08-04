@@ -3,8 +3,12 @@ import datetime
 import time
 import random
 import math
+import queue
 
 class Schedule:
+	X_LINES = 1
+	Y_SECONDS = 1
+	equeue = queue.Queue()
 	loop = True
 	is_bonus_on = False
 	last_hour_mp = -1
@@ -27,6 +31,22 @@ class Schedule:
 		regenerate_thread.start()
 		bonus_thread = threading.Thread(target=self.give_bonus)
 		bonus_thread.start()
+		flood_thread = threading.Thread(target=self.process_msg)
+		flood_thread.start()
+
+	@staticmethod
+	def get_event():
+		e = threading.Event()
+		e.clear()
+		Schedule.equeue.put(e)
+		return e
+
+	def process_msg(self):
+		while self.loop:
+			if not Schedule.equeue.empty():
+				e = Schedule.equeue.get()
+				e.set()
+			time.sleep(Schedule.Y_SECONDS)
 
 	def regenerate_mp(self):
 		while self.loop:
