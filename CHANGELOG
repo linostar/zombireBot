@@ -1,5 +1,8 @@
 CHANGELOG
 ---------
+v1.0.2
+Enable the round to end when all remaining players of one type unregister
+
 v1.0.1
 Minor fix that prevents bot from crashing when declaring the winner
 
