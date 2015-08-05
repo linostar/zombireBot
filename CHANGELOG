@@ -1,2 +1,7 @@
+CHANGELOG
+---------
+v1.0.1
+Minor fix that prevents bot from crashing when declaring the winner
+
 v1.0.0
 First stable release of Zombire IRC bot

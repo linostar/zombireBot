@@ -270,8 +270,8 @@ class UserCommand:
 
 	def check_end(self, players):
 		winner2 = User.check_if_round_ended(players)
-		winner = winner2.replace("..", "[").replace(",,", "]")
-		if winner:
+		if winner2:
+			winner = winner2.replace("..", "[").replace(",,", "]")
 			self.dbc.add_highscore(winner, players[winner2]['type'], players[winner2]['score'])
 			self.connection.privmsg(self.channel, "\x02Game set.\x02 The \x03{}s\x03 have won!"
 				.format(self.colored_types[players[winner2]['type']]))
