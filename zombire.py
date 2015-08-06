@@ -70,11 +70,13 @@ class Zombire(CustomSingleServerIRCBot):
 		self.read_config(config_file)
 		self.dbc = Database(self.config)
 		self.players = self.dbc.get_players()
+		self.profiles = self.dbc.get_profiles()
 		CustomSingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
-		self.sched = schedule.Schedule(self.connection, self.dbc, self.config['channel'], self.players)
+		self.sched = schedule.Schedule(self.connection, self.dbc, self.config['channel'],
+			self.players, self.profiles)
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'], 
-			self.config['channel_accesstype'])
+			self.config['channel_accesstype'], self.profiles)
 		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['channel'], 
 			str(self.config['admin_passwd']), self.config['channel_accesstype'], self.sched)
 
@@ -150,7 +152,8 @@ class Zombire(CustomSingleServerIRCBot):
 	def on_pubmsg(self, c, e):
 		re_exprs = (r"\!(register)", r"\!(unregister)", r"\!(status\s+.+)",
 			r"\!(attack\s+.+)", r"\!(heal\s+.+)", r"\!(vampires|zombies)", r"\!(version)",
-			r"\!(topscores)", r"\!(highscores)", r"\!(howtoplay)", r"\!(ambush\s+.+)")
+			r"\!(topscores)", r"\!(highscores)", r"\!(howtoplay)", r"\!(ambush\s+.+)",
+			r"\!(auto\s+(attack|heal|register)\s+.*)")
 		for expr in re_exprs:
 			try:
 				detected = re.match(expr, e.arguments[0], re.IGNORECASE)

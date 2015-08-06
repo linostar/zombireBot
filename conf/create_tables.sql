@@ -7,12 +7,22 @@ CREATE TABLE IF NOT EXISTS `users` (
   `nick` varchar(64) NOT NULL,
   `main_nick` varchar(64) NOT NULL,
   `type` varchar(1) NOT NULL,
-  `hp` smallint NOT NULL DEFAULT 10,
+  `hp` int NOT NULL DEFAULT 10,
   `mmp` smallint NOT NULL DEFAULT 5,
   `score` int NOT NULL DEFAULT 0,
   `bonus` smallint NOT NULL DEFAULT 0,
   PRIMARY KEY(`userid`)
 ) ENGINE=MyISAM	DEFAULT CHARSET=utf8;
+
+-- Table structure for table `profiles`
+
+CREATE TABLE IF NOT EXISTS `profiles` (
+  `prid` int NOT NULL AUTO_INCREMENT,
+  `nick` varchar(64) NOT NULL,
+  `autovals` smallint NOT NULL DEFAULT 0,
+  `extras` smallint NOT NULL DEFAULT 0,
+  PRIMARY KEY(`prid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- Table structure for table `highscores`
 

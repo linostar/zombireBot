@@ -9,12 +9,13 @@ class UserCommand:
 	colors = {'v': 4, 'z': 3}
 	colored_types = {'v': '4vampire', 'z': '3zombie'}
 
-	def __init__(self, conn, dbc, channel, access):
+	def __init__(self, conn, dbc, channel, access, profiles):
 		random.seed()
 		self.connection = conn
 		self.dbc = dbc
 		self.channel = channel
 		self.access = access
+		self.profiles = profiles
 
 	def howtoplay(self, nick):
 		self.connection.notice(nick, "See: " + Utils.HOW_TO_PLAY)
@@ -51,6 +52,8 @@ class UserCommand:
 		nick2 = nick.replace("[", "..").replace("]", ",,")
 		if self.dbc.register_user(nick2, utype, None):
 			players[nick2] = {'type': utype, 'hp': 10, 'mp': 5, 'mmp': 5, 'score': 0, 'bonus': 0}
+			if not nick2 in self.profiles:
+				self.profiles[nick2] = {'auto': 0, 'extras': 0}
 			self.connection.notice(nick, "You have successfully registered as a \x03{}\x03!"
 				.format(self.colored_types[utype]))
 			if len(players) == 1:
@@ -286,11 +289,109 @@ class UserCommand:
 				diff_time.seconds//3600, (diff_time.seconds-diff_time.seconds//3600*3600)//60, 
 				diff_time.seconds%60))
 			User.reset_players(players)
+			# in case there are players with auto register on
+			self.auto_register(players)
 			self.dbc.save(players)
 			return True
 
+	def auto_register(self, players):
+		list_nicks = []
+		for nick in self.profiles:
+			if self.profiles[nick]['auto'] & 1: # check bit 0
+				if random.random() > User.ratio_of_types(players):
+					utype = "v" # vampire
+				else:
+					utype = "z" # zombie
+				players[nick] = {'type': utype, 'hp': 10, 'mp': 5, 'mmp': 5, 'score': 0, 'bonus': 0}
+				list_nicks.append(nick.replace("..", "[").replace(",,", "]"))
+				if len(players) == 1:
+					self.connection.privmsg(self.channel, "\x02A new round of the Game has started!\x02")
+					Utils.round_starttime = datetime.datetime.now()
+		if len(list_nicks):
+			self.connection.privmsg(self.channel, "The following players have been auto-registered:")
+			self.connection.privmsg(self.channel, "\x02{}\x02".format(", ".join(list_nicks)))
+
 	def print_version(self):
 		self.connection.privmsg(self.channel, "Zombire Bot version: {}".format(Utils.VERSION))
+
+	def get_auto(self, prop, nick):
+		res = ""
+		prop = prop.lower()
+		nick2 = nick.replace("[", "..").replace("]", ",,")
+		if prop == "register":
+			# bit 0 for on/off
+			if self.profiles[nick2]['auto'] & 1:
+				res = "on"
+			else:
+				res = "off"
+		elif prop == "heal":
+			# bit 2 for highest/lowest, bit 1 for on/off
+			if self.profiles[nick2]['auto'] & 2:
+				if self.profiles[nick2]['auto'] & 4:
+					res = "highest"
+				else:
+					res = "lowest"
+			else:
+				res = "off"
+		elif prop == "attack":
+			# bit 4 for highest/lowest, bit 3 for on/off
+			if self.profiles[nick2]['auto'] & 8:
+				if self.profiles[nick2]['auto'] & 16:
+					res = "highest"
+				else:
+					res = "lowest"
+			else:
+				res = "off"
+		if res:
+			self.connection.notice(nick, "Your auto-{} is \x02{}\x02.".format(prop, res))
+		else:
+			self.connection.notice(nick, "Wrong \x02!auto\x02 command syntax.")
+
+	def set_auto(self, prop, val, nick):
+		# see bit assignment is get_auto()
+		res = True
+		prop = prop.lower()
+		val = val.lower()
+		nick2 = nick.replace("[", "..").replace("]", ",,")
+		if prop == "register":
+			if val == "on":
+				self.prop[nick2]['auto'] |= 1
+			elif val == "off":
+				self.prop[nick2]['auto'] &= ~1
+			else:
+				res = False
+		elif prop == "heal":
+			if val == "off":
+				self.prop[nick2]['auto'] &= ~2
+			elif val == "lowest":
+				self.prop[nick2]['auto'] &= ~8 # turn auto-attack off
+				self.prop[nick2]['auto'] |= 2
+				self.prop[nick2]['auto'] &= ~4
+			elif val == "highest":
+				self.prop[nick2]['auto'] &= ~8 # turn auto-attack off
+				self.prop[nick2]['auto'] |= 2
+				self.prop[nick2]['auto'] |= 4
+			else:
+				res = False
+		elif prop == "attack":
+			if val == "off":
+				self.prop[nick2]['auto'] &= ~8
+			elif val == "lowest":
+				self.prop[nick2]['auto'] &= ~2 # turn auto-heal off
+				self.prop[nick2]['auto'] |= 8
+				self.prop[nick2]['auto'] &= ~16
+			elif val == "highest":
+				self.prop[nick2]['auto'] &= ~2 # turn auto-heal off
+				self.prop[nick2]['auto'] |= 8
+				self.prop[nick2]['auto'] |= 16
+			else:
+				res = False
+		else:
+			res = False
+		if res:
+			self.connection.notice(nick, "Your auto-{} is now set on \x02{}\x02.".format(prop, val))
+		else
+			self.connection.notice(nick, "Wrong \x02!auto\x02 command syntax.")
 
 	def execute(self, event, command, players):
 		command = command.strip()
@@ -322,5 +423,9 @@ class UserCommand:
 			self.topscores()
 		elif cmd == "howtoplay" and not args:
 			self.howtoplay(event.source.nick)
-		elif cmd =="version" and not args:
+		elif cmd == "version" and not args:
 			self.print_version()
+		elif cmd == "auto" and len(args) == 1:
+			self.get_auto(args[0], event.source.nick.lower())
+		elif cmd == "auto" and len(args) == 2:
+			self.set_auto(args[0], args[1], event.source.nick.lower())			

@@ -66,12 +66,19 @@ class Database:
 		if self.query_select("select * from `users` where `nick` = %s", nick.lower()):
 			return True
 
+	def has_profile(self, nick):
+		if self.query_select("select * from `profiles` where `nick` = %s", nick.lower()):
+			return True
+
 	def register_user(self, nick, usertype, main_nick=None):
 		if not self.is_registered(nick):
 			if not main_nick:
 				main_nick = nick
 			self.query("insert into `users` values (0, '{0}', '{1}', '{2}', 10, 5, 0, 0)"
 				.format(nick.lower(), main_nick.lower(), usertype))
+			if not self.has_profile(nick):
+				self.query("insert into `profiles` values (0, '{}', 0, 0)"
+					.format(nick.lower()))
 			return True
 
 	def unregister_user(self, nick):
@@ -93,6 +100,14 @@ class Database:
 					players[row[0]] = {'type': row[1], 'hp': row[2], 'mp': row[3], 
 					'mmp': row[3], 'score': row[4], 'bonus': row[5]}
 		return players
+
+	def get_profiles(self):
+		profiles = {}
+		if self.query_select("select `nick`, `autovals`, `extras` from `profiles`",	(None)):
+			for row in self.cur:
+				if row:
+					profiles[row[0]] = {'auto': row[1], 'extras': row[2]}
+		return profiles
 
 	def add_highscore(self, nick, utype, score):
 		now_date = datetime.date.today().strftime("%Y-%m-%d")
