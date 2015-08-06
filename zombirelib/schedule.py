@@ -147,6 +147,23 @@ class Schedule:
 			self.dbc.save(self.players)
 			return True
 
+	def auto_register(self):
+		list_nicks = []
+		for nick in self.profiles:
+			if self.profiles[nick]['auto'] & 1: # check bit 0
+				if random.random() > User.ratio_of_types(self.players):
+					utype = "v" # vampire
+				else:
+					utype = "z" # zombie
+				self.players[nick] = {'type': utype, 'hp': 10, 'mp': 5, 'mmp': 5, 'score': 0, 'bonus': 0}
+				list_nicks.append(nick.replace("..", "[").replace(",,", "]"))
+				if len(self.players) == 1:
+					self.connection.privmsg(self.channel, "\x02A new round of the Game has started!\x02")
+					Utils.round_starttime = datetime.datetime.now()
+		if len(list_nicks):
+			self.connection.privmsg(self.channel, "The following players have been auto-registered:")
+			self.connection.privmsg(self.channel, "\x02{}\x02".format(", ".join(list_nicks)))
+
 	def regenerate_mp(self):
 		while self.loop:
 			if self.players:
