@@ -1,9 +1,11 @@
 import math
+import datetime
 
 class Utils:
 	VERSION = "1.1.0"
 	MAX_MSG_LENGTH = 220
 	HOW_TO_PLAY = "https://linostar.github.io/zombireBot"
+	round_starttime = datetime.datetime.now()
 	cs_list = 0
 	#reg_list1 = []
 	#reg_list2 = []

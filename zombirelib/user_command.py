@@ -1,4 +1,5 @@
 import random
+import datetime
 
 from .user import User
 from .utils import Utils
@@ -54,6 +55,7 @@ class UserCommand:
 				.format(self.colored_types[utype]))
 			if len(players) == 1:
 				self.connection.privmsg(self.channel, "\x02A new round of the Game has started!\x02")
+				Utils.round_starttime = datetime.datetime.now()
 		else:
 			self.connection.notice(nick, "Error in registration. A probable cause is " +
 				"that you are already registered.")
@@ -272,12 +274,17 @@ class UserCommand:
 	def check_end(self, players):
 		winner2 = User.check_if_round_ended(players)
 		if winner2 and len(players) > 0:
+			diff_time = datetime.datetime.now() - Utils.round_starttime
 			winner = winner2.replace("..", "[").replace(",,", "]")
 			self.dbc.add_highscore(winner, players[winner2]['type'], players[winner2]['score'])
 			self.connection.privmsg(self.channel, "\x02Game set.\x02 The \x03{}s\x03 have won!"
 				.format(self.colored_types[players[winner2]['type']]))
 			self.connection.privmsg(self.channel, ("\x02{}\x02 is the highscorer in this round, " +
 				"with a score of \x02{}\x02.").format(winner, players[winner2]['score']))
+			self.connection.privmsg(self.channel, ("This round has lasted for {} day(s), {} " +
+				"hour(s), {} minute(s) and {} second(s).").format(diff_time.days, 
+				diff_time.seconds//3600, (diff_time.seconds-diff_time.seconds//3600*3600)//60, 
+				diff_time.seconds%60))
 			User.reset_players(players)
 			self.dbc.save(players)
 			return True
