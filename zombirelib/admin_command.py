@@ -4,17 +4,18 @@ class AdminCommand:
 	TAB = "    "
 	types = {'v': 'vampire', 'z': 'zombie'}
 
-	def __init__(self, conn, dbc, channel, passwd, access, sched):
+	def __init__(self, conn, dbc, channel, passwd, access, sched, profiles):
 		self.dbc = dbc
 		self.connection = conn
 		self.channel = channel
 		self.passwd = passwd
 		self.access = access
 		self.sched = sched
+		self.profiles = profiles
 
 	def quit(self, players, message=None):
 		self.sched.stop()
-		self.dbc.save(players)
+		self.dbc.save(players, self.profiles)
 		if message:
 			self.connection.disconnect(message)
 		else:
@@ -59,7 +60,7 @@ class AdminCommand:
 						self.connection.notice(sender, "Error: \x02{}\x02 is not registered in the game."
 							.format(nick))
 			self.connection.privmsg("chanserv", "sync {}".format(self.channel))
-			self.dbc.save(players)
+			self.dbc.save(players, self.profiles)
 		else:
 			self.connection.notice(sender, "There are no players currently in the game.")
 

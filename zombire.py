@@ -78,7 +78,8 @@ class Zombire(CustomSingleServerIRCBot):
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'], 
 			self.config['channel_accesstype'], self.profiles)
 		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['channel'], 
-			str(self.config['admin_passwd']), self.config['channel_accesstype'], self.sched)
+			str(self.config['admin_passwd']), self.config['channel_accesstype'], self.sched,
+			self.profiles)
 
 	def read_config(self, filename):
 		if not os.path.exists(filename):

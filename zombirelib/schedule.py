@@ -144,7 +144,7 @@ class Schedule:
 			User.reset_players(self.players)
 			# in case there are players with auto register on
 			self.auto_register(self.players)
-			self.dbc.save(self.players)
+			self.dbc.save(self.players, self.profiles)
 			return True
 
 	def auto_register(self):
@@ -213,7 +213,7 @@ class Schedule:
 						else:
 							pass # no bonus
 					# save new stats after regenerate_mp and give_bonus
-					self.dbc.save(self.players)
+					self.dbc.save(self.players, self.profiles)
 			time.sleep(5)
 
 	def bonus_random_players(self, btype):

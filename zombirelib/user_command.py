@@ -291,7 +291,7 @@ class UserCommand:
 			User.reset_players(players)
 			# in case there are players with auto register on
 			self.auto_register(players)
-			self.dbc.save(players)
+			self.dbc.save(players, self.profiles)
 			return True
 
 	def auto_register(self, players):
@@ -355,42 +355,42 @@ class UserCommand:
 		nick2 = nick.replace("[", "..").replace("]", ",,")
 		if prop == "register":
 			if val == "on":
-				self.prop[nick2]['auto'] |= 1
+				self.profiles[nick2]['auto'] |= 1
 			elif val == "off":
-				self.prop[nick2]['auto'] &= ~1
+				self.profiles[nick2]['auto'] &= ~1
 			else:
 				res = False
 		elif prop == "heal":
 			if val == "off":
-				self.prop[nick2]['auto'] &= ~2
+				self.profiles[nick2]['auto'] &= ~2
 			elif val == "lowest":
-				self.prop[nick2]['auto'] &= ~8 # turn auto-attack off
-				self.prop[nick2]['auto'] |= 2
-				self.prop[nick2]['auto'] &= ~4
+				self.profiles[nick2]['auto'] &= ~8 # turn auto-attack off
+				self.profiles[nick2]['auto'] |= 2
+				self.profiles[nick2]['auto'] &= ~4
 			elif val == "highest":
-				self.prop[nick2]['auto'] &= ~8 # turn auto-attack off
-				self.prop[nick2]['auto'] |= 2
-				self.prop[nick2]['auto'] |= 4
+				self.profiles[nick2]['auto'] &= ~8 # turn auto-attack off
+				self.profiles[nick2]['auto'] |= 2
+				self.profiles[nick2]['auto'] |= 4
 			else:
 				res = False
 		elif prop == "attack":
 			if val == "off":
-				self.prop[nick2]['auto'] &= ~8
+				self.profiles[nick2]['auto'] &= ~8
 			elif val == "lowest":
-				self.prop[nick2]['auto'] &= ~2 # turn auto-heal off
-				self.prop[nick2]['auto'] |= 8
-				self.prop[nick2]['auto'] &= ~16
+				self.profiles[nick2]['auto'] &= ~2 # turn auto-heal off
+				self.profiles[nick2]['auto'] |= 8
+				self.profiles[nick2]['auto'] &= ~16
 			elif val == "highest":
-				self.prop[nick2]['auto'] &= ~2 # turn auto-heal off
-				self.prop[nick2]['auto'] |= 8
-				self.prop[nick2]['auto'] |= 16
+				self.profiles[nick2]['auto'] &= ~2 # turn auto-heal off
+				self.profiles[nick2]['auto'] |= 8
+				self.profiles[nick2]['auto'] |= 16
 			else:
 				res = False
 		else:
 			res = False
 		if res:
 			self.connection.notice(nick, "Your auto-{} is now set on \x02{}\x02.".format(prop, val))
-		else
+		else:
 			self.connection.notice(nick, "Wrong \x02!auto\x02 command syntax.")
 
 	def execute(self, event, command, players):

@@ -30,7 +30,7 @@ class Database:
 			print("Error: {}".format(err))
 			raise
 
-	def save(self, players):
+	def save(self, players, profiles):
 		if not players:
 			self.query("delete from `users`")
 			return True
@@ -38,6 +38,10 @@ class Database:
 			p = players[nick]
 			self.query(("update `users` set `type` = '{p[type]}', `hp` = {p[hp]}, `mmp` = {p[mmp]}, " +
 				"`score` = {p[score]}, `bonus` = {p[bonus]} where `nick` = '{nick}'").format(p=p, nick=nick))
+		for nick in profiles:
+			p = profiles[nick]
+			self.query("update `profiles` set `autovals` = {}, `extras` = {} where `nick` = '{}'"
+				.format(p['auto'], p['extras'], nick))
 		return True
 
 	def query_select(self, expr, args=None):
