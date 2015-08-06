@@ -71,25 +71,26 @@ class Schedule:
 								otype = "v" if utype == "z" else "z"
 								if self.profiles[nick]['auto'] & 2: # auto-heal
 									if self.players[nick]['hp'] > 2:
-										pfilter = filter(lambda x: x != nick and self.players[x]['type'] == utype,
-											self.players)
+										pfilter = {x:self.players[x]['hp'] for x in self.players
+											if self.players[x]['type'] == utype and x != nick}
 										if list(pfilter):
 											if self.profiles[nick]['auto'] & 4: # highest
-												target = max(pfilter, key=lambda x: self.players[x]['hp'])
+												target = max(pfilter, key=pfilter.get)
 											else: #lowest
-												target = min(pfilter, key=lambda x: self.players[x]['hp'])
+												target = min(pfilter, key=pfilter.get)
 											User.donate(nick, target, self.players)
 											nick1 = nick.replace("..", "[").replace(",,", "]")
 											target1 = target.replace("..", "[").replace(",,", "]")
 											self.connection.privmsg(self.channel, "\x03{0}{1}\x03 auto-healed \x03{0}{2}\x03."
 												.format(self.colors[utype], nick1, target1))
 								elif self.profiles[nick]['auto'] & 8: # auto-attack
-									pfilter = filter(lambda x: self.players[x]['type'] != utype, self.players)
+									pfilter = {x:self.players[x]['hp'] for x in self.players
+										if self.players[x]['type'] != utype}
 									if list(pfilter):
 										if self.profiles[nick]['auto'] & 16: # highest
-											target = max(pfilter, key=lambda x: self.players[x]['hp'])
+											target = max(pfilter, key=pfilter.get)
 										else: #lowest
-											target = min(pfilter, key=lambda x: self.players[x]['hp'])
+											target = min(pfilter, key=pfilter.get)
 										nick1 = nick.replace("..", "[").replace(",,", "]")
 										target1 = target.replace("..", "[").replace(",,", "]")
 										[dice1, dice2, diff_dice] = User.battle(nick, target, self.players)
