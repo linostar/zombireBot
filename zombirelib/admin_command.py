@@ -40,7 +40,7 @@ class AdminCommand:
 		self.dbc.clear_scores()
 		self.connection.notice(sender, "Highscores table has been cleared.")
 
-	def kick(self, sender, players, targets):
+	def kick(self, sender, players, targets, terminate):
 		if players:
 			target_list = targets.split(" ")
 			for nick in target_list:
@@ -48,6 +48,8 @@ class AdminCommand:
 				if nick:
 					if nick2 in players:
 						del players[nick2]
+						if terminate:
+							del self.profiles[nick2]
 						if self.access == "xop":
 							self.connection.privmsg("chanserv", "vop {} del {}".format(self.channel, nick))
 						elif self.access == "levels":
@@ -88,7 +90,9 @@ class AdminCommand:
 		elif (cmd == "topscores" or cmd == "highscores") and not args:
 			self.admin_topscores(event.source.nick)
 		elif cmd == "kick" and args:
-			self.kick(event.source.nick, players, args.strip().lower())
+			self.kick(event.source.nick, players, args.strip().lower(), False)
+		elif cmd == "terminate" and args:
+			self.kick(event.source.nick, players, args.strip().lower(), True)
 		elif cmd == "stats" and not args:
 			self.stats(event.source.nick, players)
 		elif cmd == "clearscores" and not args:

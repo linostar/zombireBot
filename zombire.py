@@ -154,7 +154,7 @@ class Zombire(CustomSingleServerIRCBot):
 		re_exprs = (r"\!(register)", r"\!(unregister)", r"\!(status\s+.+)",
 			r"\!(attack\s+.+)", r"\!(heal\s+.+)", r"\!(vampires|zombies)", r"\!(version)",
 			r"\!(topscores)", r"\!(highscores)", r"\!(howtoplay)", r"\!(ambush\s+.+)",
-			r"\!(auto\s+(attack|heal|register)\s+.*)")
+			r"\!(auto\s+(attack|heal|register)(\s+.+)?)")
 		for expr in re_exprs:
 			try:
 				detected = re.match(expr, e.arguments[0], re.IGNORECASE)

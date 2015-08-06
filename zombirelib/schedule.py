@@ -71,60 +71,61 @@ class Schedule:
 								otype = "v" if utype == "z" else "z"
 								if self.profiles[nick]['auto'] & 2: # auto-heal
 									if self.players[nick]['hp'] > 2:
-										if self.profiles[nick]['auto'] & 4: # highest
-											target = max(filter(lambda x: x != nick and self.players[x]['type'] == utype,
-												self.players), key=lambda x: self.players[x]['hp'])
+										pfilter = filter(lambda x: x != nick and self.players[x]['type'] == utype,
+											self.players)
+										if list(pfilter):
+											if self.profiles[nick]['auto'] & 4: # highest
+												target = max(pfilter, key=lambda x: self.players[x]['hp'])
+											else: #lowest
+												target = min(pfilter, key=lambda x: self.players[x]['hp'])
+											User.donate(nick, target, self.players)
+											nick1 = nick.replace("..", "[").replace(",,", "]")
+											target1 = target.replace("..", "[").replace(",,", "]")
+											self.connection.privmsg(self.channel, "\x03{0}{1}\x03 auto-healed \x03{0}{2}\x03."
+												.format(self.colors[utype], nick1, target1))
+								elif self.profiles[nick]['auto'] & 8: # auto-attack
+									pfilter = filter(lambda x: self.players[x]['type'] != utype, self.players)
+									if list(pfilter):
+										if self.profiles[nick]['auto'] & 16: # highest
+											target = max(pfilter, key=lambda x: self.players[x]['hp'])
 										else: #lowest
-											target = max(filter(lambda x: x != nick and self.players[x]['type'] == utype,
-												self.players), key=lambda x: self.players[x]['hp'])
-										User.donate(nick, target, self.players)
+											target = min(pfilter, key=lambda x: self.players[x]['hp'])
 										nick1 = nick.replace("..", "[").replace(",,", "]")
 										target1 = target.replace("..", "[").replace(",,", "]")
-										self.connection.privmsg(self.channel, "\x03{0}{1}\x03 auto-healed \x03{0}{2}\x03."
-											.format(self.colors[utype], nick1, target1))
-								elif self.profiles[nick]['auto'] & 8: # auto-attack
-									if self.profiles[nick]['auto'] & 16: # highest
-										target = max(filter(lambda x: self.players[x]['type'] != utype,
-											self.players), key=lambda x: self.players[x]['hp'])
-									else: #lowest
-										target = min(filter(lambda x: self.players[x]['type'] != utype,
-											self.players), key=lambda x: self.players[x]['hp'])
-									nick1 = nick.replace("..", "[").replace(",,", "]")
-									target1 = target.replace("..", "[").replace(",,", "]")
-									[dice1, dice2, diff_dice] = User.battle(nick, target, self.players)
-									if diff_dice > 0:
-										self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 auto-attacked \x03{2}{3}\x03" +
-											"and succeeded, gaining \x02{4} HP\x02 in the process.").format(self.colors[utype],
-											nick1, self.colors[otype], target1, diff_dice))
-										if User.transform(target, self.players):
-											newtype = self.colored_types[utype]
-											self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
-												"and has been transformed to a \x03{}\x03.").format(target1, newtype))
-											if self.check_end():
-												continue
-									elif diff_dice < 0:
-										self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 auto-attacked \x03{2}{3}\x03" +
-											"and failed, losing \x02{4} HP\x02 in the process.").format(self.colors[utype],
-											nick1, self.colors[otype], target1, -diff_dice))
-										if User.transform(nick, self.players):
-											newtype = self.colored_types[otype]
-											self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
-												"and has been transformed to a \x03{}\x03.").format(nick1, newtype))
-											if self.check_end():
-												continue
-									else:
-										self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 tried to auto-attack \x03" +
-											"{2}{3}\x03, but it was a tie and no one was hurt.").format(self.colors[utype],
-											nick1, self.colors[otype], target1))
-									# check if the max MP is eligible to increase/decrease
-									got_new_mmp = User.redetermine_mmp(diff_dice, nick, self.players)
-									if got_new_mmp: new_mmp = self.players[nick]['mmp']
-									if got_new_mmp == 1:
-										self.connection.privmsg(self.channel, ("After {} successful attacks in a row, {} received " +
-											"a level-up, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, nick1, new_mmp))
-									elif got_new_mmp == -1:
-										self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
-											"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, nick1, new_mmp))
+										[dice1, dice2, diff_dice] = User.battle(nick, target, self.players)
+										if diff_dice > 0:
+											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 auto-attacked \x03{2}{3}\x03" +
+												" and succeeded, gaining \x02{4} HP\x02 in the process.").format(self.colors[utype],
+												nick1, self.colors[otype], target1, diff_dice))
+											if User.transform(target, self.players):
+												newtype = self.colored_types[utype]
+												self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
+													"and has been transformed to a \x03{}\x03.").format(target1, newtype))
+												if self.check_end():
+													break
+										elif diff_dice < 0:
+											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 auto-attacked \x03{2}{3}\x03" +
+												" and failed, losing \x02{4} HP\x02 in the process.").format(self.colors[utype],
+												nick1, self.colors[otype], target1, -diff_dice))
+											if User.transform(nick, self.players):
+												newtype = self.colored_types[otype]
+												self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
+													"and has been transformed to a \x03{}\x03.").format(nick1, newtype))
+												if self.check_end():
+													break
+										else:
+											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 tried to auto-attack \x03" +
+												"{2}{3}\x03, but it was a tie and no one was hurt.").format(self.colors[utype],
+												nick1, self.colors[otype], target1))
+										# check if the max MP is eligible to increase/decrease
+										got_new_mmp = User.redetermine_mmp(diff_dice, nick, self.players)
+										if got_new_mmp: new_mmp = self.players[nick]['mmp']
+										if got_new_mmp == 1:
+											self.connection.privmsg(self.channel, ("After {} successful attacks in a row, {} received " +
+												"a level-up, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, nick1, new_mmp))
+										elif got_new_mmp == -1:
+											self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
+												"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, nick1, new_mmp))
 			time.sleep(5)
 
 	def check_end(self):

@@ -345,7 +345,7 @@ class UserCommand:
 		if res:
 			self.connection.notice(nick, "Your auto-{} is \x02{}\x02.".format(prop, res))
 		else:
-			self.connection.notice(nick, "Wrong \x02!auto\x02 command syntax.")
+			self.connection.notice(nick, "Incorrect \x02!auto\x02 command syntax.")
 
 	def set_auto(self, prop, val, nick):
 		# see bit assignment is get_auto()
@@ -389,9 +389,9 @@ class UserCommand:
 		else:
 			res = False
 		if res:
-			self.connection.notice(nick, "Your auto-{} is now set on \x02{}\x02.".format(prop, val))
+			self.connection.notice(nick, "Your auto-{} is now set to \x02{}\x02.".format(prop, val))
 		else:
-			self.connection.notice(nick, "Wrong \x02!auto\x02 command syntax.")
+			self.connection.notice(nick, "Incorrect \x02!auto\x02 command syntax.")
 
 	def execute(self, event, command, players):
 		command = command.strip()

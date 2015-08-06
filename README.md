@@ -74,6 +74,7 @@ The possible commands are:
 
 - **quit _message_ :**  makes the bot disconnect (*message* is optional and will appear in the bot quitting message)
 - **kick _player(s)_ :**  removes player(s) from the game (you can specify a list of players separated by spaces)
+- **terminate _player(s)_ :**  similar to **kick**, but delete player settings in addition (such as those set by !auto commands)
 - **stats :**  displays the total of vampires and zombies in the current round
 - **topscores** or **highscores :**  displays the top 10 highscores with more details
 - **clearscores :**  deletes all entries from the highscore table
