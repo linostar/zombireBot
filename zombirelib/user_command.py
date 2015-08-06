@@ -282,6 +282,9 @@ class UserCommand:
 			self.dbc.save(players)
 			return True
 
+	def print_version(self):
+		self.connection.privmsg(self.channel, "Zombire Bot version: {}".format(Utils.VERSION))
+
 	def execute(self, event, command, players):
 		command = command.strip()
 		first_space = command.find(" ")
@@ -312,3 +315,5 @@ class UserCommand:
 			self.topscores()
 		elif cmd == "howtoplay" and not args:
 			self.howtoplay(event.source.nick)
+		elif cmd =="version" and not args:
+			self.print_version()
