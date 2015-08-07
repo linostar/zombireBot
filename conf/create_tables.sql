@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `prid` int NOT NULL AUTO_INCREMENT,
   `nick` varchar(64) NOT NULL,
   `autovals` smallint NOT NULL DEFAULT 0,
-  `extras` smallint NOT NULL DEFAULT 0,
+  `extras` int NOT NULL DEFAULT 0,
   PRIMARY KEY(`prid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

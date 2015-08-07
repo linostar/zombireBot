@@ -6,6 +6,7 @@ import math
 import queue
 
 from .user import User
+from .utils import Utils
 
 class Schedule:
 	X_LINES = 1
@@ -25,6 +26,12 @@ class Schedule:
 		"a delicious Honeypot", "a Rainbow Cake"))
 	bonus_vars.append(("caught swine flu", "got bitten by a venomous snake", "got stinged by a wasp", 
 		"got attacked by a wolf", "suffered from Vitamin C deficiency"))
+	msg_boss_join = ["\x034Count Dracula\x03 has arrived to the battlefield. His presence substantially boosted the morale of all vampires.",
+	"\x033General Zomvilo\x03 has arrived to the battlefield. His presence substantially boosted the morale of all zombies."]
+	msg_boss_leave = ["\x034Count Dracula\x03 just left the battlefield.", "\x033General Zombilo\x03 just left the battlefield."]
+	msg_boss_name = ["<Count Dracula> ", "<General Zombilo> "]
+	msg_boss_taunt = [("BRING ME SOME BLOODY ZOMBIE SOUP!", "WE WILL SUCK THEIR BRAINS DRY!", "BRING IT ON, YOU GREENISH PUKE MONSTERS!"),
+	("ZOMBIES, WHAT IS YOUR PROFESSION?", "WE WILL MAKE NECKLACES FROM THEIR FANGS!", "TONIGHT WE DINE ON THOSE BLOODY SUCKERS!")]
 
 	def __init__(self, conn, dbc, channel, players, profiles):
 		random.seed()
@@ -33,8 +40,8 @@ class Schedule:
 		self.channel = channel
 		self.players = players
 		self.profiles = profiles
-		regenerate_thread = threading.Thread(target=self.regenerate_mp)
-		regenerate_thread.start()
+		misc_thread = threading.Thread(target=self.misc_tasks)
+		misc_thread.start()
 		bonus_thread = threading.Thread(target=self.give_bonus)
 		bonus_thread.start()
 		flood_thread = threading.Thread(target=self.process_msg)
@@ -166,18 +173,44 @@ class Schedule:
 			self.connection.privmsg(self.channel, "The following players have been auto-registered:")
 			self.connection.privmsg(self.channel, "\x02{}\x02".format(", ".join(list_nicks)))
 
-	def regenerate_mp(self):
+	def misc_tasks(self):
 		while self.loop:
 			if self.players:
 				now_hour = datetime.datetime.now().hour
 				now_min = datetime.datetime.now().minute
 				now_sec = datetime.datetime.now().second
+				# create bosses
+				if Utils.b_created and Utils.bosses:
+					if Utils.bosses[0]['shown'] and Utils.bosses[1]['shown'] and not Utils.bosses[0]['on'] \
+					and not Utils.bosses[1]['on']:
+						#Utils.bosses[0]['shown'] = False
+						#Utils.bosses[1]['shown'] = False
+						Utils.b_created = False
+				if now_hour == 0 and now_min == 0 and now_sec >=0 and now_sec < 6 and not Utils.b_created:
+					Utils.b_created = True
+					Utils.bosses = Utils.create_bosses()
+				# regenerate_mp
 				if now_min == 0 and now_sec >= 0 and now_sec < 6 and self.last_hour_mp != now_hour:
 					self.last_hour_mp = now_hour
 					for nick in self.players:
 						self.players[nick]['mp'] = self.players[nick]['mmp']
 					self.connection.privmsg(self.channel, "\x02One hour has passed, " +
 						"and all players have their MP regenerated.\x02")
+				# show/hide bosses
+				for i in range(2):
+					if Utils.bosses:
+						if now_hour == Utils.bosses[i]['h'] and now_min == Utils.bosses[i]['m'] and \
+						now_sec >= Utils.bosses[i]['s'] and now_sec < Utils.bosses[i]['s'] + 6:
+							Utils.bosses[i]['on'] = True
+							self.connection.privmsg(self.channel, self.msg_boss_join[i])
+							self.connection.privmsg(self.channel, self.msg_boss_name[i] +
+								random.choice(self.msg_boss_taunt[i]))
+						if now_hour == Utils.bosses[i]['h'] and now_min == Utils.bosses[i]['m'] + 15 and \
+						now_sec >= Utils.bosses[i]['s'] and now_sec < Utils.bosses[i]['s'] + 6:
+							if Utils.bosses[i]['on']:
+								Utils.bosses[i]['on'] = False
+								Utils.bosses[i]['shown'] = True
+								self.connection.privmsg(self.channel, self.msg_boss_leave[i])
 			time.sleep(5)
 
 	def give_bonus(self):

@@ -1,5 +1,7 @@
+import random
 import math
 import datetime
+
 
 class Utils:
 	VERSION = "1.1.0"
@@ -10,6 +12,9 @@ class Utils:
 	#reg_list1 = []
 	#reg_list2 = []
 	registering_nick = ""
+	# Dracula is bosses[0] and Zombilo and bosses[1]
+	bosses = []
+	b_created = False
 
 	@staticmethod
 	def cut_to_chunks(msg):
@@ -26,3 +31,14 @@ class Utils:
 				msg.append(msg[pos:last_space])
 				pos = last_space + 1
 			return msgs
+
+	@staticmethod
+	def create_bosses():
+		random.seed()
+		leaders = []
+		for i in (0, 1):
+			hour = random.randint(0, 23)
+			minute = random.randint(2, 44)
+			second = random.randint(0, 59)
+			leaders.append({'h': hour, 'm': minute, 's': second, 'on': False, 'shown': False})
+		return leaders

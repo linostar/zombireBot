@@ -96,6 +96,11 @@ class UserCommand:
 			bonus_text = "Bonus: -30% attack/defense."
 		else:
 			bonus_text = ""
+		if Utils.bosses:
+			if utype == "v" and Utils.bosses[0]['on']:
+				bonus_text = "Power substantially increased due to \x02Dracula\x02 presence."
+			elif utype == "z" and Utils.bosses[1]['on']:
+				bonus_text = "Power substantially increased due to \x02Zombilo\x02 presence."
 		self.connection.privmsg(self.channel, "{} is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}"
 				.format(nick, self.colored_types[utype], hp, mp, mmp, score, bonus_text))
 

@@ -1,5 +1,8 @@
 import random
 
+from .utils import Utils
+
+
 class User:
 	CUMULATIVE = 5
 	MMP_MAX = 60
@@ -58,6 +61,18 @@ class User:
 			dice2 = int(random.random() * 4) + 1 # -30% winning chance
 		else:
 			dice2 = int(random.random() * 6) + 1 # normal winning chance
+		# check for bosses presence
+		if Utils.bosses:
+			if Utils.bosses[0]['on']:
+				if p1['type'] == "v":
+					dice1 = random.choice((5, 6))
+				else:
+					dice2 = random.choice((5, 6))
+			if Utils.bosses[1]['on']:
+				if p1['type'] == "z":
+					dice1 = random.choice((5, 6))
+				else:
+					dice2 = random.choice((5, 6))
 		diff_dice = dice1 - dice2
 		players[source]['hp'] += diff_dice
 		players[target]['hp'] -= diff_dice
@@ -104,6 +119,20 @@ class User:
 			dice2 = random.randint(1, 4)
 		else:
 			dice2 = random.randint(1, 6)
+		# check for bosses presence
+		if Utils.bosses:
+			if Utils.bosses[0]['on']:
+				if p0['type'] == "v":
+					dice0 = random.choice((5, 6)) + random.choice((5, 6))
+				else:
+					dice1 = random.choice((5, 6))
+					dice2 = random.choice((5, 6))
+			if Utils.bosses[1]['on']:
+				if p0['type'] == "z":
+					dice0 = random.choice((5, 6)) + random.choice((5, 6))
+				else:
+					dice1 = random.choice((5, 6))
+					dice2 = random.choice((5, 6))
 		# check for ambush result
 		players[source]['mp'] -= 2
 		diff_dices = dice0 - dice1 - dice2
@@ -115,7 +144,7 @@ class User:
 		elif diff_dices < 0:
 			players[source]['hp'] -= 6
 			players[target1]['hp'] += 3
-			players[target1]['hp'] += 3
+			players[target2]['hp'] += 3
 		return diff_dices
 
 
