@@ -164,7 +164,7 @@ class Zombire(CustomSingleServerIRCBot):
 			except DetectedCommand:
 				if detected:
 					detected_command = detected.group(1).strip()
-					if detected_command.lower().startswith(("unregister", "attack", "heal", "ambush")):
+					if detected_command.lower().startswith(("unregister", "attack", "heal", "ambush", "auto")):
 						# user needs to be registered to use those commands
 						for chname, chobj in self.channels.items():
 							voiced_users = list(chobj.voiced()) + list(chobj.opers()) + list(chobj.halfops())
