@@ -1,10 +1,17 @@
 CHANGELOG
 ---------
+v1.1.0
+- Added the leader characters: Dracula and Zombilo (they give their soldiers substantial boost when they appear)
+- Added !auto commands that let the user change its settings to auto register/attack/heal
+- Display the round length in time when the round ends
+- Added !version command
+- Fixed other issues
+
 v1.0.2
-Enable the round to end when all remaining players of one type unregister
+- Enabled the round to end when all remaining players of one type unregister
 
 v1.0.1
-Minor fix that prevents bot from crashing when declaring the winner
+- Minor fix that prevents bot from crashing when declaring the winner
 
 v1.0.0
-First stable release of Zombire IRC bot
+- First stable release of Zombire IRC bot

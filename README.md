@@ -46,6 +46,17 @@ Each player can take 3 types of **actions** against other players:
 - a healing gives 1 score point
 - a successful attack gives 2 score points
 - a successful ambush gives 3 score points
+- attacking and killing an enemy (and making him/her transform) gives 5 score points
+
+**Player settings:**
+- `!auto register` command, when set to `on`, allows the player to automatically register when a new round of the game begins.
+- `!auto heal` command, if set to `lowest`, will make the player automatically heals the ally with the lowest HP, before the current hour ends. If set to `highest`, the target of healing will be the ally with the highest HP. The player should at least 1 MP remaining for that auto-action to take place.
+- `!auto attack` command, similarly to `!auto heal`, allows the player to attack the enemy with the lowest or highest HP, before the current hour ends.
+- Note that enabling `!auto attack` will cancel `!auto heal`, and vice versa.
+
+**Special apperarences:**
+
+The respective leaders of vampires and zombies, Count Dracula and General Zombilo, will join the battle once a day at random time, for 15 minutes each. When they are around, their soldiers will have a dramatical boost in attack and defense, temporarily removing any other negative effects. When the leader leaves, his soldiers bonus stats return as they were before his arrival.
 
 **End of Round:**
 
@@ -62,6 +73,10 @@ The game will end when all players become vampires, or all players become zombie
 - **!vampires :**  lists all vampires in the current round
 - **!zombies :**  lists all zombies in the current round
 - **!topscores** or **!highscores :**  displays the top 10 highscores in the game
+- **!auto register [off|on] :**  for reading or changing the auto register setting
+- **!auto heal [off|lowest|highest] :**  for reading or changing the auto heal setting
+- **!auto attack [off|lowest|highest] :**  for reading or changing the auto attack setting
+- **!version :**  displays the running version of the bot
 
 ### List of admin commands
 All admin commands are in the following syntax:
