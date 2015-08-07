@@ -90,7 +90,24 @@
 <li>a healing gives 1 score point</li>
 <li>a successful attack gives 2 score points</li>
 <li>a successful ambush gives 3 score points</li>
+<li>attacking and killing an enemy (and making him/her transform) gives 5 score points</li>
 </ul>
+
+<p><strong>Player settings:</strong></p>
+
+<ul>
+<li>
+<code>!auto register</code> command, when set to <code>on</code>, allows the player to automatically register when a new round of the game begins.</li>
+<li>
+<code>!auto heal</code> command, if set to <code>lowest</code>, will make the player automatically heals the ally with the lowest HP, before the current hour ends. If set to <code>highest</code>, the target of healing will be the ally with the highest HP. The player should at least 1 MP remaining for that auto-action to take place.</li>
+<li>
+<code>!auto attack</code> command, similarly to <code>!auto heal</code>, allows the player to attack the enemy with the lowest or highest HP, before the current hour ends.</li>
+<li>Note that enabling <code>!auto attack</code> will cancel <code>!auto heal</code>, and vice versa.</li>
+</ul>
+
+<p><strong>Special apperarences:</strong></p>
+
+<p>The respective leaders of vampires and zombies, Count Dracula and General Zombilo, will join the battle once a day at random time, for 15 minutes each. When they are around, their soldiers will have a dramatical boost in attack and defense, temporarily removing any other negative effects. When the leader leaves, his soldiers bonus stats return as they were before his arrival.</p>
 
 <p><strong>End of Round:</strong></p>
 
@@ -120,6 +137,14 @@
 <strong>!zombies :</strong>  lists all zombies in the current round</li>
 <li>
 <strong>!topscores</strong> or <strong>!highscores :</strong>  displays the top 10 highscores in the game</li>
+<li>
+<strong>!auto register [off|on] :</strong>  for reading or changing the auto register setting</li>
+<li>
+<strong>!auto heal [off|lowest|highest] :</strong>  for reading or changing the auto heal setting</li>
+<li>
+<strong>!auto attack [off|lowest|highest] :</strong>  for reading or changing the auto attack setting</li>
+<li>
+<strong>!version :</strong>  displays the running version of the bot</li>
 </ul>
 
 <h3>
@@ -139,6 +164,8 @@
 <strong>quit <em>message</em> :</strong>  makes the bot disconnect (<em>message</em> is optional and will appear in the bot quitting message)</li>
 <li>
 <strong>kick <em>player(s)</em> :</strong>  removes player(s) from the game (you can specify a list of players separated by spaces)</li>
+<li>
+<strong>terminate <em>player(s)</em> :</strong>  similar to <strong>kick</strong>, but delete player settings in addition (such as those set by !auto commands)</li>
 <li>
 <strong>stats :</strong>  displays the total of vampires and zombies in the current round</li>
 <li>
