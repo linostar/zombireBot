@@ -229,19 +229,21 @@ class User:
 	@staticmethod
 	def search_item(source, profiles):
 		random.seed()
-		# 33% chance for finding an item
-		chance = random.randint(1, 3)
-		if chance == 3:
-			return random.randint(1, len(User.item_names))
+		# 25% chance for finding an item
+		chance = random.randint(1, 4)
+		if chance == 2:
+			return random.randrange(1, len(User.item_names))
 		else:
 			return 0
 
 	@staticmethod
 	def add_item(source, profiles, players):
+		items = User.get_inventory(source, profiles)
+		if items[0] and items[1] and items[2]:
+			return -1  # inventory is full
 		players[source]['mp'] -= 1
 		new_item = User.search_item(source, profiles)
 		if new_item:
-			items = User.get_inventory(source, profiles)
 			if items[0] and items[1]:
 				items[2] = new_item
 			elif items[0]:

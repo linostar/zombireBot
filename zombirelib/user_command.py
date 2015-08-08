@@ -456,10 +456,13 @@ class UserCommand:
 		source2 = source.replace("[", "..").replace("]", ",,")
 		if source2.lower() in self.profiles and source2.lower() in players:
 			if players[source2.lower()]['mp'] > 0:
-				item_index = User.add_item(source2.lower(), self.profiles, players)
-				if item_index:
+				item = User.add_item(source2.lower(), self.profiles, players)
+				if item == -1:
+					self.connection.notice(source, "You cannot search for items. Your inventory is already full.")
+					return
+				if item:
 					self.connection.notice(source, "Lucky! You found \x02{}\x02."
-						.format(User.item_names[item_index]))
+						.format(User.item_names[item]))
 				else:
 					self.connection.notice(source, "You did not find any item this time.")
 			else:
@@ -592,7 +595,7 @@ class UserCommand:
 		elif cmd == "inventory" and not args:
 			self.inventory(event.source.nick)
 		elif cmd == "use" and len(args) == 1:
-			self.use(event.source.nick, args[0])
+			self.use(event.source.nick, players, args[0])
 		elif cmd == "use" and len(args) == 2:
 			self.use(event.source.nick, players, args[0], args[1])
 		elif cmd == "drop" and len(args) == 1:
