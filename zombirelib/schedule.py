@@ -122,8 +122,8 @@ class Schedule:
 												if self.check_end():
 													break
 										else:
-											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 tried to auto-attack \x03" +
-												"{2}{3}\x03, but it was a tie and no one was hurt.").format(self.colors[utype],
+											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 tried to auto-attack " +
+												"\x03{2}{3}\x03, but it was a tie and no one was hurt.").format(self.colors[utype],
 												nick1, self.colors[otype], target1))
 										# check if the max MP is eligible to increase/decrease
 										got_new_mmp = User.redetermine_mmp(diff_dice, nick, self.players)
@@ -152,7 +152,7 @@ class Schedule:
 				diff_time.seconds%60))
 			User.reset_players(self.players)
 			# in case there are players with auto register on
-			self.auto_register(self.players)
+			self.auto_register()
 			self.dbc.save(self.players, self.profiles)
 			return True
 
