@@ -105,7 +105,7 @@ class Schedule:
 											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 auto-attacked \x03{2}{3}\x03" +
 												" and succeeded, gaining \x02{4} HP\x02 in the process.").format(self.colors[utype],
 												nick1, self.colors[otype], target1, diff_dice))
-											if User.transform(target, self.players):
+											if User.transform(target, self.players, nick):
 												newtype = self.colored_types[utype]
 												self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
 													"and has been transformed to a \x03{}\x03.").format(target1, newtype))

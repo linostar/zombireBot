@@ -138,7 +138,7 @@ class UserCommand:
 				else:
 					self.connection.privmsg(self.channel, "\x02Attack succeeded.\x02 " +
 						"\x033{}\x03 ate \x02{} HP\x02 of brains from \x034{}\x03.".format(source, res, target))
-				if User.transform(target2.lower(), players):
+				if User.transform(target2.lower(), players, source2.lower()):
 					newtype = self.colored_types[players[target2.lower()]['type']]
 					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
 						"and has been transformed to a \x03{}\x03.").format(target, newtype))
@@ -232,13 +232,13 @@ class UserCommand:
 					"while the other two lost \x023 HP\x02 each.").format(source, ftarget, starget,
 					self.colors[players[source2.lower()]['type']], 
 					self.colors[players[ftarget2.lower()]['type']]))
-				if User.transform(ftarget2.lower(), players):
+				if User.transform(ftarget2.lower(), players, source2.lower()):
 					newtype = self.colored_types[players[ftarget2.lower()]['type']]
 					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
 						"and has been transformed to a \x03{}\x03.").format(ftarget, newtype))
 					if self.check_end(players):
 						return
-				if User.transform(starget2.lower(), players):
+				if User.transform(starget2.lower(), players, source2.lower()):
 					newtype = self.colored_types[players[starget2.lower()]['type']]
 					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
 						"and has been transformed to a \x03{}\x03.").format(starget, newtype))

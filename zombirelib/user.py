@@ -27,14 +27,16 @@ class User:
 		return 0.5
 
 	@staticmethod
-	def transform(nick, players):
-		if players[nick]['hp'] > 0:
+	def transform(target, players, source=None):
+		if players[target]['hp'] > 0:
 			return False
-		if players[nick]['type'] == "v":
-			players[nick]['type'] = "z"
+		if players[target]['type'] == "v":
+			players[target]['type'] = "z"
 		else:
-			players[nick]['type'] = "v"
-		players[nick]['hp'] = 10
+			players[target]['type'] = "v"
+		players[target]['hp'] = 10
+		if source:
+			players[source]['score'] += 5
 		return True
 
 	@staticmethod
