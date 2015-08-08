@@ -452,6 +452,101 @@ class UserCommand:
 			else:
 				self.connection.profiles(self.channel, "{}: You do not have enough MP.".format(source1))
 
+	def search(self, source, players):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		if source2.lower() in self.profiles and source2.lower() in players:
+			if players[source2.lower()]['mp'] > 0:
+				item_index = User.add_item(source2.lower(), self.profiles, players)
+				if item_index:
+					self.connection.notice(source, "Lucky! You found \x02{}\x02."
+						.format(User.item_names[item_index]))
+				else:
+					self.connection.notice(source, "You did not find any item this time.")
+			else:
+				self.connection.notice(source, "You do not have enough MP to search for items.")
+
+	def inventory(self, source):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		if source2.lower() in self.profiles:
+			msg = ""
+			items = User.get_inventory(source2.lower(), self.profiles)
+			for i in range(3):
+				if items[i]:
+					msg += "\x02{}- {}.\x02 ".format(i+1, User.item_names[items[i]])
+			if msg:
+				self.connection.notice(source, "Your inventory contains: " + msg)
+			else:
+				self.connection.notice(source, "Your inventory is empty.")
+
+	def use(self, source, players, item_index, target=None):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		type1 = players[source2.lower()]['type']
+		try:
+			if item_index not in ("1", "2", "3"):
+				item_index = "x" # goto except line
+			item_index = int(item_index)
+			if source2.lower() in self.profiles:
+				item = User.get_item(item_index-1, source2.lower(), self.profiles)
+				if item:
+					if item in (8, 9): # needs a target
+						target2 = target.replace("[", "..").replace("]", ",,") if target else ""
+						if target2.lower() in players:
+							type2 = players[target2.lower()]['type']
+							User.use_item2(item, source2.lower(), target2.lower(), players)
+							msg = "\x03{0}{1}\x03 used \x02{2}\x02 on \x03{3}{4}\x03. "
+							if item == 8:
+								msg += "The explosion lowered the HP of both to \x021\x02."
+							elif item == 9:
+								msg += "As a result, \x03{3}{4}\x03 lost all his/her bonus effects."
+							self.connection.privmsg(self.channel, msg.format(
+								self.colors[type1], source, User.item_names[item], self.colors[type2], target))
+					else: # does not need a target
+						User.use_item(item, source2.lower(), players)
+						msg = "\x03{0}{1}\x03 ate a \x02{2}\x02. "
+						if item == 1:
+							msg += "His/her HP increased by \x022\x02."
+						elif item == 2:
+							msg += "His/her HP increased by \x025\x02."
+						elif item == 3:
+							msg += "His/her HP increased by \x0210\x02."
+						elif item == 4:
+							msg += "His/her MP increased by \x021\x02."
+						elif item == 5:
+							msg += "His/her MP increased by \x022\x02."
+						elif item == 6:
+							msg += "His/her MP increased by \x023\x02."
+						elif item == 7:
+							newtype = players[source2.lower()]['type']
+							msg += "He/she transformed into a \x03" + self.colored_types[newtype] + "\x03."
+						self.connection.privmsg(self.channel, msg.format(
+							self.colors[type1], source, User.item_names[item]))
+					# remove item after it was consumed
+					User.drop_item(item_index-1, source2.lower(), self.profiles)
+				else:
+					self.connection.notice(source, "Item \x02#{}\x02 does not exist in your inventory."
+						.format(item_index))
+		except ValueError:
+			self.connection.notice(source, "You can only enter a number between 1 and 3 after this command.")
+
+	def drop(self, source, item_index):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		try:
+			if item_index not in ("1", "2", "3"):
+				item_index = "x" # goto except line
+			item_index = int(item_index)
+			if source2.lower() in self.profiles:
+				item = User.get_item(item_index-1, source2.lower(), self.profiles)
+				if item:
+					User.drop_item(item_index-1, source2.lower(), self.profiles)
+					self.connection.notice(source, "You have dropped item #{}: \x02{}\x02."
+						.format(item_index, User.item_names[item]))
+				else:
+					self.connection.notice(source, "Item \x02#{}\x02 does not exist in your inventory."
+						.format(item_index))
+		except ValueError:
+			self.connection.notice(source, "You can only enter a number between 1 and 3 after this command.")
+
+
 	def execute(self, event, command, players):
 		command = command.strip()
 		first_space = command.find(" ")
@@ -492,3 +587,13 @@ class UserCommand:
 			self.set_auto(args[0], args[1], event.source.nick.lower())
 		elif cmd == "challenge" and not args:
 			self.challenge(event.source.nick, players)
+		elif cmd == "search" and not args:
+			self.search(event.source.nick, players)
+		elif cmd == "inventory" and not args:
+			self.inventory(event.source.nick)
+		elif cmd == "use" and len(args) == 1:
+			self.use(event.source.nick, args[0])
+		elif cmd == "use" and len(args) == 2:
+			self.use(event.source.nick, players, args[0], args[1])
+		elif cmd == "drop" and len(args) == 1:
+			self.drop(event.source.nick, args[0])

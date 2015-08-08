@@ -7,6 +7,18 @@ class User:
 	CUMULATIVE = 5
 	MMP_MAX = 60
 	MMP_MIN = 1
+	item_names = {
+	0: "",
+	1: "small apple",   # +2 HP
+	2: "medium apple",  # +5 HP
+	3: "large apple",   # +10 HP
+	4: "small lemon",   # +1 MP
+	5: "medium lemon",  # +2 MP
+	6: "large lemon",   # +3 MP
+	7: "Tansformic",    # for type transformation
+	8: "Explodic",      # for a suicidal attack
+	9: "Neutralic",     # for removing bonus effect
+	}
 
 	@staticmethod
 	def is_online(conn, nick):
@@ -196,6 +208,94 @@ class User:
 		else:
 			# reset the cumulation to zero
 			players[nick]['bonus'] %= 10
+
+	@staticmethod
+	def get_inventory(source, profiles):
+		# lowest 12 bits of extras, since each item is 4 bits
+		items = []
+		inventory = profiles[source]['extras'] & 4095
+		for i in range(3):
+			items.append((inventory >> 4*i) & 15)
+		return items
+
+	@staticmethod
+	def save_inventory(items, source, profiles):
+		inventory = 0
+		for i in range(3):
+			inventory += items[i] * (16**i)
+		profiles[source]['extras'] &= ~4095
+		profiles[source]['extras'] |= inventory
+
+	@staticmethod
+	def search_item(source, profiles):
+		random.seed()
+		# 33% chance for finding an item
+		chance = random.randint(1, 3)
+		if chance == 3:
+			return random.randint(1, len(User.item_names))
+		else:
+			return 0
+
+	@staticmethod
+	def add_item(source, profiles, players):
+		players[source]['mp'] -= 1
+		new_item = User.search_item(source, profiles)
+		if new_item:
+			items = User.get_inventory(source, profiles)
+			if items[0] and items[1]:
+				items[2] = new_item
+			elif items[0]:
+				items[1] = new_item
+			else:
+				items[0] = new_item
+			User.save_inventory(items, source, profiles)
+			return new_item
+
+	@staticmethod
+	def get_item(item_index, source, profiles):
+		return (User.get_inventory(source, profiles))[item_index]
+
+	@staticmethod
+	def drop_item(item_index, source, profiles):
+		items = User.get_inventory(source, profiles)
+		if item_index == 0:
+			items[0] = items[1]
+			items[1] = items[2]
+			items[2] = 0
+		elif item_index == 1:
+			items[1] = items[2]
+			items[2] = 0
+		else:
+			items[2] = 0
+		User.save_inventory(items, source, profiles)
+
+	@staticmethod
+	def use_item(item, source, players):
+		if item == 1:
+			players[source]['hp'] += 2
+		elif item == 2:
+			players[source]['hp'] += 5
+		elif item == 3:
+			players[source]['hp'] += 10
+		elif item == 4:
+			players[source]['mp'] = min(players[source]['mp'] + 1, players[source]['mmp'])
+		elif item == 5:
+			players[source]['mp'] = min(players[source]['mp'] + 2, players[source]['mmp'])
+		elif item == 6:
+			players[source]['mp'] = min(players[source]['mp'] + 3, players[source]['mmp'])
+		elif item == 7:
+			if players[source]['type'] == "v":
+				players[source]['type'] = "z"
+			else:
+				players[source]['type'] = "v"
+
+	@staticmethod
+	def use_item2(item, source, target, players):
+		if item == 8:
+			players[source]['hp'] = 1
+			players[target]['hp'] = 1
+		elif item == 9:
+			players[target]['bonus'] = players[target]['bonus'] // 10 * 10
 
 	@staticmethod
 	def check_if_round_ended(players):

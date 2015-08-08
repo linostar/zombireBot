@@ -22,12 +22,12 @@ class Schedule:
 	bonus_vars = []
 	bonus_texts = ("The following players found \x02{}\x02. Upon consuming it, they temporarily gained \x0230%\x02 boost on attack/defense: ", 
 		"The following players \x02{}\x02. Due to that, they temporarily lost \x0230%\x02 of their attack/defense: ")
-	bonus_vars.append(("a Red Bull", "a Mega Potion", "Elixir", "a Super Vaccine", 
+	bonus_vars.append(("a Red Bull", "Mega Steroids", "Elixir", "a Super Vaccine", "Blueberry Pancakes", "Mega Potion",
 		"a delicious Honeypot", "a Rainbow Cake"))
-	bonus_vars.append(("caught swine flu", "got bitten by a venomous snake", "got stinged by a wasp", 
+	bonus_vars.append(("caught swine flu", "got bitten by a venomous snake", "got stinged by a wasp", "fell in a deep hole",
 		"got attacked by a wolf", "suffered from Vitamin C deficiency"))
 	msg_boss_join = ["\x034Count Dracula\x03 has arrived to the battlefield. His presence substantially boosted the morale of all vampires.",
-	"\x033General Zomvilo\x03 has arrived to the battlefield. His presence substantially boosted the morale of all zombies."]
+	"\x033General Zombilo\x03 has arrived to the battlefield. His presence substantially boosted the morale of all zombies."]
 	msg_boss_leave = ["\x034Count Dracula\x03 just left the battlefield.", "\x033General Zombilo\x03 just left the battlefield."]
 	msg_boss_name = ["<Count Dracula> ", "<General Zombilo> "]
 	msg_boss_taunt = [("BRING ME SOME BLOODY ZOMBIE SOUP!", "WE WILL SUCK THEIR BRAINS DRY!", "BRING IT ON, YOU GREENISH PUKE MONSTERS!"),
@@ -122,8 +122,8 @@ class Schedule:
 												if self.check_end():
 													break
 										else:
-											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 tried to auto-attack " +
-												"\x03{2}{3}\x03, but it was a tie and no one was hurt.").format(self.colors[utype],
+											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 tried to auto-attack \x03{2}{3}\x03" +
+												", but it was a tie and no one was hurt.").format(self.colors[utype],
 												nick1, self.colors[otype], target1))
 										# check if the max MP is eligible to increase/decrease
 										got_new_mmp = User.redetermine_mmp(diff_dice, nick, self.players)
