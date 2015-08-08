@@ -46,7 +46,8 @@ Each player can take 3 types of **actions** against other players:
 - a healing gives 1 score point
 - a successful attack gives 2 score points
 - a successful ambush gives 3 score points
-- attacking and killing an enemy (and making him/her transform) gives 5 score points
+- attacking and killing an enemy gives 5 additional score points
+- successfully attacking and inflicting damage on the enemy leader gives 10 score points (instead of 2)
 
 **Player settings:**
 - `!auto register` command, when set to `on`, allows the player to automatically register when a new round of the game begins.
@@ -54,9 +55,29 @@ Each player can take 3 types of **actions** against other players:
 - `!auto attack` command, similarly to `!auto heal`, allows the player to attack the enemy with the lowest or highest HP, before the current hour ends.
 - Note that enabling `!auto attack` will cancel `!auto heal`, and vice versa.
 
+**Items:**
+
+Players can search for items and use them. Searching for items using the `!search` command will consume 1 MP. The chance of finding an item is 25%. Be aware that the player inventory has a limited capacity of 3 items.
+
+Here is a full list of the items that can be found:
+
+Item | Description
+---- | -----------
+Small apple | +2 HP
+Medium apple | +5 HP
+Large apple | +10 HP
+Small lemon | +1 MP (MP will not go over Maximum MP)
+Medium lemon | +2 MP (MP will not go over Maximum MP)
+Large lemon | +3 MP (MP will not go over Maximum MP)
+Transformic | tranforms the player to the opposite type without affecting his/her stats
+Explodic | suicidal attack (renders the HP of the user and the target to 1)
+Neutralic | removes any bonus effect of a particular player
+
 **Special apperarences:**
 
-The respective leaders of vampires and zombies, Count Dracula and General Zombilo, will join the battle once a day at random time, for 15 minutes each. When they are around, their soldiers will have a dramatical boost in attack and defense, temporarily removing any other negative effects. When the leader leaves, his soldiers bonus stats return as they were before his arrival.
+The respective leaders of vampires and zombies, Count Dracula and General Zombilo, will join the battle once a day at random time, for 15 minutes each. When they are around, their soldiers will have a dramatical boost in attack and defense, temporarily removing any other negative effects. When the leader leaves, his soldiers bonus stats return as they were before his arrival. 
+
+Those leaders can be attacked when they appear using the `!challenge` command. Be aware that they use a 12-face dice though, when the player uses a 6-face dice. A successful attack will award the player 10 score points.
 
 **End of Round:**
 
@@ -69,13 +90,19 @@ The game will end when all players become vampires, or all players become zombie
 - **!attack _player_ :**  lets the player attack a player of the opposite type (an enemy)
 - **!heal _player_ :**  lets the player heal a player of the same type (an ally)
 - **!ambush _player1_ _player2_ :**  lets the player attack 2 enemy players simultaneously
-- **!status _player_ :**  displays the stats of the mentioned player
+- **!status [_player_] :**  displays the stats of the mentioned player, or displays your own stats if you omit _player_
 - **!vampires :**  lists all vampires in the current round
 - **!zombies :**  lists all zombies in the current round
 - **!topscores** or **!highscores :**  displays the top 10 highscores in the game
 - **!auto register [off|on] :**  for reading or changing the auto register setting
 - **!auto heal [off|lowest|highest] :**  for reading or changing the auto heal setting
 - **!auto attack [off|lowest|highest] :**  for reading or changing the auto attack setting
+- **!challenge :**  attack the enemy leader if he is around
+- **!search :**  searches for a random item (add the item to the inventory if found)
+- **!inventory :**  lists the items in your inventory
+- **!use _number_ :**  uses item #number in your inventory on yourself (number can be: 1, 2 or 3)
+- **!use _number_ _target_ :**  uses item in your inventory on a target (applies only on few certain items)
+- **!drop _number_ :**  drops an item from your inventory (number can be: 1, 2 or 3)
 - **!version :**  displays the running version of the bot
 
 ### List of admin commands

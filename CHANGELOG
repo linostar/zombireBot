@@ -1,5 +1,14 @@
 CHANGELOG
 ---------
+v1.2.0
+- Added new user commands for items: !search, !use, !inventory, !drop
+- Added ability to fight enemy leaders using: !challenge
+- Reward the attacker 5 additional score points if he/she finishes off an enemy
+- Allow running !status without arguments to show the status of the issuing player
+
+v1.1.1
+- Fixed minor issues in v1.1.0
+
 v1.1.0
 - Added the leader characters: Dracula and Zombilo (they give their soldiers substantial boost when they appear)
 - Added !auto commands that let the user change its settings to auto register/attack/heal
