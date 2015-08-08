@@ -525,6 +525,8 @@ class UserCommand:
 							self.colors[type1], source, User.item_names[item]))
 					# remove item after it was consumed
 					User.drop_item(item_index-1, source2.lower(), self.profiles)
+					if item == 7:
+						self.check_end(players)
 				else:
 					self.connection.notice(source, "Item \x02#{}\x02 does not exist in your inventory."
 						.format(item_index))
