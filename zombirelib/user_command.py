@@ -299,7 +299,7 @@ class UserCommand:
 			User.reset_players(players)
 			# in case there are players with auto register on
 			self.auto_register(players)
-			self.dbc.save(players, self.profiles)
+			#self.dbc.save(players, self.profiles)
 			return True
 
 	def auto_register(self, players):

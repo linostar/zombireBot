@@ -153,7 +153,7 @@ class Schedule:
 			User.reset_players(self.players)
 			# in case there are players with auto register on
 			self.auto_register()
-			self.dbc.save(self.players, self.profiles)
+			#self.dbc.save(self.players, self.profiles)
 			return True
 
 	def auto_register(self):
