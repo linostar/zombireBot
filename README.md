@@ -11,11 +11,11 @@ ZombireBot works properly if run on Rizon IRC network. It would also work on oth
 
 3. Register the bot nick on the IRC network you want it to run on, and gives it the ability to change the channel access.
 
-4. Copy `conf/config.example.yml` to `conf/config.yml` and change the configuration parameters to your needs.
+4. Copy `conf/config.example.yml` to `conf/config.yml` and change the configuration parameters according to your needs.
 
-5. Create the mysql database and user, then run:
+5. Create the mysql database and user, then run (substituting `mysql_user` and `mysql_db` by their values):
 ```
-mysql -u <mysql_user> -D <mysql_db> -p < conf/create_tables.sql
+mysql -u mysql_user -D mysql_db -p < conf/create_tables.sql
 ```
 Finally, run: `python3 zombire.py` and enjoy!
 
@@ -73,6 +73,8 @@ Transformic | tranforms the player to the opposite type without affecting his/he
 Explodic | suicidal attack (renders the HP of the user and the target to 1)
 Neutralic | removes any bonus effect of a particular player
 
+The unused items will remain in the player inventory even after a round ends.
+
 **Special apperarences:**
 
 The respective leaders of vampires and zombies, Count Dracula and General Zombilo, will join the battle once a day at random time, for 15 minutes each. When they are around, their soldiers will have a dramatical boost in attack and defense, temporarily removing any other negative effects. When the leader leaves, his soldiers bonus stats return as they were before his arrival. 
@@ -100,7 +102,7 @@ The game will end when all players become vampires, or all players become zombie
 - **!challenge :**  attack the enemy leader if he is around
 - **!search :**  searches for a random item (add the item to the inventory if found)
 - **!inventory :**  lists the items in your inventory
-- **!use _number_ :**  uses item #number in your inventory on yourself (number can be: 1, 2 or 3)
+- **!use _number_ :**  uses item in your inventory on yourself (number can be: 1, 2 or 3)
 - **!use _number_ _target_ :**  uses item in your inventory on a target (applies only on few certain items)
 - **!drop _number_ :**  drops an item from your inventory (number can be: 1, 2 or 3)
 - **!version :**  displays the running version of the bot

@@ -492,7 +492,10 @@ class UserCommand:
 				item = User.get_item(item_index-1, source2.lower(), self.profiles)
 				if item:
 					if item in (8, 9): # needs a target
-						target2 = target.replace("[", "..").replace("]", ",,") if target else ""
+						if not target:
+							self.connection.notice(source, "You need to specify a target for this item use.")
+							return
+						target2 = target.replace("[", "..").replace("]", ",,")
 						if target2.lower() in players:
 							type2 = players[target2.lower()]['type']
 							User.use_item2(item, source2.lower(), target2.lower(), players)
@@ -501,6 +504,8 @@ class UserCommand:
 								msg += "The explosion lowered the HP of both to \x021\x02."
 							elif item == 9:
 								msg += "As a result, \x03{3}{4}\x03 lost all his/her bonus effects."
+							# remove item after it was consumed
+							User.drop_item(item_index-1, source2.lower(), self.profiles)
 							self.connection.privmsg(self.channel, msg.format(
 								self.colors[type1], source, User.item_names[item], self.colors[type2], target))
 					else: # does not need a target
@@ -521,10 +526,10 @@ class UserCommand:
 						elif item == 7:
 							newtype = players[source2.lower()]['type']
 							msg += "He/she transformed into a \x03" + self.colored_types[newtype] + "\x03."
+						# remove item after it was consumed
+						User.drop_item(item_index-1, source2.lower(), self.profiles)
 						self.connection.privmsg(self.channel, msg.format(
 							self.colors[type1], source, User.item_names[item]))
-					# remove item after it was consumed
-					User.drop_item(item_index-1, source2.lower(), self.profiles)
 					if item == 7:
 						self.check_end(players)
 				else:
