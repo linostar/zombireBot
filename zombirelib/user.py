@@ -149,6 +149,31 @@ class User:
 			players[target2]['hp'] += 3
 		return diff_dices
 
+	@staticmethod
+	def challenge_boss(source, players):
+		random.seed()
+		p = players[source]
+		if p['type'] == "v" and Utils.bosses[0]['on']:
+			dice1 = random.choice((5, 6))
+		elif p['type'] == "z" and Utils.bosses[1]['on']:
+			dice1 = random.choice((5, 6))
+		elif p['bonus'] % 10 == 1:
+			dice1 = random.randint(3, 6)
+		elif p['bonus'] % 10 == 2:
+			dice1 = random.randint(1, 4)
+		else:
+			dice1 = random.randint(1, 6)
+		dice2 = random.randint(1, 12)
+		diff_dice = dice1 - dice2
+		players[source]['mp'] -= 1
+		players[source]['hp'] += diff_dice
+		if diff_dice > 0:
+			players[source]['score'] += 10
+		elif diff_dice < 0:
+			if players[source]['hp'] < 0:
+				diff_dice -= players[source]['hp']
+				players[source]['hp'] = 0
+		return [diff_dice, dice1, dice2]
 
 	@staticmethod
 	def redetermine_mmp(result, nick, players):

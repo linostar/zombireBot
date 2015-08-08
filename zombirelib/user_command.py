@@ -8,6 +8,7 @@ class UserCommand:
 	types = {'v': 'vampire', 'z': 'zombie'}
 	colors = {'v': 4, 'z': 3}
 	colored_types = {'v': '4vampire', 'z': '3zombie'}
+	leaders = {'v': 'Count Dracula', 'z': 'General Zombilo'}
 
 	def __init__(self, conn, dbc, channel, access, profiles):
 		random.seed()
@@ -400,6 +401,57 @@ class UserCommand:
 		else:
 			self.connection.notice(nick, "Incorrect \x02!auto\x02 command syntax.")
 
+	def challenge(self, source, players):
+		source1 = source.replace("..", "[").replace(",,", "]")
+		p = players[source.lower()]
+		if (p['type'] == "v" and not Utils.bosses[1]['on']) or (p['type'] == "z" and not Utils.bosses[0]['on']):
+			self.connection.privmsg(self.channel, "{}: Your enemy's leader is not around.".format(source1))
+		else:
+			if p['mp'] > 0:
+				[res, dice1, dice2] = User.challenge_boss(source.lower(), players)
+				utype = p['type']
+				otype = "v" if utype == "z" else "z"
+				self.connection.privmsg(self.channel, ("\x03{}{}\x03 rolled the dice and got \x02{}\x02. " +
+					"\x03{}{}\x03 rolled the dice and got \x02{}\x02.").format(self.colors[utype],
+					source1, dice1, self.colors[otype], self.leaders[otype], dice2))
+				if res > 0:
+					if utype == "v":
+						self.connection.privmsg(self.channel, ("Whoa! Attack succeeded! \x03{}{}\x03 " +
+							"sucked \x02{} HP\x02 of blood from \x03{}{}\x03.").format(self.colors[utype],
+							source1, res, self.colors[otype], self.leaders[otype]))
+					else:
+						self.connection.privmsg(self.channel, ("Whoa! Attack succeeded! \x03{}{}\x03 " +
+							"ate \x02{} HP\x02 of brains from \x03{}{}\x03.").format(self.colors[utype],
+							source1, res, self.colors[otype], self.leaders[otype]))
+				elif res < 0:
+					if utype == "v":
+						self.connection.privmsg(self.channel, ("Muwhahaha! Attack failed! \x03{}{}\x03 " +
+							"ate \x02{} HP\x02 of brains from \x03{}{}\x03.").format(self.colors[otype],
+							self.leaders[otype], -res, self.colors[utype], source1))
+					else:
+						self.connection.privmsg(self.channel, ("Muwhahaha! Attack failed! \x03{}{}\x03 " +
+							"sucked \x02{} HP\x02 of blood from \x03{}{}\x03.").format(self.colors[otype],
+							self.leaders[otype], -res, self.colors[utype], source1))
+					if User.transform(source.lower(), players):
+						newtype = self.colored_types[players[source.lower()]['type']]
+						self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
+							"and has been transformed to a \x03{}\x03.").format(source1, newtype))
+						if self.check_end(players):
+							return
+				else:
+					self.connection.privmsg(self.channel, "\x02It is a tie.\x02 No one has been hurt.")
+				# check if the max MP is eligible to increase/decrease
+				got_new_mmp = User.redetermine_mmp(res, source.lower(), players)
+				if got_new_mmp: new_mmp = players[source.lower()]['mmp']
+				if got_new_mmp == 1:
+					self.connection.privmsg(self.channel, ("After {} successful attacks in a row, {} received " +
+						"a level-up, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source1, new_mmp))
+				elif got_new_mmp == -1:
+					self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
+						"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source1, new_mmp))
+			else:
+				self.connection.profiles(self.channel, "{}: You do not have enough MP.".format(source1))
+
 	def execute(self, event, command, players):
 		command = command.strip()
 		first_space = command.find(" ")
@@ -437,4 +489,6 @@ class UserCommand:
 		elif cmd == "auto" and len(args) == 1:
 			self.get_auto(args[0], event.source.nick.lower())
 		elif cmd == "auto" and len(args) == 2:
-			self.set_auto(args[0], args[1], event.source.nick.lower())			
+			self.set_auto(args[0], args[1], event.source.nick.lower())
+		elif cmd == "challenge" and not args:
+			self.challenge(event.source.nick, players)
