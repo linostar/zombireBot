@@ -153,7 +153,7 @@ class Zombire(CustomSingleServerIRCBot):
 					return
 
 	def on_pubmsg(self, c, e):
-		re_exprs = (r"\!(register)", r"\!(unregister)", r"\!(status\s+.+)",
+		re_exprs = (r"\!(register)", r"\!(unregister)", r"\!(status(\s+.+)?)",
 			r"\!(attack\s+.+)", r"\!(heal\s+.+)", r"\!(vampires|zombies)", r"\!(version)",
 			r"\!(topscores)", r"\!(highscores)", r"\!(howtoplay)", r"\!(ambush\s+.+)",
 			r"\!(auto\s+(attack|heal|register)(\s+.+)?)")

@@ -82,12 +82,14 @@ class UserCommand:
 		else:
 			self.connection.notice(nick, "Error: you are not registered in this game.")
 
-	def status(self, nick, players):
-		nick2 = nick.replace("[", "..").replace("]", ",,")
-		if not nick2.lower() in players:
-			self.connection.privmsg(self.channel, "{} is not a registered player.".format(nick))
+	def status(self, players, source, target=None):
+		if not target:
+			target = source
+		target2 = target.replace("[", "..").replace("]", ",,")
+		if not target2.lower() in players:
+			self.connection.privmsg(self.channel, "{} is not a registered player.".format(target))
 			return
-		p = players[nick2.lower()]
+		p = players[target2.lower()]
 		[utype, hp, mp, mmp, score, bonus] = [p['type'], p['hp'], p['mp'], p['mmp'],
 		p['score'], p['bonus']]
 		if bonus % 10 == 1:
@@ -102,7 +104,7 @@ class UserCommand:
 			elif utype == "z" and Utils.bosses[1]['on']:
 				bonus_text = "Power substantially increased due to \x02Zombilo\x02 presence."
 		self.connection.privmsg(self.channel, "{} is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}"
-				.format(nick, self.colored_types[utype], hp, mp, mmp, score, bonus_text))
+				.format(target, self.colored_types[utype], hp, mp, mmp, score, bonus_text))
 
 	def topscores(self):
 		msg = ""
@@ -412,8 +414,10 @@ class UserCommand:
 			self.register(event.source.nick.lower())
 		elif cmd == "unregister" and not args:
 			self.unregister(event.source.nick.lower(), players)
+		elif cmd == "status" and not args:
+			self.status(players, event.source.nick)
 		elif cmd == "status" and len(args) == 1:
-			self.status(args[0], players)
+			self.status(players, event.source.nick, args[0])
 		elif cmd == "attack" and len(args) == 1:
 			self.attack(event.source.nick, args[0], players)
 		elif cmd == "heal" and len(args) == 1:
