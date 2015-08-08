@@ -36,11 +36,11 @@
 <li><p>You need <code>Python3</code> and <code>pip3</code> installed on your system.</p></li>
 <li><p>Run: <code>pip3 install -r requirements.txt</code></p></li>
 <li><p>Register the bot nick on the IRC network you want it to run on, and gives it the ability to change the channel access.</p></li>
-<li><p>Copy <code>conf/config.example.yml</code> to <code>conf/config.yml</code> and change the configuration parameters to your needs.</p></li>
-<li><p>Create the mysql database and user, then run:</p></li>
+<li><p>Copy <code>conf/config.example.yml</code> to <code>conf/config.yml</code> and change the configuration parameters according to your needs.</p></li>
+<li><p>Create the mysql database and user, then run (substituting <code>mysql_user</code> and <code>mysql_db</code> by their values):</p></li>
 </ol>
 
-<pre><code>mysql -u &lt;mysql_user&gt; -D &lt;mysql_db&gt; -p &lt; conf/create_tables.sql
+<pre><code>mysql -u mysql_user -D mysql_db -p &lt; conf/create_tables.sql
 </code></pre>
 
 <p>Finally, run: <code>python3 zombire.py</code> and enjoy!</p>
@@ -90,7 +90,8 @@
 <li>a healing gives 1 score point</li>
 <li>a successful attack gives 2 score points</li>
 <li>a successful ambush gives 3 score points</li>
-<li>attacking and killing an enemy (and making him/her transform) gives 5 score points</li>
+<li>attacking and killing an enemy gives 5 additional score points</li>
+<li>successfully attacking and inflicting damage on the enemy leader gives 10 score points (instead of 2)</li>
 </ul>
 
 <p><strong>Player settings:</strong></p>
@@ -105,9 +106,66 @@
 <li>Note that enabling <code>!auto attack</code> will cancel <code>!auto heal</code>, and vice versa.</li>
 </ul>
 
+<p><strong>Items:</strong></p>
+
+<p>Players can search for items and use them. Searching for items using the <code>!search</code> command will consume 1 MP. The chance of finding an item is 25%. Be aware that the player inventory has a limited capacity of 3 items.</p>
+
+<p>Here is a full list of the items that can be found:</p>
+
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Small apple</td>
+<td>+2 HP</td>
+</tr>
+<tr>
+<td>Medium apple</td>
+<td>+5 HP</td>
+</tr>
+<tr>
+<td>Large apple</td>
+<td>+10 HP</td>
+</tr>
+<tr>
+<td>Small lemon</td>
+<td>+1 MP (MP will not go over Maximum MP)</td>
+</tr>
+<tr>
+<td>Medium lemon</td>
+<td>+2 MP (MP will not go over Maximum MP)</td>
+</tr>
+<tr>
+<td>Large lemon</td>
+<td>+3 MP (MP will not go over Maximum MP)</td>
+</tr>
+<tr>
+<td>Transformic</td>
+<td>tranforms the player to the opposite type without affecting his/her stats</td>
+</tr>
+<tr>
+<td>Explodic</td>
+<td>suicidal attack (renders the HP of the user and the target to 1)</td>
+</tr>
+<tr>
+<td>Neutralic</td>
+<td>removes any bonus effect of a particular player</td>
+</tr>
+</tbody>
+</table>
+
+<p>The unused items will remain in the player inventory even after a round ends.</p>
+
 <p><strong>Special apperarences:</strong></p>
 
-<p>The respective leaders of vampires and zombies, Count Dracula and General Zombilo, will join the battle once a day at random time, for 15 minutes each. When they are around, their soldiers will have a dramatical boost in attack and defense, temporarily removing any other negative effects. When the leader leaves, his soldiers bonus stats return as they were before his arrival.</p>
+<p>The respective leaders of vampires and zombies, Count Dracula and General Zombilo, will join the battle once a day at random time, for 15 minutes each. When they are around, their soldiers will have a dramatical boost in attack and defense, temporarily removing any other negative effects. When the leader leaves, his soldiers bonus stats return as they were before his arrival. </p>
+
+<p>Those leaders can be attacked when they appear using the <code>!challenge</code> command. Be aware that they use a 12-face dice though, when the player uses a 6-face dice. A successful attack will award the player 10 score points.</p>
 
 <p><strong>End of Round:</strong></p>
 
@@ -130,7 +188,8 @@
 <li>
 <strong>!ambush <em>player1</em> <em>player2</em> :</strong>  lets the player attack 2 enemy players simultaneously</li>
 <li>
-<strong>!status <em>player</em> :</strong>  displays the stats of the mentioned player</li>
+<strong>!status [<em>player</em>] :</strong>  displays the stats of the mentioned player, or displays your own stats if you omit <em>player</em>
+</li>
 <li>
 <strong>!vampires :</strong>  lists all vampires in the current round</li>
 <li>
@@ -143,6 +202,18 @@
 <strong>!auto heal [off|lowest|highest] :</strong>  for reading or changing the auto heal setting</li>
 <li>
 <strong>!auto attack [off|lowest|highest] :</strong>  for reading or changing the auto attack setting</li>
+<li>
+<strong>!challenge :</strong>  attack the enemy leader if he is around</li>
+<li>
+<strong>!search :</strong>  searches for a random item (add the item to the inventory if found)</li>
+<li>
+<strong>!inventory :</strong>  lists the items in your inventory</li>
+<li>
+<strong>!use <em>number</em> :</strong>  uses item in your inventory on yourself (number can be: 1, 2 or 3)</li>
+<li>
+<strong>!use <em>number</em> <em>target</em> :</strong>  uses item in your inventory on a target (applies only on few certain items)</li>
+<li>
+<strong>!drop <em>number</em> :</strong>  drops an item from your inventory (number can be: 1, 2 or 3)</li>
 <li>
 <strong>!version :</strong>  displays the running version of the bot</li>
 </ul>
