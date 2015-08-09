@@ -90,6 +90,16 @@ class Schedule:
 											target1 = target.replace("..", "[").replace(",,", "]")
 											self.connection.privmsg(self.channel, "\x03{0}{1}\x03 auto-healed \x03{0}{2}\x03."
 												.format(self.colors[utype], nick1, target1))
+								elif self.profiles[nick]['auto'] & 32: # auto-search
+									nick1 = nick.replace("..", "[").replace(",,", "]")
+									new_item = User.add_item(nick, self.profiles, self.players)
+									if new_item == -1:
+										self.connection.notice(nick1, "You cannot search for items because your inventory is full.")
+									elif new_item:
+										self.connection.notice(source, "Lucky! You found \x02{}\x02."
+											.format(User.item_names[new_item]))
+									else:
+										self.connection.notice(source, "You did not find any item this time.")
 								elif self.profiles[nick]['auto'] & 8: # auto-attack
 									pfilter = {x:self.players[x]['hp'] for x in self.players
 										if self.players[x]['type'] != utype}

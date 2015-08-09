@@ -350,6 +350,12 @@ class UserCommand:
 					res = "lowest"
 			else:
 				res = "off"
+		elif prop == "search":
+			# bit 5 for on/off
+			if self.profiles[nick2]['auto'] & 32:
+				res = "on"
+			else:
+				res = "off"
 		if res:
 			self.connection.notice(nick, "Your auto-{} is \x02{}\x02.".format(prop, res))
 		else:
@@ -373,10 +379,12 @@ class UserCommand:
 				self.profiles[nick2]['auto'] &= ~2
 			elif val == "lowest":
 				self.profiles[nick2]['auto'] &= ~8 # turn auto-attack off
+				self.profiles[nick2]['auto'] &= ~32 # turn auto-search off
 				self.profiles[nick2]['auto'] |= 2
 				self.profiles[nick2]['auto'] &= ~4
 			elif val == "highest":
 				self.profiles[nick2]['auto'] &= ~8 # turn auto-attack off
+				self.profiles[nick2]['auto'] &= ~32 # turn auto-search off
 				self.profiles[nick2]['auto'] |= 2
 				self.profiles[nick2]['auto'] |= 4
 			else:
@@ -386,12 +394,23 @@ class UserCommand:
 				self.profiles[nick2]['auto'] &= ~8
 			elif val == "lowest":
 				self.profiles[nick2]['auto'] &= ~2 # turn auto-heal off
+				self.profiles[nick2]['auto'] &= ~32 # turn auto-search off
 				self.profiles[nick2]['auto'] |= 8
 				self.profiles[nick2]['auto'] &= ~16
 			elif val == "highest":
 				self.profiles[nick2]['auto'] &= ~2 # turn auto-heal off
+				self.profiles[nick2]['auto'] &= ~32 # turn auto-search off
 				self.profiles[nick2]['auto'] |= 8
 				self.profiles[nick2]['auto'] |= 16
+			else:
+				res = False
+		elif prop == "search":
+			if val == "on":
+				self.profiles[nick2]['auto'] &= ~2 # turn auto-heal off
+				self.profiles[nick2]['auto'] &= ~8 # turn auto-attack off
+				self.profiles[nick2]['auto'] |= 32
+			elif val == "off":
+				self.profiles[nick2]['auto'] &= ~32
 			else:
 				res = False
 		else:
