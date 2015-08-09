@@ -70,11 +70,11 @@ Large apple | no | +10 HP
 Small lemon | no | +1 MP (MP will not go over Maximum MP)
 Medium lemon | no | +2 MP (MP will not go over Maximum MP)
 Large lemon | no | +3 MP (MP will not go over Maximum MP)
-Melon | no | sacrifices 1 MP to obtain 5 HP
 Transformic | no | tranforms the player to the opposite type without affecting his/her stats
 Explodic | yes | suicidal attack (renders the HP of the user and the target to 1)
 Neutralic | yes | removes any bonus effect of a particular player
 Switchic | yes | switches the HP stats between player and target
+Drainic | yes | sacrifices 1 MP to decrease a target's HP by 5
 
 The unused items will remain in the player inventory even after a round ends.
 

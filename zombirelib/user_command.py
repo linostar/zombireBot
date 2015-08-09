@@ -510,7 +510,7 @@ class UserCommand:
 			if source2.lower() in self.profiles:
 				item = User.get_item(item_index-1, source2.lower(), self.profiles)
 				if item:
-					if item in (8, 9, 10): # needs a target
+					if item in (8, 9, 10, 11): # needs a target
 						if not target:
 							self.connection.notice(source, "You need to specify a target for this item use.")
 							return
@@ -525,10 +525,20 @@ class UserCommand:
 								msg += "As a result, \x03{3}{4}\x03 lost all his/her bonus effects."
 							elif item == 10:
 								msg += "As a result, each of the two has now the other player's HP stats."
+							elif item == 11:
+								if players[source2.lower()]['mp'] < 1:
+									self.connection.notice(source, "You do not have any MP to use this item.")
+									return
+								msg += "He/she sacrificed 1 MP to decrease \x03{3}{4}\x03's HP by 5."
 							# remove item after it was consumed
 							User.drop_item(item_index-1, source2.lower(), self.profiles)
 							self.connection.privmsg(self.channel, msg.format(
 								self.colors[type1], source, User.item_names[item], self.colors[type2], target))
+							if item == 11:
+								if User.transform(target2.lower(), players, source2.lower()):
+									newtype = self.colored_types[players[target2.lower()]['type']]
+									self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
+										"and has been transformed to a \x03{}\x03.").format(target, newtype))
 					else: # does not need a target
 						if target:
 							self.connection.notice(source, "You cannot use this item on other players.")
@@ -550,16 +560,11 @@ class UserCommand:
 						elif item == 7:
 							newtype = players[source2.lower()]['type']
 							msg += "He/she transformed into a \x03" + self.colored_types[newtype] + "\x03."
-						elif item == 11:
-							if players[source2.lower()]['mp'] < 1:
-								self.connection.notice(source, "You do not have any MP to use this item.")
-								return
-							msg += "He/she sacrificed 1 MP to obtain 5 HP."
 						# remove item after it was consumed
 						User.drop_item(item_index-1, source2.lower(), self.profiles)
 						self.connection.privmsg(self.channel, msg.format(
 							self.colors[type1], source, User.item_names[item]))
-					if item == 7:
+					if item in (7, 11):
 						self.check_end(players)
 				else:
 					self.connection.notice(source, "Item \x02#{}\x02 does not exist in your inventory."
