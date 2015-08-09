@@ -528,6 +528,9 @@ class UserCommand:
 							self.connection.privmsg(self.channel, msg.format(
 								self.colors[type1], source, User.item_names[item], self.colors[type2], target))
 					else: # does not need a target
+						if target:
+							self.connection.notice(source, "You cannot use this item on other players.")
+							return
 						User.use_item(item, source2.lower(), players)
 						msg = "\x03{0}{1}\x03 ate a \x02{2}\x02. "
 						if item == 1:
