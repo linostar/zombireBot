@@ -1,5 +1,8 @@
 CHANGELOG
 ---------
+v1.2.1
+
+
 v1.2.0
 - Added new user commands for items: !search, !use, !inventory, !drop
 - Added ability to fight enemy leaders using: !challenge

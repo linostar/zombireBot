@@ -4,7 +4,7 @@ import datetime
 
 
 class Utils:
-	VERSION = "1.2.0"
+	VERSION = "1.2.1"
 	MAX_MSG_LENGTH = 220
 	HOW_TO_PLAY = "https://linostar.github.io/zombireBot"
 	round_starttime = datetime.datetime.now()
@@ -12,7 +12,7 @@ class Utils:
 	#reg_list1 = []
 	#reg_list2 = []
 	registering_nick = ""
-	# Dracula is bosses[0] and Zombilo and bosses[1]
+	# Dracula is bosses[0] and Zombilo is bosses[1]
 	bosses = []
 	b_created = False
 

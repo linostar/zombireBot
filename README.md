@@ -53,7 +53,8 @@ Each player can take 3 types of **actions** against other players:
 - `!auto register` command, when set to `on`, allows the player to automatically register when a new round of the game begins.
 - `!auto heal` command, if set to `lowest`, will make the player automatically heals the ally with the lowest HP, before the current hour ends. If set to `highest`, the target of healing will be the ally with the highest HP. The player should at least 1 MP remaining for that auto-action to take place.
 - `!auto attack` command, similarly to `!auto heal`, allows the player to attack the enemy with the lowest or highest HP, before the current hour ends.
-- Note that enabling `!auto attack` will cancel `!auto heal`, and vice versa.
+- `!auto search` command, will allow the player to auto-spend 1 MP (if available) to search for an item. It won't work of the user inventory is already full.
+- Note that enabling `!auto attack` will cancel `!auto heal` and `!auto search`, and vice versa.
 
 **Items:**
 
@@ -99,6 +100,7 @@ The game will end when all players become vampires, or all players become zombie
 - **!auto register [off|on] :**  for reading or changing the auto register setting
 - **!auto heal [off|lowest|highest] :**  for reading or changing the auto heal setting
 - **!auto attack [off|lowest|highest] :**  for reading or changing the auto attack setting
+- **!auto search [off|on] :**  for reading or changing the auto search setting
 - **!challenge :**  attack the enemy leader if he is around
 - **!search :**  searches for a random item (add the item to the inventory if found)
 - **!inventory :**  lists the items in your inventory
