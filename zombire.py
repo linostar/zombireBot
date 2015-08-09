@@ -156,7 +156,7 @@ class Zombire(CustomSingleServerIRCBot):
 		re_exprs = (r"\!(register)", r"\!(unregister)", r"\!(status(\s+.+)?)",
 			r"\!(attack\s+.+)", r"\!(heal\s+.+)", r"\!(vampires|zombies)", r"\!(version)",
 			r"\!(topscores)", r"\!(highscores)", r"\!(howtoplay)", r"\!(ambush\s+.+)",
-			r"\!(auto\s+(attack|heal|register)(\s+.+)?)", r"\!(challenge)",
+			r"\!(auto\s+(attack|heal|register|search)(\s+.+)?)", r"\!(challenge)",
 			r"\!(search|inventory)", r"\!((use|drop)\s+.+)")
 		for expr in re_exprs:
 			try:
