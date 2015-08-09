@@ -144,7 +144,7 @@ class UserCommand:
 				if User.transform(target2.lower(), players, source2.lower()):
 					newtype = self.colored_types[players[target2.lower()]['type']]
 					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
-						"and has been transformed to a \x03{}\x03.").format(target, newtype))
+						"and has been transformed into a \x03{}\x03.").format(target, newtype))
 					if self.check_end(players):
 						return
 			elif res < 0: # attack failed
@@ -157,7 +157,7 @@ class UserCommand:
 				if User.transform(source2.lower(), players):
 					newtype = self.colored_types[players[source2.lower()]['type']]
 					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
-						"and has been transformed to a \x03{}\x03.").format(source, newtype))
+						"and has been transformed into a \x03{}\x03.").format(source, newtype))
 					if self.check_end(players):
 						return
 			else: # res == 0 (it's a tie)
@@ -238,13 +238,13 @@ class UserCommand:
 				if User.transform(ftarget2.lower(), players, source2.lower()):
 					newtype = self.colored_types[players[ftarget2.lower()]['type']]
 					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
-						"and has been transformed to a \x03{}\x03.").format(ftarget, newtype))
+						"and has been transformed into a \x03{}\x03.").format(ftarget, newtype))
 					if self.check_end(players):
 						return
 				if User.transform(starget2.lower(), players, source2.lower()):
 					newtype = self.colored_types[players[starget2.lower()]['type']]
 					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
-						"and has been transformed to a \x03{}\x03.").format(starget, newtype))
+						"and has been transformed into a \x03{}\x03.").format(starget, newtype))
 					if self.check_end(players):
 						return
 			elif res < 0:
@@ -256,7 +256,7 @@ class UserCommand:
 				if User.transform(source2.lower(), players):
 					newtype = self.colored_types[players[source2.lower()]['type']]
 					self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
-						"and has been transformed to a \x03{}\x03.").format(source, newtype))
+						"and has been transformed into a \x03{}\x03.").format(source, newtype))
 					if self.check_end(players):
 						return
 			else:
@@ -454,7 +454,7 @@ class UserCommand:
 					if User.transform(source.lower(), players):
 						newtype = self.colored_types[players[source.lower()]['type']]
 						self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
-							"and has been transformed to a \x03{}\x03.").format(source1, newtype))
+							"and has been transformed into a \x03{}\x03.").format(source1, newtype))
 						if self.check_end(players):
 							return
 				else:
@@ -538,7 +538,7 @@ class UserCommand:
 								if User.transform(target2.lower(), players, source2.lower()):
 									newtype = self.colored_types[players[target2.lower()]['type']]
 									self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
-										"and has been transformed to a \x03{}\x03.").format(target, newtype))
+										"and has been transformed into a \x03{}\x03.").format(target, newtype))
 					else: # does not need a target
 						if target:
 							self.connection.notice(source, "You cannot use this item on other players.")
