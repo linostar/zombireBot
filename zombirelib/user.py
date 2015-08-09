@@ -18,6 +18,8 @@ class User:
 	7: "Tansformic",    # for type transformation
 	8: "Explodic",      # for a suicidal attack
 	9: "Neutralic",     # for removing bonus effect
+	10: "Switchic",     # for switching HP stats with another player
+	11: "melon",        # sacrifice 1 MP to get 5 HP
 	}
 
 	@staticmethod
@@ -290,6 +292,9 @@ class User:
 				players[source]['type'] = "z"
 			else:
 				players[source]['type'] = "v"
+		elif item == 11:
+			players[source]['mp'] -= 1
+			players[source]['hp'] += 5
 
 	@staticmethod
 	def use_item2(item, source, target, players):
@@ -298,6 +303,10 @@ class User:
 			players[target]['hp'] = 1
 		elif item == 9:
 			players[target]['bonus'] = players[target]['bonus'] // 10 * 10
+		elif item == 10:
+			old_hp = players[source]['hp']
+			players[source]['hp'] = players[target]['hp']
+			players[target]['hp'] = old_hp
 
 	@staticmethod
 	def check_if_round_ended(players):
