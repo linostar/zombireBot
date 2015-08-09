@@ -103,7 +103,9 @@
 <code>!auto heal</code> command, if set to <code>lowest</code>, will make the player automatically heals the ally with the lowest HP, before the current hour ends. If set to <code>highest</code>, the target of healing will be the ally with the highest HP. The player should at least 1 MP remaining for that auto-action to take place.</li>
 <li>
 <code>!auto attack</code> command, similarly to <code>!auto heal</code>, allows the player to attack the enemy with the lowest or highest HP, before the current hour ends.</li>
-<li>Note that enabling <code>!auto attack</code> will cancel <code>!auto heal</code>, and vice versa.</li>
+<li>
+<code>!auto search</code> command, will allow the player to auto-spend 1 MP (if available) to search for an item. It won't work of the user inventory is already full.</li>
+<li>Note that enabling <code>!auto attack</code> will cancel <code>!auto heal</code> and <code>!auto search</code>, and vice versa.</li>
 </ul>
 
 <p><strong>Items:</strong></p>
@@ -116,45 +118,65 @@
 <thead>
 <tr>
 <th>Item</th>
+<th>Can be used on others?</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Small apple</td>
+<td>no</td>
 <td>+2 HP</td>
 </tr>
 <tr>
 <td>Medium apple</td>
+<td>no</td>
 <td>+5 HP</td>
 </tr>
 <tr>
 <td>Large apple</td>
+<td>no</td>
 <td>+10 HP</td>
 </tr>
 <tr>
 <td>Small lemon</td>
+<td>no</td>
 <td>+1 MP (MP will not go over Maximum MP)</td>
 </tr>
 <tr>
 <td>Medium lemon</td>
+<td>no</td>
 <td>+2 MP (MP will not go over Maximum MP)</td>
 </tr>
 <tr>
 <td>Large lemon</td>
+<td>no</td>
 <td>+3 MP (MP will not go over Maximum MP)</td>
 </tr>
 <tr>
+<td>Melon</td>
+<td>no</td>
+<td>sacrifices 1 MP to obtain 5 HP</td>
+</tr>
+<tr>
 <td>Transformic</td>
+<td>no</td>
 <td>tranforms the player to the opposite type without affecting his/her stats</td>
 </tr>
 <tr>
 <td>Explodic</td>
+<td>yes</td>
 <td>suicidal attack (renders the HP of the user and the target to 1)</td>
 </tr>
 <tr>
 <td>Neutralic</td>
+<td>yes</td>
 <td>removes any bonus effect of a particular player</td>
+</tr>
+<tr>
+<td>Switchic</td>
+<td>yes</td>
+<td>switches the HP stats between player and target</td>
 </tr>
 </tbody>
 </table>
@@ -202,6 +224,8 @@
 <strong>!auto heal [off|lowest|highest] :</strong>  for reading or changing the auto heal setting</li>
 <li>
 <strong>!auto attack [off|lowest|highest] :</strong>  for reading or changing the auto attack setting</li>
+<li>
+<strong>!auto search [off|on] :</strong>  for reading or changing the auto search setting</li>
 <li>
 <strong>!challenge :</strong>  attack the enemy leader if he is around</li>
 <li>
