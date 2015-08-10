@@ -113,6 +113,9 @@ class Database:
 					profiles[row[0]] = {'auto': row[1], 'extras': row[2]}
 		return profiles
 
+	def delete_profile(self, nick):
+		self.query("delete from `profiles` where `nick` = '{}'".format(nick))
+
 	def add_highscore(self, nick, utype, score):
 		now_date = datetime.date.today().strftime("%Y-%m-%d")
 		self.query("insert into `highscores` values (0, '{0}', '{1}', {2}, '{3}')".format(

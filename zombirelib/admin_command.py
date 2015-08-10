@@ -50,6 +50,7 @@ class AdminCommand:
 						del players[nick2]
 						if terminate:
 							del self.profiles[nick2]
+							self.dbc.delete_profile(nick2)
 						if self.access == "xop":
 							self.connection.privmsg("chanserv", "vop {} del {}".format(self.channel, nick))
 						elif self.access == "levels":
