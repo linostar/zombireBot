@@ -20,7 +20,10 @@ class User:
 	8: "Explodic",      # for a suicidal attack
 	9: "Neutralic",     # for removing bonus effect
 	10: "Switchic",     # for switching HP stats with another player
-	11: "Drainic",        # sacrifice 1 MP to get 5 HP
+	11: "Drainic",      # sacrifice 1 MP to get 5 HP
+	12: "Revealic",     # reveals the inventory contents of a target
+	13: "Thievic",      # steals a random item from target (if he has any)
+	14: "Summonic",     # sacrifices 10 HP to summon the player's leader
 	}
 
 	@staticmethod
