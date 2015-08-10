@@ -519,7 +519,8 @@ class UserCommand:
 						target2 = target.replace("[", "..").replace("]", ",,")
 						if target2.lower() in players:
 							type2 = players[target2.lower()]['type']
-							if item != 10:
+							# check restrictions on some items before using them
+							if item not in (10, 11):
 								User.use_item2(item, source2.lower(), target2.lower(), players)
 							msg = "\x03{0}{1}\x03 used \x02{2}\x02 on \x03{3}{4}\x03. "
 							if item == 8:
@@ -537,6 +538,7 @@ class UserCommand:
 								if User.check_lt(players, source2.lower(), 'mp', 1):
 									self.connection.notice(source, "You do not have any MP to use this item.")
 									return
+								User.use_item2(item, source2.lower(), target2.lower(), players)
 								msg += "He/she sacrificed 1 MP to decrease \x03{3}{4}\x03's HP by 5."
 							elif item == 12:
 								msg2 = ""
