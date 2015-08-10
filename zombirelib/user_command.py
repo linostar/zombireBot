@@ -579,6 +579,8 @@ class UserCommand:
 									newtype = self.colored_types[players[target2.lower()]['type']]
 									self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
 										"and has been transformed into a \x03{}\x03.").format(target, newtype))
+						else:
+							self.connection.notice(source, "You cannot use the item on someone who is not playing in this round.")
 					else: # does not need a target
 						if target:
 							self.connection.notice(source, "You cannot use this item on other players.")
