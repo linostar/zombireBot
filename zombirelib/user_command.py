@@ -296,6 +296,7 @@ class UserCommand:
 				"hour(s), {} minute(s) and {} second(s).").format(diff_time.days, 
 				diff_time.seconds//3600, (diff_time.seconds-diff_time.seconds//3600*3600)//60, 
 				diff_time.seconds%60))
+			Schedule.is_bonus_on = False
 			User.reset_players(players)
 			# in case there are players with auto register on
 			self.auto_register(players)
