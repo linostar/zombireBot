@@ -62,19 +62,19 @@ Players can search for items and use them. Searching for items using the `!searc
 
 Here is a full list of the items that can be found:
 
-Item | Can be used on others? | Description
----- | ---------------------- | -----------
-Small apple | no | +2 HP
-Medium apple | no | +5 HP
-Large apple | no | +10 HP
-Small lemon | no | +1 MP (MP will not go over Maximum MP)
-Medium lemon | no | +2 MP (MP will not go over Maximum MP)
-Large lemon | no | +3 MP (MP will not go over Maximum MP)
-Transformic | no | tranforms the player to the opposite type without affecting his/her stats
-Explodic | yes | suicidal attack (renders the HP of the user and the target to 1)
-Neutralic | yes | removes any bonus effect of a particular player
-Switchic | yes | switches the HP stats between player and target
-Drainic | yes | sacrifices 1 MP to decrease a target's HP by 5
+Item | Can be used on others? | Rare item? | Description
+---- | ---------------------- | ---------- | -----------
+Small apple | no | no | +2 HP
+Medium apple | no | no | +5 HP
+Large apple | no | no | +10 HP
+Small lemon | no | no | +1 MP (MP will not go over Maximum MP)
+Medium lemon | no | no | +2 MP (MP will not go over Maximum MP)
+Large lemon | no | no | +3 MP (MP will not go over Maximum MP)
+Transformic | no | yes | tranforms the player to the opposite type without affecting his/her stats
+Explodic | yes | yes | suicidal attack (renders the HP of the user and the target to 1)
+Neutralic | yes | yes | removes any bonus effect of a particular player
+Switchic | yes | yes | switches the HP stats between player and target
+Drainic | yes | yes | sacrifices 1 MP to decrease a target's HP by 5
 
 The unused items will remain in the player inventory even after a round ends.
 
