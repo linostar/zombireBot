@@ -24,6 +24,18 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   PRIMARY KEY(`prid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+-- Table structure for table `weaponry`
+
+CREATE TABLE IF NOT EXISTS `weaponry` (
+  `wid` int NOT NULL AUTO_INCREMENT,
+  `nick` varchar(64) NOT NULL,
+  `sword` smallint NOT NULL DEFAULT 0,
+  `slife` smallint NOT NULL DEFAULT 0,
+  `armor` smallint NOT NULL DEFAULT 0,
+  `alife` smallint NOT NULL DEFAULT 0,
+  PRIMARY KEY(`wid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 -- Table structure for table `highscores`
 
 CREATE TABLE IF NOT EXISTS `highscores` (
