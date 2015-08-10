@@ -35,6 +35,26 @@ class User:
 		conn.privmsg("nickserv", "status {}".format(nick))
 
 	@staticmethod
+	def check_eq(players, nick, stats, val):
+		return players[nick][stats] == val
+
+	@staticmethod
+	def check_gt(players, nick, stats, val):
+		return players[nick][stats] > val
+
+	@staticmethod
+	def check_lt(players, nick, stats, val):
+		return players[nick][stats] < val
+
+	@staticmethod
+	def check_ge(players, nick, stats, val):
+		return players[nick][stats] >= val
+
+	@staticmethod
+	def check_le(players, nick, stats, val):
+		return players[nick][stats] <= val
+
+	@staticmethod
 	def ratio_of_types(players):
 		num_v = 0
 		num_z = 0
@@ -243,6 +263,22 @@ class User:
 			return 0
 
 	@staticmethod
+	def append_item(new_item, source, profiles):
+		items = User.get_inventory(source, profiles)
+		if items[0] and items[1] and items[2]:
+			return -1  # inventory is full
+		if new_item in User.rare_items and new_item in items:
+			return 0 # adding a rare item that already exists isn't possible
+		if items[0] and items[1]:
+			items[2] = new_item
+		elif items[0]:
+			items[1] = new_item
+		else:
+			items[0] = new_item
+		User.save_inventory(items, source, profiles)
+		return new_item
+
+	@staticmethod
 	def add_item(source, profiles, players):
 		items = User.get_inventory(source, profiles)
 		if items[0] and items[1] and items[2]:
@@ -299,6 +335,8 @@ class User:
 				players[source]['type'] = "z"
 			else:
 				players[source]['type'] = "v"
+		elif item == 14:
+			players[source]['hp'] -= 10
 
 	@staticmethod
 	def use_item2(item, source, target, players):
@@ -314,6 +352,10 @@ class User:
 		elif item == 11:
 			players[source]['mp'] -= 1
 			players[target]['hp'] = max(players[target]['hp'] - 5, 0)
+		elif item == 12:
+			pass # no stats will be affected
+		elif item == 13:
+			pass
 
 	@staticmethod
 	def check_if_round_ended(players):
