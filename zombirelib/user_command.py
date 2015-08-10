@@ -534,7 +534,10 @@ class UserCommand:
 								msg += "He/she sacrificed 1 MP to decrease \x03{3}{4}\x03's HP by 5."
 							elif item == 12:
 								msg2 = ""
+								User.drop_item(item_index-1, source2.lower(), self.profiles)
 								items = User.get_inventory(target2.lower(), self.profiles)
+								self.connection.privmsg(self.channel, msg.format(
+									self.colors[type1], source, User.item_names[item], self.colors[type2], target))
 								for i in range(3):
 									if items[i]:
 										msg2 += "\x02{}- {}.\x02 ".format(i+1, User.item_names[items[i]])
@@ -547,25 +550,30 @@ class UserCommand:
 								nz_items = [x for x in items if x]
 								if len(nz_items):
 									choice = random.randrange(0, len(nz_items))
-									res = User.append_item(items[choice], source2.lower(), self.profiles)
-									if res == -1:
-										self.connection.notice(source, "You cannot use this item because your inventory is full.")
-									elif res:
-										User.drop_item(choice, target2.lower(), self.profiles)
+									User.drop_item(item_index-1, source2.lower(), self.profiles)
+									stolen_item = items[choice]
+									res = User.append_item(stolen_item, source2.lower(), self.profiles)
+									self.connection.privmsg(self.channel, msg.format(
+										self.colors[type1], source, User.item_names[item], self.colors[type2], target))
+									User.drop_item(choice, target2.lower(), self.profiles)
+									if res:
 										self.connection.privmsg(self.channel, "\x02{}\x02 stole \x02{}\x02 from \x02{}\x02."
-											.format(source, User.item_names[res], target))
+											.format(source, User.item_names[stolen_item], target))
 									else:
-										User.drop_item(choice, target2.lower(), self.profiles)
 										self.connection.privmsg(self.channel, ("\x02{}\x02 tried to steal \x02{}\x02 from \x02{}\x02 " +
 											"but had to drop it because he/she already had one of those.").format(source,
-											User.item_names[res], target))
+											User.item_names[stolen_item], target))
 								else:
+									User.drop_item(item_index-1, source2.lower(), self.profiles)
+									self.connection.privmsg(self.channel, msg.format(
+										self.colors[type1], source, User.item_names[item], self.colors[type2], target))
 									self.connection.privmsg(self.channel, ("\x02{}\x02 couldn't steal anything because " +
 										"\x02{}\x02's inventory was empty.").format(source, target))
 							# remove item after it was consumed
-							User.drop_item(item_index-1, source2.lower(), self.profiles)
-							self.connection.privmsg(self.channel, msg.format(
-								self.colors[type1], source, User.item_names[item], self.colors[type2], target))
+							if item not in (12, 13):
+								User.drop_item(item_index-1, source2.lower(), self.profiles)
+								self.connection.privmsg(self.channel, msg.format(
+									self.colors[type1], source, User.item_names[item], self.colors[type2], target))
 							if item == 11:
 								if User.transform(target2.lower(), players, source2.lower()):
 									newtype = self.colored_types[players[target2.lower()]['type']]
@@ -576,7 +584,7 @@ class UserCommand:
 							self.connection.notice(source, "You cannot use this item on other players.")
 							return
 						User.use_item(item, source2.lower(), players)
-						msg = "\x03{0}{1}\x03 ate a \x02{2}\x02. "
+						msg = "\x03{0}{1}\x03 consumed a \x02{2}\x02. "
 						if item == 1:
 							msg += "His/her HP increased by \x022\x02."
 						elif item == 2:

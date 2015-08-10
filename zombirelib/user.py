@@ -265,10 +265,8 @@ class User:
 	@staticmethod
 	def append_item(new_item, source, profiles):
 		items = User.get_inventory(source, profiles)
-		if items[0] and items[1] and items[2]:
-			return -1  # inventory is full
 		if new_item in User.rare_items and new_item in items:
-			return 0 # adding a rare item that already exists isn't possible
+			return False # adding a rare item that already exists isn't possible
 		if items[0] and items[1]:
 			items[2] = new_item
 		elif items[0]:
@@ -276,7 +274,7 @@ class User:
 		else:
 			items[0] = new_item
 		User.save_inventory(items, source, profiles)
-		return new_item
+		return True
 
 	@staticmethod
 	def add_item(source, profiles, players):
@@ -355,7 +353,7 @@ class User:
 		elif item == 12:
 			pass # no stats will be affected
 		elif item == 13:
-			pass
+			pass # no stats will be affected
 
 	@staticmethod
 	def check_if_round_ended(players):
