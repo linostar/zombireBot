@@ -89,7 +89,7 @@ class UserCommand:
 			target = source
 		target2 = target.replace("[", "..").replace("]", ",,")
 		if not target2.lower() in players:
-			self.connection.privmsg(self.channel, "{} is not a registered player.".format(target))
+			self.connection.privmsg(self.channel, "\x02{}\x02 is not a registered player.".format(target))
 			return
 		p = players[target2.lower()]
 		[utype, hp, mp, mmp, score, bonus] = [p['type'], p['hp'], p['mp'], p['mmp'],
@@ -105,7 +105,7 @@ class UserCommand:
 				bonus_text = "Power substantially increased due to \x02Dracula\x02 presence."
 			elif utype == "z" and Utils.bosses[1]['on']:
 				bonus_text = "Power substantially increased due to \x02Zombilo\x02 presence."
-		self.connection.privmsg(self.channel, "{} is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}"
+		self.connection.privmsg(self.channel, "\x02{}\x02 is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}"
 				.format(target, self.colored_types[utype], hp, mp, mmp, score, bonus_text))
 
 	def topscores(self):
@@ -123,18 +123,18 @@ class UserCommand:
 		source2 = source.replace("[", "..").replace("]", ",,")
 		target2 = target.replace("[", "..").replace("]", ",,")
 		if not source2.lower() in players:
-			self.connection.privmsg(self.channel, "{}: you are not registered in this game."
+			self.connection.privmsg(self.channel, "\x02{}:\x02 you are not registered in this game."
 				.format(source))
 		elif not target2.lower() in players:
-			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
+			self.connection.privmsg(self.channel, "\x02{}:\x02 {} isn't registered in this game.".format(
 				source, target))
 		elif players[source2.lower()]['type'] == players[target2.lower()]['type']:
-			self.connection.privmsg(self.channel, "{}: You cannot attack a {} like yourself.".format(
+			self.connection.privmsg(self.channel, "\x02{}:\x02 You cannot attack a {} like yourself.".format(
 				source, self.types[players[source2.lower()]['type']]))
 		elif User.check_gt(players, source2.lower(), 'mp', 0):
 			[dice1, dice2, res] = User.battle(source2.lower(), target2.lower(), players)
-			self.connection.privmsg(self.channel, ("{} rolled the dice and got \x02{}\x02. " +
-				"{} rolled the dice and got \x02{}\x02.").format(source, dice1, target, dice2))
+			self.connection.privmsg(self.channel, ("\x02{}\x02 rolled the dice and got \x02{}\x02. " +
+				"\x02{}\x02 rolled the dice and got \x02{}\x02.").format(source, dice1, target, dice2))
 			if res > 0: # attack succeeded
 				if players[source2.lower()]['type'] == "v":
 					self.connection.privmsg(self.channel, "\x02Attack succeeded.\x02 " +
@@ -173,22 +173,22 @@ class UserCommand:
 				self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
 					"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source, new_mmp))
 		else:
-			self.connection.privmsg(self.channel, "{}: You don't have enough MP to attack other players."
+			self.connection.privmsg(self.channel, "\x02{}:\x02 You don't have enough MP to attack other players."
 				.format(source))
 
 	def heal(self, source, target, players):
 		source2 = source.replace("[", "..").replace("]", ",,")
 		target2 = target.replace("[", "..").replace("]", ",,")
 		if not source2.lower() in players:
-			self.connection.privmsg(self.channel, "{}: you are not registered in this game."
+			self.connection.privmsg(self.channel, "\x02{}:\x02 you are not registered in this game."
 				.format(source))
 		elif not target2.lower() in players:
-			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
+			self.connection.privmsg(self.channel, "\x02{}:\x02 {} isn't registered in this game.".format(
 				source, target))
 		elif source2.lower() == target2.lower():
-			self.connection.privmsg(self.channel, "{}: You cannot heal yourself.".format(source))
+			self.connection.privmsg(self.channel, "\x02{}:\x02 You cannot heal yourself.".format(source))
 		elif players[source2.lower()]['type'] != players[target2.lower()]['type']:
-			self.connection.privmsg(self.channel, "{}: You cannot heal your enemy.".format(
+			self.connection.privmsg(self.channel, "\x02{}:\x02 You cannot heal your enemy.".format(
 				source))
 		elif User.check_gt(players, source2.lower(), 'mp', 0) and User.check_gt(players, source2.lower(), 'hp', 2):
 			User.donate(source2.lower(), target2.lower(), players)
@@ -196,10 +196,10 @@ class UserCommand:
 			self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 sacrificed 2 HP to heal an ally. " +
 				"\x03{0}{2}\x03 received 1 HP.").format(color, source, target))
 		elif User.check_gt(players, source2.lower(), 'mp', 0):
-			self.connection.privmsg(self.channel, "{}: You need at least 3 HP to be able to heal others."
+			self.connection.privmsg(self.channel, "\x02{}:\x02 You need at least 3 HP to be able to heal others."
 				.format(source))
 		else:
-			self.connection.privmsg(self.channel, "{}: You don't have enough MP to heal other players."
+			self.connection.privmsg(self.channel, "\x02{}:\x02 You don't have enough MP to heal other players."
 				.format(source))
 
 	def ambush(self, source, ftarget, starget, players):
@@ -207,26 +207,26 @@ class UserCommand:
 		ftarget2 = ftarget.replace("[", "..").replace("]", ",,")
 		starget2 = starget.replace("[", "..").replace("]", ",,")
 		if not source2.lower() in players:
-			self.connection.privmsg(self.channel, "{}: you are not registered in this game."
+			self.connection.privmsg(self.channel, "\x02{}:\x02 you are not registered in this game."
 				.format(source))
 		elif not ftarget2.lower() in players:
-			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
+			self.connection.privmsg(self.channel, "\x02{}:\x02 {} isn't registered in this game.".format(
 				source, ftarget))
 		elif not starget2.lower() in players:
-			self.connection.privmsg(self.channel, "{}: {} isn't registered in this game.".format(
+			self.connection.privmsg(self.channel, "\x02{}:\x02 {} isn't registered in this game.".format(
 				source, starget))
 		elif ftarget2.lower() == starget2.lower():
-			self.connection.privmsg(self.channel, "{}: You need to specify two different players."
+			self.connection.privmsg(self.channel, "\x02{}:\x02 You need to specify two different players."
 				.format(source))
 		elif players[source2.lower()]['type'] == players[ftarget2.lower()]['type'] or \
 		players[ftarget2.lower()]['type'] != players[starget2.lower()]['type']:
-			self.connection.privmsg(self.channel, "{}: You cannot attack {}s like yourself.".format(
+			self.connection.privmsg(self.channel, "\x02{}:\x02 You cannot attack {}s like yourself.".format(
 				source, self.types[players[source2.lower()]['type']]))
 		elif User.check_lt(players, source2.lower(), 'mp', 2):
-			self.connection.privmsg(self.channel, "{}: You need at least 2 MP to be able to ambush others."
+			self.connection.privmsg(self.channel, "\x02{}:\x02 You need at least 2 MP to be able to ambush others."
 				.format(source))
 		elif User.check_lt(players, source2.lower(), 'hp', 6):
-			self.connection.privmsg(self.channel, "{}: You need at least 6 HP to be able to ambush others."
+			self.connection.privmsg(self.channel, "\x02{}:\x02 You need at least 6 HP to be able to ambush others."
 				.format(source))
 		else: # ambush
 			res = User.ambush(source2.lower(), ftarget2.lower(), starget2.lower(), players)
@@ -426,7 +426,7 @@ class UserCommand:
 		source1 = source.replace("..", "[").replace(",,", "]")
 		p = players[source.lower()]
 		if (p['type'] == "v" and not Utils.bosses[1]['on']) or (p['type'] == "z" and not Utils.bosses[0]['on']):
-			self.connection.privmsg(self.channel, "{}: Your enemy's leader is not around.".format(source1))
+			self.connection.privmsg(self.channel, "\x02{}:\x02 Your enemy's leader is not around.".format(source1))
 		else:
 			if User.check_gt(players, source.lower(), 'mp', 0):
 				[res, dice1, dice2] = User.challenge_boss(source.lower(), players)
@@ -471,7 +471,7 @@ class UserCommand:
 					self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
 						"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source1, new_mmp))
 			else:
-				self.connection.profiles(self.channel, "{}: You do not have enough MP.".format(source1))
+				self.connection.profiles(self.channel, "\x02{}:\x02 You do not have enough MP.".format(source1))
 
 	def search(self, source, players):
 		source2 = source.replace("[", "..").replace("]", ",,")

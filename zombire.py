@@ -102,7 +102,7 @@ class Zombire(CustomSingleServerIRCBot):
 			if largs[2] == "3": # if user is identified to nickserv 
 				self.uc.register2(largs[1].lower(), self.channels, self.players) # proceed with the registration
 			else:
-				self.connection.privmsg(self.config['channel'], ("{}: You must register your nick first " +
+				self.connection.privmsg(self.config['channel'], ("\x02{}:\x02 You must register your nick first " +
 					"through NickServ, or identify if you have already registered it.").format(largs[1]))
 			return
 		# retrieving chanserv access list for channel
