@@ -583,7 +583,8 @@ class UserCommand:
 						if target:
 							self.connection.notice(source, "You cannot use this item on other players.")
 							return
-						User.use_item(item, source2.lower(), players)
+						if item != 14:
+							User.use_item(item, source2.lower(), players)
 						msg = "\x03{0}{1}\x03 consumed a \x02{2}\x02. "
 						if item == 1:
 							msg += "His/her HP increased by \x022\x02."
@@ -602,6 +603,7 @@ class UserCommand:
 							msg += "He/she transformed into a \x03" + self.colored_types[newtype] + "\x03."
 						elif item == 14:
 							if User.check_gt(players, source2.lower(), 'hp', 10):
+								User.use_item(item, source2.lower(), players)
 								boss_index = 0 if type1 == "v" else 1
 								if User.summon_boss(boss_index):
 									User.drop_item(item_index-1, source2.lower(), self.profiles)

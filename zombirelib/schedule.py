@@ -211,13 +211,13 @@ class Schedule:
 				for i in range(2):
 					if Utils.bosses:
 						if now_hour == Utils.bosses[i]['h'] and now_min == Utils.bosses[i]['m'] and \
-						now_sec >= Utils.bosses[i]['s'] and now_sec < Utils.bosses[i]['s'] + 6:
+						now_sec >= Utils.bosses[i]['s'] and now_sec < Utils.bosses[i]['s'] + 10 and not Utils.bosses[i]['on']:
 							Utils.bosses[i]['on'] = True
 							self.connection.privmsg(self.channel, self.msg_boss_join[i])
 							self.connection.privmsg(self.channel, self.msg_boss_name[i] +
 								random.choice(self.msg_boss_taunt[i]))
 						if now_hour == Utils.bosses[i]['h'] and now_min == Utils.bosses[i]['m'] + 15 and \
-						now_sec >= Utils.bosses[i]['s'] and now_sec < Utils.bosses[i]['s'] + 6:
+						now_sec >= Utils.bosses[i]['s'] and now_sec <= Utils.bosses[i]['s'] + 10:
 							if Utils.bosses[i]['on']:
 								Utils.bosses[i]['on'] = False
 								Utils.bosses[i]['shown'] = True
