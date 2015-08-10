@@ -26,6 +26,16 @@ class User:
 	13: "Thievic",      # steals a random item from target (if he has any)
 	14: "Summonic",     # sacrifices 20 HP to summon the player's leader
 	}
+	ore_names = {
+	0: "",
+	1: "Copper",
+	2: "Steel",
+	3: "Titanium",
+	4: "Quartz",
+	5: "Sapphire",
+	6: "Diamond",
+	7: "Bomb",
+	}
 
 	@staticmethod
 	def is_online(conn, nick):
@@ -372,6 +382,68 @@ class User:
 		Utils.bosses[boss_index]['h'] = now_hour
 		Utils.bosses[boss_index]['m'] = now_min
 		Utils.bosses[boss_index]['s'] = now_sec
+		return True
+
+	@staticmethod
+	def get_forge(source, profiles):
+		# bits 13..21 from extras, where each ore is 3 bits
+		ores = []
+		arsenal = (profiles[source]['extras'] >> 13) & 511
+		for i in range(3):
+			ores.append((arsenal >> 3*i) & 7)
+		return ores
+
+	@staticmethod
+	def save_forge(ores, source, profiles):
+		arsenal = 0
+		for i in range(3):
+			arsenal += ores[i] << 3*i
+		profiles[source]['extras'] &= ~(511 << 13)
+		profiles[source]['extras'] |= arsenal << 13
+
+	@staticmethod
+	def has_chest(source, profiles):
+		# bit 12 in extras
+		return (profiles[source]['extras'] >> 12) & 1
+
+	@staticmethod
+	def obtain_chest(source, profiles):
+		profiles[source]['extras'] |= 1 << 12
+
+	@staticmethod
+	def drop_chest(source, profiles):
+		profiles[source]['extras'] &= ~(1 << 12)
+
+	@staticmethod
+	def open_chest(source, profiles):
+		random.seed()
+		ore = random.randrange(0, len(User.ore_names))
+		User.drop_chest(source, profiles)
+		return ore
+
+	@staticmethod
+	def add_forge(source, profiles):
+		ores = User.get_forge(source, profiles)
+		if ores[0] and ores[1] and ores[2]:
+			return -1
+		new_ore = User.open_chest(source, profiles)
+		if new_ore:
+			if ores[0] and ores[1]:
+				ores[2] = new_ore
+			elif ores[0]:
+				ores[1] = new_ore
+			else:
+				ores[0] = new_ore
+			User.save_forge(ores, source, profiles)
+			return new_ore
+
+	@staticmethod
+	def drop_forge(ore_index, source, profiles):
+		ores = User.get_forge(source, profiles)
+		if not ores[ore_index]:
+			return False
+		ores[ore_index] = 0
+		User.save_forge(ores, source, profiles)
 		return True
 
 	@staticmethod
