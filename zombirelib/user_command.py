@@ -3,6 +3,7 @@ import datetime
 
 from .user import User
 from .utils import Utils
+from .schedule import Schedule
 
 class UserCommand:
 	types = {'v': 'vampire', 'z': 'zombie'}

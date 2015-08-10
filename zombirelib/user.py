@@ -7,6 +7,7 @@ class User:
 	CUMULATIVE = 5
 	MMP_MAX = 60
 	MMP_MIN = 1
+	rare_items = (7, 8, 9, 10, 11, 12, 13, 14)
 	item_names = {
 	0: "",
 	1: "small apple",   # +2 HP
@@ -246,6 +247,9 @@ class User:
 		players[source]['mp'] -= 1
 		new_item = User.search_item(source, profiles)
 		if new_item:
+			# don't allow a player to have more than 1 unit of a rare item
+			while (new_item in User.rare_items and new_item in items) or not new_item:
+				new_item = User.search_item(source, profiles)
 			if items[0] and items[1]:
 				items[2] = new_item
 			elif items[0]:
