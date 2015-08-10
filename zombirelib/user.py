@@ -1,4 +1,5 @@
 import random
+import datetime
 
 from .utils import Utils
 
@@ -354,6 +355,23 @@ class User:
 			pass # no stats will be affected
 		elif item == 13:
 			pass # no stats will be affected
+
+	@staticmethod
+	def summon_boss(boss_index):
+		if Utils.bosses[boss_index]['on']:
+			return False
+		now_hour = datetime.datetime.now().hour
+		now_min = datetime.datetime.now().minute
+		now_sec = datetime.datetime.now().second
+		now_min += 1
+		if now_min >= 60:
+			now_min %= 60
+			now_hour = (now_hour + 1) % 24
+		Utils.bosses[boss_index]['shown'] = False
+		Utils.bosses[boss_index]['h'] = now_hour
+		Utils.bosses[boss_index]['m'] = now_min
+		Utils.bosses[boss_index]['s'] = now_sec
+		return True
 
 	@staticmethod
 	def check_if_round_ended(players):

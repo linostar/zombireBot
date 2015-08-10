@@ -528,7 +528,7 @@ class UserCommand:
 							elif item == 10:
 								msg += "As a result, each of the two has now the other player's HP stats."
 							elif item == 11:
-								if players[source2.lower()]['mp'] < 1:
+								if User.check_lt(players, source2.lower(), 'mp', 1):
 									self.connection.notice(source, "You do not have any MP to use this item.")
 									return
 								msg += "He/she sacrificed 1 MP to decrease \x03{3}{4}\x03's HP by 5."
@@ -601,11 +601,23 @@ class UserCommand:
 							newtype = players[source2.lower()]['type']
 							msg += "He/she transformed into a \x03" + self.colored_types[newtype] + "\x03."
 						elif item == 14:
-							pass
+							if User.check_gt(players, source2.lower(), 'hp', 10):
+								boss_index = 0 if type1 == "v" else 1
+								if User.summon_boss(boss_index):
+									User.drop_item(item_index-1, source2.lower(), self.profiles)
+									self.connection.privmsg(self.channel, msg.format(
+										self.colors[type1], source, User.item_names[item]))
+									self.connection.privmsg(self.channel, "\x03{}{}\x03 will arrive in 1 minute."
+										.format(self.colors[type1], self.leaders[type1]))
+								else:
+									self.connection.notice(source, "You cannot use this item now because your leader is already here.")
+							else:
+								self.connection.notice(source, "You need to have more than 10 HP to use this item.")
 						# remove item after it was consumed
-						User.drop_item(item_index-1, source2.lower(), self.profiles)
-						self.connection.privmsg(self.channel, msg.format(
-							self.colors[type1], source, User.item_names[item]))
+						if item != 14:
+							User.drop_item(item_index-1, source2.lower(), self.profiles)
+							self.connection.privmsg(self.channel, msg.format(
+								self.colors[type1], source, User.item_names[item]))
 					if item in (7, 11):
 						self.check_end(players)
 				else:
