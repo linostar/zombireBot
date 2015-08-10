@@ -131,7 +131,7 @@ class UserCommand:
 		elif players[source2.lower()]['type'] == players[target2.lower()]['type']:
 			self.connection.privmsg(self.channel, "{}: You cannot attack a {} like yourself.".format(
 				source, self.types[players[source2.lower()]['type']]))
-		elif players[source2.lower()]['mp'] > 0:
+		elif User.check_gt(players, source2.lower(), 'mp', 0):
 			[dice1, dice2, res] = User.battle(source2.lower(), target2.lower(), players)
 			self.connection.privmsg(self.channel, ("{} rolled the dice and got \x02{}\x02. " +
 				"{} rolled the dice and got \x02{}\x02.").format(source, dice1, target, dice2))
@@ -190,12 +190,12 @@ class UserCommand:
 		elif players[source2.lower()]['type'] != players[target2.lower()]['type']:
 			self.connection.privmsg(self.channel, "{}: You cannot heal your enemy.".format(
 				source))
-		elif players[source2.lower()]['mp'] > 0 and players[source2.lower()]['hp'] > 2:
+		elif User.check_gt(players, source2.lower(), 'mp', 0) and User.check_gt(players, source2.lower(), 'hp', 2):
 			User.donate(source2.lower(), target2.lower(), players)
 			color = 4 if players[source2.lower()]['type'] == "v" else 3
 			self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 sacrificed 2 HP to heal an ally. " +
 				"\x03{0}{2}\x03 received 1 HP.").format(color, source, target))
-		elif players[source2.lower()]['mp'] > 0:
+		elif User.check_gt(players, source2.lower(), 'mp', 0):
 			self.connection.privmsg(self.channel, "{}: You need at least 3 HP to be able to heal others."
 				.format(source))
 		else:
@@ -222,10 +222,10 @@ class UserCommand:
 		players[ftarget2.lower()]['type'] != players[starget2.lower()]['type']:
 			self.connection.privmsg(self.channel, "{}: You cannot attack {}s like yourself.".format(
 				source, self.types[players[source2.lower()]['type']]))
-		elif players[source2.lower()]['mp'] < 2:
+		elif User.check_lt(players, source2.lower(), 'mp', 2):
 			self.connection.privmsg(self.channel, "{}: You need at least 2 MP to be able to ambush others."
 				.format(source))
-		elif players[source2.lower()]['hp'] < 6:
+		elif User.check_lt(players, source2.lower(), 'hp', 6):
 			self.connection.privmsg(self.channel, "{}: You need at least 6 HP to be able to ambush others."
 				.format(source))
 		else: # ambush
@@ -428,7 +428,7 @@ class UserCommand:
 		if (p['type'] == "v" and not Utils.bosses[1]['on']) or (p['type'] == "z" and not Utils.bosses[0]['on']):
 			self.connection.privmsg(self.channel, "{}: Your enemy's leader is not around.".format(source1))
 		else:
-			if p['mp'] > 0:
+			if User.check_gt(players, source.lower(), 'mp', 0):
 				[res, dice1, dice2] = User.challenge_boss(source.lower(), players)
 				utype = p['type']
 				otype = "v" if utype == "z" else "z"
@@ -476,7 +476,7 @@ class UserCommand:
 	def search(self, source, players):
 		source2 = source.replace("[", "..").replace("]", ",,")
 		if source2.lower() in self.profiles and source2.lower() in players:
-			if players[source2.lower()]['mp'] > 0:
+			if User.check_gt(players, source2.lower(), 'mp', 0):
 				item = User.add_item(source2.lower(), self.profiles, players)
 				if item == -1:
 					self.connection.notice(source, "You cannot search for items. Your inventory is already full.")

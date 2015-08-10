@@ -73,11 +73,11 @@ class Schedule:
 					self.last_hour_auto = now_hour
 					for nick in self.profiles:
 						if nick in self.players:
-							if self.players[nick]['mp'] > 0:
+							if User.check_gt(self.players, nick, 'mp', 0):
 								utype = self.players[nick]['type']
 								otype = "v" if utype == "z" else "z"
 								if self.profiles[nick]['auto'] & 2: # auto-heal
-									if self.players[nick]['hp'] > 2:
+									if User.check_gt(self.players, nick, 'hp', 2):
 										pfilter = {x:self.players[x]['hp'] for x in self.players
 											if self.players[x]['type'] == utype and x != nick}
 										if list(pfilter):
