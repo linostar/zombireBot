@@ -519,14 +519,20 @@ class UserCommand:
 						target2 = target.replace("[", "..").replace("]", ",,")
 						if target2.lower() in players:
 							type2 = players[target2.lower()]['type']
-							User.use_item2(item, source2.lower(), target2.lower(), players)
+							if item != 10:
+								User.use_item2(item, source2.lower(), target2.lower(), players)
 							msg = "\x03{0}{1}\x03 used \x02{2}\x02 on \x03{3}{4}\x03. "
 							if item == 8:
 								msg += "The explosion lowered the HP of both to \x021\x02."
 							elif item == 9:
 								msg += "As a result, \x03{3}{4}\x03 lost all his/her bonus effects."
 							elif item == 10:
-								msg += "As a result, each of the two has now the other player's HP stats."
+								if players[source2.lower()]['mp'] == players[source2.lower()]['mmp']:
+									User.use_item2(item, source2.lower(), target2.lower(), players)
+									msg += "As a result, each of the two has now the other player's HP stats."
+								else:
+									self.connection.notice(source, "You need to have full MP to use this item.")
+									return
 							elif item == 11:
 								if User.check_lt(players, source2.lower(), 'mp', 1):
 									self.connection.notice(source, "You do not have any MP to use this item.")
@@ -604,7 +610,7 @@ class UserCommand:
 							newtype = players[source2.lower()]['type']
 							msg += "He/she transformed into a \x03" + self.colored_types[newtype] + "\x03."
 						elif item == 14:
-							if User.check_gt(players, source2.lower(), 'hp', 10):
+							if User.check_gt(players, source2.lower(), 'hp', 20):
 								User.use_item(item, source2.lower(), players)
 								boss_index = 0 if type1 == "v" else 1
 								if User.summon_boss(boss_index):
@@ -616,7 +622,7 @@ class UserCommand:
 								else:
 									self.connection.notice(source, "You cannot use this item now because your leader is already here.")
 							else:
-								self.connection.notice(source, "You need to have more than 10 HP to use this item.")
+								self.connection.notice(source, "You need to have more than 20 HP to use this item.")
 						# remove item after it was consumed
 						if item != 14:
 							User.drop_item(item_index-1, source2.lower(), self.profiles)

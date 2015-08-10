@@ -75,11 +75,11 @@ Large lemon | no | no | +3 MP (MP will not go over Maximum MP)
 Transformic | no | yes | tranforms the player to the opposite type without affecting his/her stats
 Explodic | yes | yes | suicidal attack (renders the HP of the user and the target to 1)
 Neutralic | yes | yes | removes any bonus effect of a particular player
-Switchic | yes | yes | switches the HP stats between player and target
+Switchic | yes | yes | switches the HP stats between player and target (consumes the full MP of the player)
 Drainic | yes | yes | sacrifices 1 MP to decrease the target's HP by 5
 Revealic | yes | yes | reveals the inventory contents of the target
 Thievic | yes | yes | steals a random item from the target (if the target has any)
-Summonic | no | yes | sacrifices 10 HP to summon the player's leader for 15 minutes
+Summonic | no | yes | sacrifices 20 HP to summon the player's leader for 15 minutes
 
 The unused items will remain in the player inventory even after a round ends.
 

@@ -24,7 +24,7 @@ class User:
 	11: "Drainic",      # sacrifice 1 MP to get 5 HP
 	12: "Revealic",     # reveals the inventory contents of a target
 	13: "Thievic",      # steals a random item from target (if he has any)
-	14: "Summonic",     # sacrifices 10 HP to summon the player's leader
+	14: "Summonic",     # sacrifices 20 HP to summon the player's leader
 	}
 
 	@staticmethod
@@ -335,7 +335,7 @@ class User:
 			else:
 				players[source]['type'] = "v"
 		elif item == 14:
-			players[source]['hp'] -= 10
+			players[source]['hp'] -= 20
 
 	@staticmethod
 	def use_item2(item, source, target, players):
@@ -345,6 +345,7 @@ class User:
 		elif item == 9:
 			players[target]['bonus'] = players[target]['bonus'] // 10 * 10
 		elif item == 10:
+			players[source]['mp'] = 0
 			old_hp = players[source]['hp']
 			players[source]['hp'] = players[target]['hp']
 			players[target]['hp'] = old_hp
