@@ -497,10 +497,18 @@ class User:
 
 	@staticmethod
 	def drop_from_forge(ore_index, source, profiles):
+		# ore_index can be 1, 2 or 3
+		ore_index -= 1
 		ores = User.get_forge(source, profiles)
 		if not ores[ore_index]:
 			return False
-		ores[ore_index] = 0
+		if ore_index == 0:
+			ores[0] = ores[1]
+			ores[1] = ores[2]
+		elif ore_index == 1:
+			ores[1] = ores[2]
+		else:
+			ores[2] = 0
 		User.save_forge(ores, source, profiles)
 		return True
 

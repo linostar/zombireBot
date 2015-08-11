@@ -690,6 +690,38 @@ class UserCommand:
 		if action == "drop":
 			self.connection.notice(source, "You dropped the chest.")
 
+	def forge_list(self, source):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		ores = User.get_forge(source2.lower(), self.profiles)
+		if not ores[0]:
+			self.connection.notice(source, "Your forge is empty.")
+			return
+		msg = "Your forge contains: "
+		for i in range(3):
+			if not ores[i]:
+				break
+			msg += "\x02{}- {}.\x02".format(i+1, User.ore_names[ores[i]])
+		self.connection.notice(source, msg)
+
+	def forge_change(self, source, action, ore_index):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		if action.lower() == "drop":
+			try:
+				ore_index = int(ore_index)
+				if ore_index not in (1, 2, 3):
+					self.connection.notice(source, "You can only enter a number between 1 and 3 after !forge drop.")
+					return
+				if User.drop_from_forge(ore_index, source2.lower(), self.profiles):
+					self.connection.notice(source, "Ore \x02#{}\x02 was dropped from your forge."
+						.format(ore_index))
+				else:
+					self.connection.notice(source, "Ore \x02#{}\x02 does not exist in your forge."
+						.format(ore_index))
+			except ValueError:
+				self.connection.notice(source, "You can only enter a number between 1 and 3 after !forge drop.")
+		else:
+			self.connection.notice(source, "Incorrect !forge command syntax.")
+
 	def execute(self, event, command, players):
 		command = command.strip()
 		first_space = command.find(" ")
@@ -742,3 +774,7 @@ class UserCommand:
 			self.drop(event.source.nick, args[0])
 		elif cmd == "chest" and len(args) == 1:
 			self.chest(args[0].lower(), event.source.nick)
+		elif cmd == "forge" and not args:
+			self.forge_list(event.source.nick)
+		elif cmd == "forge" and len(args) == 2:
+			self.forge_change(event.source.nick, args[0], args[1])
