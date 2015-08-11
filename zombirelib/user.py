@@ -76,6 +76,50 @@ class User:
 		return 0.5
 
 	@staticmethod
+	def get_bonus(source, players):
+		# lowest 2 bits of 'bonus'
+		return players[source]['bonus'] & 3
+
+	@staticmethod
+	def set_bonus(source, players, value):
+		# value can only be: 0, 1 or 2
+		players[source]['bonus'] &= ~3
+		players[source]['bonus'] |= value
+
+	@staticmethod
+	def reset_both_attacks(source, players):
+		# clear bits 2..7 of 'bonus'
+		players[source]['bonus'] &= ~(63 << 2)
+
+	@staticmethod
+	def check_positive_attacks(source, players):
+		# bits 2..4 of 'bonus'
+		positive_count = (players[source]['bonus'] >> 2) & 7
+		# reset negative count
+		players[source]['bonus'] &= ~(7 << 5)
+		# increase and check
+		positive_count = (positive_count + 1) % User.CUMULATIVE
+		# store back
+		players[source]['bonus'] &= ~(7 << 2)
+		players[source]['bonus'] |= positive_count << 2
+		if not positive_count:
+			return True
+
+	@staticmethod
+	def check_negative_attacks(source, players):
+		# bits 5..7 of 'bonus'
+		negative_count = (players[source]['bonus'] >> 5) & 7
+		# reset positive count
+		players[source]['bonus'] &= ~(7 << 2)
+		# increase and check
+		negative_count = (negative_count + 1) % User.CUMULATIVE
+		# store back
+		players[source]['bonus'] &= ~(7 << 5)
+		players[source]['bonus'] |= negative_count << 5
+		if not negative_count:
+			return True
+
+	@staticmethod
 	def transform(target, players, source=None):
 		if players[target]['hp'] > 0:
 			return False
@@ -100,15 +144,17 @@ class User:
 		random.seed()
 		p1 = players[source]
 		p2 = players[target]
-		if p1['bonus'] % 10 == 1:
+		bonus1 = User.get_bonus(source, players)
+		bonus2 = User.get_bonus(target, players)
+		if bonus1 == 1:
 			dice1 = int(random.random() * 4) + 3 # +30% winning chance
-		elif p1['bonus'] % 10 == 2:
+		elif bonus1 == 2:
 			dice1 = int(random.random() * 4) + 1 # -30% winning chance
 		else:
 			dice1 = int(random.random() * 6) + 1 # normal winning chance
-		if p2['bonus'] % 10 == 1:
+		if bonus2 == 1:
 			dice2 = int(random.random() * 4) + 3 # +30% winning chance
-		elif p2['bonus'] % 10 == 2:
+		elif bonus2 == 2:
 			dice2 = int(random.random() * 4) + 1 # -30% winning chance
 		else:
 			dice2 = int(random.random() * 6) + 1 # normal winning chance
@@ -152,21 +198,24 @@ class User:
 		p0 = players[source]
 		p1 = players[target1]
 		p2 = players[target2]
-		if p0['bonus'] % 10 == 1:
+		bonus0 = User.get_bonus(source, players)
+		bonus1 = User.get_bonus(target1, players)
+		bonus2 = User.get_bonus(target2, players)
+		if bonus0 == 1:
 			dice0 = random.randint(3, 6) + random.randint(3, 6)
-		elif p0['bonus'] % 10 == 2:
+		elif bonus0 == 2:
 			dice0 = random.randint(1, 4) + random.randint(1, 4)
 		else:
 			dice0 = random.randint(1, 6) + random.randint(1, 6)
-		if p1['bonus'] % 10 == 1:
+		if bonus1 == 1:
 			dice1 = random.randint(3, 6)
-		elif p1['bonus'] % 10 == 2:
+		elif bonus1 == 2:
 			dice1 = random.randint(1, 4)
 		else:
 			dice1 = random.randint(1, 6)
-		if p2['bonus'] % 10 == 1:
+		if bonus2 == 1:
 			dice2 = random.randint(3, 6)
-		elif p2['bonus'] % 10 == 2:
+		elif bonus2 == 2:
 			dice2 = random.randint(1, 4)
 		else:
 			dice2 = random.randint(1, 6)
@@ -202,13 +251,14 @@ class User:
 	def challenge_boss(source, players):
 		random.seed()
 		p = players[source]
+		bonus1 = User.get_bonus(source, players)
 		if p['type'] == "v" and Utils.bosses[0]['on']:
 			dice1 = random.choice((5, 6))
 		elif p['type'] == "z" and Utils.bosses[1]['on']:
 			dice1 = random.choice((5, 6))
-		elif p['bonus'] % 10 == 1:
+		elif bonus1 == 1:
 			dice1 = random.randint(3, 6)
-		elif p['bonus'] % 10 == 2:
+		elif bonus1 == 2:
 			dice1 = random.randint(1, 4)
 		else:
 			dice1 = random.randint(1, 6)
@@ -227,24 +277,18 @@ class User:
 	@staticmethod
 	def redetermine_mmp(result, nick, players):
 		if result > 0:
-			players[nick]['bonus'] -= (players[nick]['bonus'] // 100) * 100
-			players[nick]['bonus'] += 10
-			if (players[nick]['bonus'] % 100) // 10 == User.CUMULATIVE:
-				players[nick]['bonus'] -= User.CUMULATIVE * 10
+			if User.check_positive_attacks(nick, players):
 				if players[nick]['mmp'] < User.MMP_MAX:
 					players[nick]['mmp'] += 1
 					return 1
 		elif result < 0:
-			players[nick]['bonus'] -= ((players[nick]['bonus'] % 100) // 10) * 10
-			players[nick]['bonus'] += 100
-			if players[nick]['bonus'] // 100 == User.CUMULATIVE:
-				players[nick]['bonus'] -= User.CUMULATIVE * 100
+			if User.check_negative_attacks(nick, players):
 				if players[nick]['mmp'] > User.MMP_MIN:
 					players[nick]['mmp'] -= 1
 					return -1
 		else:
 			# reset the cumulation to zero
-			players[nick]['bonus'] %= 10
+			User.reset_both_attacks(nick, players)
 
 	@staticmethod
 	def get_inventory(source, profiles):
@@ -357,7 +401,7 @@ class User:
 			players[source]['hp'] = 1
 			players[target]['hp'] = 1
 		elif item == 9:
-			players[target]['bonus'] = players[target]['bonus'] // 10 * 10
+			User.set_bonus(target, players, 0)
 		elif item == 10:
 			players[source]['mp'] = 0
 			old_hp = players[source]['hp']

@@ -92,11 +92,11 @@ class UserCommand:
 			self.connection.privmsg(self.channel, "\x02{}\x02 is not a registered player.".format(target))
 			return
 		p = players[target2.lower()]
-		[utype, hp, mp, mmp, score, bonus] = [p['type'], p['hp'], p['mp'], p['mmp'],
-		p['score'], p['bonus']]
-		if bonus % 10 == 1:
+		[utype, hp, mp, mmp, score] = [p['type'], p['hp'], p['mp'], p['mmp'], p['score']]
+		bonus = User.get_bonus(target2.lower(), players)
+		if bonus == 1:
 			bonus_text = "Bonus: +30% attack/defense."
-		elif bonus % 10 == 2:
+		elif bonus == 2:
 			bonus_text = "Bonus: -30% attack/defense."
 		else:
 			bonus_text = ""

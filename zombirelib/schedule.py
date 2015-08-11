@@ -268,7 +268,7 @@ class Schedule:
 			rand_sample = random.sample(list(self.players), nb_sample)
 			list_nicks = ", ".join(rand_sample)
 			for nick in rand_sample:
-				self.players[nick]['bonus'] += btype
+				User.set_bonus(nick, self.players, btype)
 			list_nicks = list_nicks.replace("..", "[").replace(",,", "]")
 			return list_nicks
 		else: # btype == 3
@@ -279,17 +279,16 @@ class Schedule:
 			list_nicks1 = ", ".join(rand_sample1)
 			list_nicks2 = ", ".join(rand_sample2)
 			for nick in rand_sample1:
-				self.players[nick]['bonus'] += 1
+				User.set_bonus(nick, self.players, 1)
 			for nick in rand_sample2:
-				self.players[nick]['bonus'] += 2
+				User.set_bonus(nick, self.players, 2)
 			list_nicks1 = list_nicks1.replace("..", "[").replace(",,", "]")
 			list_nicks2 = list_nicks2.replace("..", "[").replace(",,", "]")
 			return [list_nicks1, list_nicks2]
 
 	def clear_bonus(self):
 		for nick in self.players:
-			old_val = self.players[nick]['bonus']
-			self.players[nick]['bonus'] = (old_val // 10) * 10
+			User.set_bonus(nick, self.players, 0)
 
 	def stop(self):
 		self.loop = False
