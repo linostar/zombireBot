@@ -267,9 +267,13 @@ class User:
 	def search_item(source, profiles):
 		random.seed()
 		# 25% chance for finding an item
-		chance = random.randint(1, 4)
-		if chance == 2:
-			return random.randrange(1, len(User.item_names))
+		chance = random.randint(1, 12)
+		if chance == 3:
+			# rare item
+			return random.randrange(7, len(User.item_names))
+		elif chance in (1, 2):
+			# non-rare item, aka fruit
+			return random.randint(1, 6)
 		else:
 			return 0
 
