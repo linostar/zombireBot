@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
 
 -- Table structure for table `arsenal`
 
-CREATE TABLE IF NOT EXISTS `arsenal` (
+CREATE TABLE IF NOT EXISTS `arsenals` (
   `aid` int NOT NULL AUTO_INCREMENT,
   `nick` varchar(64) NOT NULL,
   `sword` smallint NOT NULL DEFAULT 0,

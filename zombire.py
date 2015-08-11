@@ -71,15 +71,16 @@ class Zombire(CustomSingleServerIRCBot):
 		self.dbc = Database(self.config)
 		self.players = self.dbc.get_players()
 		self.profiles = self.dbc.get_profiles()
+		self.arsenals = self.dbc.get_arsenals()
 		CustomSingleServerIRCBot.__init__(self, [(self.config['server'], self.config['port'])],
 		self.config['nick'], self.config['realname'])
 		self.sched = schedule.Schedule(self.connection, self.dbc, self.config['channel'],
-			self.players, self.profiles)
+			self.players, self.profiles, self.arsenals)
 		self.uc = user_command.UserCommand(self.connection, self.dbc, self.config['channel'], 
-			self.config['channel_accesstype'], self.profiles)
+			self.config['channel_accesstype'], self.profiles, self.arsenals)
 		self.ac = admin_command.AdminCommand(self.connection, self.dbc, self.config['channel'], 
 			str(self.config['admin_passwd']), self.config['channel_accesstype'], self.sched,
-			self.profiles)
+			self.profiles, self.arsenals)
 		Utils.bosses = Utils.create_bosses()
 		Utils.b_created = True
 

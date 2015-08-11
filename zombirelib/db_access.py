@@ -30,7 +30,7 @@ class Database:
 			print("Error: {}".format(err))
 			raise
 
-	def save(self, players, profiles):
+	def save(self, players, profiles, arsenals):
 		if not players:
 			self.query("delete from `users`")
 			return True
@@ -42,6 +42,10 @@ class Database:
 			p = profiles[nick]
 			self.query("update `profiles` set `autovals` = {}, `extras` = {} where `nick` = '{}'"
 				.format(p['auto'], p['extras'], nick))
+		for nick in arsenals:
+			a = arsenals[nick]
+			self.query("update `arsenals` set `sword` = {}, `slife` = {}, `armor` = {}, `alife` = {} where `nick` = '{}'"
+				.format(a['sword'], a['slife'], a['armor'], a['alife'], nick))
 		return True
 
 	def query_select(self, expr, args=None):
@@ -74,6 +78,10 @@ class Database:
 		if self.query_select("select * from `profiles` where `nick` = %s", nick.lower()):
 			return True
 
+	def has_arsenal(self, nick):
+		if self.query_select("select * from `arsenals` where `nick` = %s", nick.lower()):
+			return True
+
 	def register_user(self, nick, usertype, main_nick=None):
 		if not self.is_registered(nick):
 			if not main_nick:
@@ -82,6 +90,9 @@ class Database:
 				.format(nick.lower(), main_nick.lower(), usertype))
 			if not self.has_profile(nick):
 				self.query("insert into `profiles` values (0, '{}', 0, 0)"
+					.format(nick.lower()))
+			if not self.has_arsenal(nick):
+				self.query("insert into `arsenals` values (0, '{}', 0, 0, 0, 0)"
 					.format(nick.lower()))
 			return True
 
@@ -113,8 +124,19 @@ class Database:
 					profiles[row[0]] = {'auto': row[1], 'extras': row[2]}
 		return profiles
 
+	def get_arsenals(self):
+		arsenals = {}
+		if self.query_select("select `nick`, `sword`, `slife`, `armor`, `alife` from `arsenals`", (None)):
+			for row in self.cur:
+				if row:
+					arsenals[row[0]] = {'sword': row[1], 'slife': row[2], 'armor': row[3], 'alife': row[4]}
+		return arsenals
+
 	def delete_profile(self, nick):
 		self.query("delete from `profiles` where `nick` = '{}'".format(nick))
+
+	def delete_arsenal(self, nick):
+		self.query("delete from `arsenals` where `nick` = '{}'".format(nick))
 
 	def add_highscore(self, nick, utype, score):
 		now_date = datetime.date.today().strftime("%Y-%m-%d")

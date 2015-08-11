@@ -14,7 +14,7 @@ class Utils:
 	registering_nick = ""
 	# Dracula is bosses[0] and Zombilo is bosses[1]
 	bosses = []
-	b_created = False
+	b_created = False # for boss creation
 
 	@staticmethod
 	def cut_to_chunks(msg):

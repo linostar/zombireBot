@@ -33,13 +33,14 @@ class Schedule:
 	msg_boss_taunt = [("BRING ME SOME BLOODY ZOMBIE SOUP!", "WE WILL SUCK THEIR BRAINS DRY!", "BRING IT ON, YOU GREENISH PUKE MONSTERS!"),
 	("ZOMBIES, WHAT IS YOUR PROFESSION?", "WE WILL MAKE NECKLACES FROM THEIR FANGS!", "TONIGHT WE DINE ON THOSE BLOODY SUCKERS!")]
 
-	def __init__(self, conn, dbc, channel, players, profiles):
+	def __init__(self, conn, dbc, channel, players, profiles, arsenals):
 		random.seed()
 		self.connection = conn
 		self.dbc = dbc
 		self.channel = channel
 		self.players = players
 		self.profiles = profiles
+		self.arsenals = arsenals
 		misc_thread = threading.Thread(target=self.misc_tasks)
 		misc_thread.start()
 		bonus_thread = threading.Thread(target=self.give_bonus)
@@ -259,7 +260,7 @@ class Schedule:
 						else:
 							pass # no bonus
 					# save new stats after regenerate_mp and give_bonus
-					self.dbc.save(self.players, self.profiles)
+					self.dbc.save(self.players, self.profiles, self.arsenals)
 			time.sleep(5)
 
 	def bonus_random_players(self, btype):

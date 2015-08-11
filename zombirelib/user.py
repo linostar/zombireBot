@@ -36,6 +36,18 @@ class User:
 	6: "Diamond",
 	7: "Stone",
 	}
+	sword_names = {
+	0: "Wooden",
+	1: "Copper",
+	2: "Steel",
+	3: "Titanium",
+	}
+	armor_names = {
+	0: "Wooden",
+	1: "Quartz",
+	2: "Sapphire",
+	3: "Diamond",
+	}
 
 	@staticmethod
 	def is_online(conn, nick):

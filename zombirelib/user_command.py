@@ -11,13 +11,14 @@ class UserCommand:
 	colored_types = {'v': '4vampire', 'z': '3zombie'}
 	leaders = {'v': 'Count Dracula', 'z': 'General Zombilo'}
 
-	def __init__(self, conn, dbc, channel, access, profiles):
+	def __init__(self, conn, dbc, channel, access, profiles, arsenals):
 		random.seed()
 		self.connection = conn
 		self.dbc = dbc
 		self.channel = channel
 		self.access = access
 		self.profiles = profiles
+		self.arsenals = arsenals
 
 	def howtoplay(self, nick):
 		self.connection.notice(nick, "See: " + Utils.HOW_TO_PLAY)
@@ -56,6 +57,8 @@ class UserCommand:
 			players[nick2] = {'type': utype, 'hp': 10, 'mp': 5, 'mmp': 5, 'score': 0, 'bonus': 0}
 			if not nick2 in self.profiles:
 				self.profiles[nick2] = {'auto': 0, 'extras': 0}
+			if not nick2 in self.arsenals:
+				self.arsenals[nick2] = {'sword': 0, 'slife': 0, 'armor': 0, 'alife': 0}
 			self.connection.notice(nick, "You have successfully registered as a \x03{}\x03!"
 				.format(self.colored_types[utype]))
 			if len(players) == 1:
@@ -109,8 +112,10 @@ class UserCommand:
 				bonus_text = "Power substantially increased due to \x02Dracula\x02 presence."
 			elif utype == "z" and Utils.bosses[1]['on']:
 				bonus_text = "Power substantially increased due to \x02Zombilo\x02 presence."
+		a = self.arsenals[target2.lower()]
 		self.connection.privmsg(self.channel, ("\x02{}\x02 is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}" +
-			" {}").format(target, self.colored_types[utype], hp, mp, mmp, score, bonus_text, chest_text))
+			"Equipment: {} sword ({}) and {} armor ({}). {}").format(target, self.colored_types[utype], hp, mp, mmp, score,
+			bonus_text, User.sword_names[a['sword']], a['slife'], User.armor_names[a['armor']], a['alife'], chest_text))
 
 	def topscores(self):
 		msg = ""
