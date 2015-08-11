@@ -100,13 +100,17 @@ class UserCommand:
 			bonus_text = "Bonus: -30% attack/defense."
 		else:
 			bonus_text = ""
+		if User.has_chest(target2.lower(), self.profiles):
+			chest_text = "1 chest."
+		else:
+			chest_text = ""
 		if Utils.bosses:
 			if utype == "v" and Utils.bosses[0]['on']:
 				bonus_text = "Power substantially increased due to \x02Dracula\x02 presence."
 			elif utype == "z" and Utils.bosses[1]['on']:
 				bonus_text = "Power substantially increased due to \x02Zombilo\x02 presence."
-		self.connection.privmsg(self.channel, "\x02{}\x02 is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}"
-				.format(target, self.colored_types[utype], hp, mp, mmp, score, bonus_text))
+		self.connection.privmsg(self.channel, ("\x02{}\x02 is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}" +
+			" {}").format(target, self.colored_types[utype], hp, mp, mmp, score, bonus_text, chest_text))
 
 	def topscores(self):
 		msg = ""
@@ -172,6 +176,9 @@ class UserCommand:
 			elif got_new_mmp == -1:
 				self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
 					"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source, new_mmp))
+			# will a chest appear?
+			if User.chest_appearing(source2.lower(), self.profiles):
+				self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(source))
 		else:
 			self.connection.privmsg(self.channel, "\x02{}:\x02 You don't have enough MP to attack other players."
 				.format(source))
@@ -195,6 +202,9 @@ class UserCommand:
 			color = 4 if players[source2.lower()]['type'] == "v" else 3
 			self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 sacrificed 2 HP to heal an ally. " +
 				"\x03{0}{2}\x03 received 1 HP.").format(color, source, target))
+			# will a chest appear?
+			if User.chest_appearing(source2.lower(), self.profiles):
+				self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(source))
 		elif User.check_gt(players, source2.lower(), 'mp', 0):
 			self.connection.privmsg(self.channel, "\x02{}:\x02 You need at least 3 HP to be able to heal others."
 				.format(source))
@@ -271,6 +281,9 @@ class UserCommand:
 			elif got_new_mmp == -1:
 				self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
 					"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source, new_mmp))
+			# will a chest appear?
+			if User.chest_appearing(source2.lower(), self.profiles):
+				self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(source))
 
 	def list_players(self, utype, players):
 		zombires = [nick.replace("..", "[").replace(",,", "]") for nick in players if players[nick]['type'] == utype]

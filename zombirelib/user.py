@@ -426,6 +426,16 @@ class User:
 		return ore
 
 	@staticmethod
+	def chest_appearing(source, profiles):
+		if not User.has_chest(source, profiles):
+			random.seed()
+			# chance to get a chest is 33%
+			chance = random.randint(1, 3)
+			if chance == 2:
+				User.obtain_chest(source, profiles)
+				return True
+
+	@staticmethod
 	def add_forge(source, profiles):
 		ores = User.get_forge(source, profiles)
 		if ores[0] and ores[1] and ores[2]:
