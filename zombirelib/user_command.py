@@ -680,13 +680,15 @@ class UserCommand:
 		if action == "open":
 			ore = User.add_to_forge(source2.lower(), self.profiles)
 			if ore == -1:
-				self.connection.notice("You couldn't open the chest because there is no empty space in your forge.")
+				self.connection.notice(source, "You couldn't open the chest because there is no empty space in your forge.")
 				return
 			if ore:
-				self.connection.notice("You found a \x02{}\x02 in the chest.".format(User.ore_names[ore]))
+				self.connection.notice(source, "You found a \x02{}\x02 in the chest.".format(User.ore_names[ore]))
 			else:
-				self.connection.notice("The chest was empty.")
+				self.connection.notice(source, "The chest was empty.")
 		User.drop_chest(source2.lower(), self.profiles)
+		if action == "drop":
+			self.connection.notice(source, "You dropped the chest.")
 
 	def execute(self, event, command, players):
 		command = command.strip()
