@@ -114,6 +114,9 @@ The game will end when all players become vampires, or all players become zombie
 - **!use _number_ :**  uses item in your inventory on yourself (number can be: 1, 2 or 3)
 - **!use _number_ _target_ :**  uses item in your inventory on a target (applies only on few certain items)
 - **!drop _number_ :**  drops an item from your inventory (number can be: 1, 2 or 3)
+- **!chest open|drop :**  for opening a chest or dropping it after finding one
+- **!forge :**  lists all the ores in the forge of the player (max. capacity of the forge is 3)
+- **!forge drop _number_ :**  drops an ore from the player's forge 
 - **!version :**  displays the running version of the bot
 
 ### List of admin commands
