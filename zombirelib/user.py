@@ -34,7 +34,7 @@ class User:
 	4: "Quartz",
 	5: "Sapphire",
 	6: "Diamond",
-	7: "Bomb",
+	7: "Stone",
 	}
 
 	@staticmethod
@@ -422,7 +422,7 @@ class User:
 	def open_chest(source, profiles):
 		random.seed()
 		ore = random.randrange(0, len(User.ore_names))
-		User.drop_chest(source, profiles)
+		#User.drop_chest(source, profiles)
 		return ore
 
 	@staticmethod
@@ -436,7 +436,7 @@ class User:
 				return True
 
 	@staticmethod
-	def add_forge(source, profiles):
+	def add_to_forge(source, profiles):
 		ores = User.get_forge(source, profiles)
 		if ores[0] and ores[1] and ores[2]:
 			return -1
@@ -452,7 +452,7 @@ class User:
 			return new_ore
 
 	@staticmethod
-	def drop_forge(ore_index, source, profiles):
+	def drop_from_forge(ore_index, source, profiles):
 		ores = User.get_forge(source, profiles)
 		if not ores[ore_index]:
 			return False

@@ -669,6 +669,24 @@ class UserCommand:
 		except ValueError:
 			self.connection.notice(source, "You can only enter a number between 1 and 3 after this command.")
 
+	def chest(self, action, source):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		if not action in ("open", "drop"):
+			self.connection.notice(source, "Error: unrecognized action on chest.")
+			return
+		if not User.has_chest(source2.lower(), self.profiles):
+			self.connection.notice(source, "You don't have any chest in your possession.")
+			return
+		if action == "open":
+			ore = User.add_to_forge(source2.lower(), self.profiles)
+			if ore == -1:
+				self.connection.notice("You couldn't open the chest because there is no empty space in your forge.")
+				return
+			if ore:
+				self.connection.notice("You found a \x02{}\x02 in the chest.".format(User.ore_names[ore]))
+			else:
+				self.connection.notice("The chest was empty.")
+		User.drop_chest(source2.lower(), self.profiles)
 
 	def execute(self, event, command, players):
 		command = command.strip()
@@ -720,3 +738,5 @@ class UserCommand:
 			self.use(event.source.nick, players, args[0], args[1])
 		elif cmd == "drop" and len(args) == 1:
 			self.drop(event.source.nick, args[0])
+		elif cmd == "chest" and len(args) == 1:
+			self.chest(args[0].lower(), event.source.nick)
