@@ -195,8 +195,8 @@ class Schedule:
 			Schedule.is_bonus_on = False
 			User.reset_players(self.players)
 			# in case there are players with auto register on
-			if not self.auto_register():
-				self.dbc.save(self.players, self.profiles, self.arsenals)
+			self.auto_register()
+			self.dbc.save(self.players, self.profiles, self.arsenals)
 			return True
 
 	def auto_register(self):
