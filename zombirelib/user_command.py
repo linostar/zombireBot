@@ -151,10 +151,18 @@ class UserCommand:
 				else:
 					self.connection.privmsg(self.channel, "\x02Attack succeeded.\x02 " +
 						"\x033{}\x03 ate \x02{} HP\x02 of brains from \x034{}\x03.".format(source, res, target))
+				# add weapon effects
+				diff_weapon = User.clash_weapons(res, source2.lower(), target2.lower(), players, self.arsenals)
+				if diff_weapon > 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage by \x02{}\x02."
+						.format(source, diff_weapon))
+				elif diff_weapon < 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
+						.format(target, -diff_weapon))
 				# check for weapon degradation
-				if User.degrade_sword(source2.lower()):
+				if User.degrade_sword(source2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(source))
-				if User.degrade_armor(target2.lower()):
+				if User.degrade_armor(target2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(target))
 				# check for player transformation
 				if User.transform(target2.lower(), players, source2.lower()):
@@ -170,10 +178,18 @@ class UserCommand:
 				else:
 					self.connection.privmsg(self.channel, "\x02Attack failed.\x02 " +
 						"\x034{}\x03 sucked \x02{} HP\x02 of blood from \x033{}\x03.".format(target, -res, source))
+				# add weapon effects
+				diff_weapon = User.clash_weapons(res, source2.lower(), target2.lower(), players, self.arsenals)
+				if diff_weapon > 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage by \x02{}\x02."
+						.format(target, diff_weapon))
+				elif diff_weapon < 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
+						.format(source, -diff_weapon))
 				# check for weapon degradation
-				if User.degrade_armor(source2.lower()):
+				if User.degrade_armor(source2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(source))
-				if User.degrade_sword(target2.lower()):
+				if User.degrade_sword(target2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(target))
 				# check for player transformation
 				if User.transform(source2.lower(), players):
@@ -263,12 +279,27 @@ class UserCommand:
 					"while the other two lost \x023 HP\x02 each.").format(source, ftarget, starget,
 					self.colors[players[source2.lower()]['type']], 
 					self.colors[players[ftarget2.lower()]['type']]))
+				# add weapon effects
+				diff_weapon = User.clash_weapons(3, source2.lower(), ftarget2.lower(), players, self.arsenals)
+				if diff_weapon > 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage on \x02{}\x02 by \x02{}\x02."
+						.format(source, ftarget, diff_weapon))
+				elif diff_weapon < 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
+						.format(ftarget, -diff_weapon))
+				diff_weapon = User.clash_weapons(3, source2.lower(), starget2.lower(), players, self.arsenals)
+				if diff_weapon > 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage on \x02{}\x02 by \x02{}\x02."
+						.format(source, starget, diff_weapon))
+				elif diff_weapon < 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
+						.format(starget, -diff_weapon))
 				# check for weapon degradation
-				if User.degrade_sword(source2.lower()):
+				if User.degrade_sword(source2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(source))
-				if User.degrade_armor(ftarget2.lower()):
+				if User.degrade_armor(ftarget2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(ftarget))
-				if User.degrade_armor(starget2.lower()):
+				if User.degrade_armor(starget2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(starget))
 				# check for player transformation
 				if User.transform(ftarget2.lower(), players, source2.lower()):
@@ -289,12 +320,27 @@ class UserCommand:
 					"while the other two gained \x023 HP\x02 each.").format(source, ftarget, starget,
 					self.colors[players[source2.lower()]['type']], 
 					self.colors[players[ftarget2.lower()]['type']]))
+				# add weapon effects
+				diff_weapon = User.clash_weapons(-3, source2.lower(), ftarget2.lower(), players, self.arsenals)
+				if diff_weapon > 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage on \x02{}\x02 by \x02{}\x02."
+						.format(ftarget, source, diff_weapon))
+				elif diff_weapon < 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
+						.format(source, -diff_weapon))
+				diff_weapon = User.clash_weapons(-3, source2.lower(), starget2.lower(), players, self.arsenals)
+				if diff_weapon > 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage on \x02{}\x02 by \x02{}\x02."
+						.format(starget, source, diff_weapon))
+				elif diff_weapon < 0:
+					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
+						.format(source, -diff_weapon))
 				# check for weapon degradation
-				if User.degrade_armor(source2.lower()):
+				if User.degrade_armor(source2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(source))
-				if User.degrade_sword(ftarget2.lower()):
+				if User.degrade_sword(ftarget2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(ftarget))
-				if User.degrade_sword(starget2.lower()):
+				if User.degrade_sword(starget2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(starget))
 				# check for player transformation
 				if User.transform(source2.lower(), players):

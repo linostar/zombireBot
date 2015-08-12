@@ -119,10 +119,18 @@ class Schedule:
 											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 auto-attacked \x03{2}{3}\x03" +
 												" and succeeded, gaining \x02{4} HP\x02 in the process.").format(self.colors[utype],
 												nick1, self.colors[otype], target1, diff_dice))
+											# add weapon effects
+											diff_weapon = User.clash_weapons(diff_dice, nick, target, self.players, self.arsenals)
+											if diff_weapon > 0:
+												self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage by \x02{}\x02."
+													.format(nick, diff_weapon))
+											elif diff_weapon < 0:
+												self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
+													.format(target, -diff_weapon))
 											# check for weapon degradation
-											if User.degrade_sword(nick):
+											if User.degrade_sword(nick, self.arsenals):
 												self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(nick1))
-											if User.degrade_armor(target):
+											if User.degrade_armor(target, self.arsenals):
 												self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(target1))
 											# check for player transformation
 											if User.transform(target, self.players, nick):
@@ -135,10 +143,18 @@ class Schedule:
 											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 auto-attacked \x03{2}{3}\x03" +
 												" and failed, losing \x02{4} HP\x02 in the process.").format(self.colors[utype],
 												nick1, self.colors[otype], target1, -diff_dice))
+											# add weapon effects
+											diff_weapon = User.clash_weapons(diff_dice, nick, target, self.players, self.arsenals)
+											if diff_weapon > 0:
+												self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage by \x02{}\x02."
+													.format(target, diff_weapon))
+											elif diff_weapon < 0:
+												self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
+													.format(nick, -diff_weapon))
 											# check for weapon degradation
-											if User.degrade_armor(nick):
+											if User.degrade_armor(nick, self.arsenals):
 												self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(nick1))
-											if User.degrade_sword(target):
+											if User.degrade_sword(target, self.arsenals):
 												self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(target1))
 											# check for player transformation
 											if User.transform(nick, self.players):

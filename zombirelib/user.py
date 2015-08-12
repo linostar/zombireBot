@@ -577,6 +577,29 @@ class User:
 			arsenals[source]['alife'] += value
 
 	@staticmethod
+	def clash_weapons(res, source, target, players, arsenals):
+		diff_weapon = 0
+		if res > 0:
+			diff_weapon = arsenals[source]['sword'] - arsenals[target]['armor']
+			if diff_weapon > 0:
+				players[source]['hp'] += diff_weapon
+				players[target]['hp'] -= diff_weapon
+			elif diff_weapon < 0:
+				diff_weapon = -min(res, -diff_weapon)
+				players[source]['hp'] += diff_weapon
+				players[target]['hp'] -= diff_weapon
+		elif res < 0:
+			diff_weapon = arsenals[target]['sword'] - arsenals[source]['armor']
+			if diff_weapon > 0:
+				players[target]['hp'] += diff_weapon
+				players[source]['hp'] -= diff_weapon
+			elif diff_weapon < 0:
+				diff_weapon = -min(-res, -diff_weapon)
+				players[target]['hp'] += diff_weapon
+				players[source]['hp'] -= diff_weapon
+		return diff_weapon
+
+	@staticmethod
 	def check_if_round_ended(players):
 		len_vamp = len([nick for nick in players if players[nick]['type'] == "v"])
 		if len(players) > 0:
