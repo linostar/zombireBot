@@ -98,9 +98,9 @@ class UserCommand:
 		[utype, hp, mp, mmp, score] = [p['type'], p['hp'], p['mp'], p['mmp'], p['score']]
 		bonus = User.get_bonus(target2.lower(), players)
 		if bonus == 1:
-			bonus_text = "Bonus: +30% attack/defense."
+			bonus_text = "Bonus: +30% attack/defense. "
 		elif bonus == 2:
-			bonus_text = "Bonus: -30% attack/defense."
+			bonus_text = "Bonus: -30% attack/defense. "
 		else:
 			bonus_text = ""
 		if User.has_chest(target2.lower(), self.profiles):
@@ -113,7 +113,7 @@ class UserCommand:
 			elif utype == "z" and Utils.bosses[1]['on']:
 				bonus_text = "Power substantially increased due to \x02Zombilo\x02 presence."
 		a = self.arsenals[target2.lower()]
-		self.connection.privmsg(self.channel, ("\x02{}\x02 is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {} " +
+		self.connection.privmsg(self.channel, ("\x02{}\x02 is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}" +
 			"Equipment: {} sword ({}) and {} armor ({}). {}").format(target, self.colored_types[utype], hp, mp, mmp, score,
 			bonus_text, User.sword_names[a['sword']], a['slife'], User.armor_names[a['armor']], a['alife'], chest_text))
 
@@ -775,6 +775,7 @@ class UserCommand:
 				return
 			if ore == 7:
 				damage = User.bomb_player(source2.lower(), players)
+				User.drop_chest(source2.lower(), self.profiles)
 				self.connection.privmsg(self.channel, ("\x02{}\x02 found an exploding bomb in the chest, which reduced " +
 					"his/her HP by \x02{}\x02.").format(source, damage))
 				return
