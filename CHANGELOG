@@ -2,11 +2,13 @@ CHANGELOG
 ---------
 v1.3.0
 - Do not allow players to have more than 1 unit of each rare item
-- Added 3 more items: Revealic, Thievic, Summonic and Maintainic
-- Imposed restrictions on the use of item Switchic
+- Added 4 more items: Revealic, Thievic, Summonic and Maintainic
+- Imposed restrictions on the use of item Switchic (it now needs and consumes full MP)
+- Made rare items appear half as much as non-rare items
 - Added chests and forges to the game (containing ore of metals and jewels)
 - Added swords and armors, which affect the damage calculation in battles
 - Disabled direct hilighting of nicknames by the bot
+- Fixed issue #7 (stats not saving properly when round ends)
 
 v1.2.1
 - Added "!auto search" command

@@ -87,7 +87,7 @@ The unused items will remain in the player inventory even after a round ends.
 
 **Chests and Equipment:**
 
-Each new player starts with a wooden sword and a wooden armor, both possessing a power of 0, and both upgradable. 
+Every new player starts with a wooden sword and a wooden armor, both possessing a power of 0, and both upgradable. 
 
 Upon taking an action (attack, ambush or heal), there is a chance that the player will find a chest, which they can open or drop. The chest may contain one of the seven ores: `Copper`, `Steel`, `Titanium`, `Quartz`, `Sapphire`, `Diamond` and `Bomb`. The ores collected are stored in the player's forge, which has a maximum capacity of 3. Except for `Bomb`, which causes up to 5 HP damage to the player, the other ores can be used to upgrade one's sword or armor, using the `!upgrade` command, as follows:
 
