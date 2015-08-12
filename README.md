@@ -80,6 +80,7 @@ Drainic | yes | yes | sacrifices 1 MP to decrease the target's HP by 5
 Revealic | yes | yes | reveals the inventory contents of the target
 Thievic | yes | yes | steals a random item from the target (if the target has any)
 Summonic | no | yes | sacrifices 20 HP to summon the player's leader for 15 minutes
+Maintainic | no | yes | increases the lifespan of a sword or an armor by 20
 
 The unused items will remain in the player inventory even after a round ends.
 
@@ -116,7 +117,8 @@ The game will end when all players become vampires, or all players become zombie
 - **!drop _number_ :**  drops an item from your inventory (number can be: 1, 2 or 3)
 - **!chest open|drop :**  for opening a chest or dropping it after finding one
 - **!forge :**  lists all the ores in the forge of the player (max. capacity of the forge is 3)
-- **!forge drop _number_ :**  drops an ore from the player's forge 
+- **!forge drop _number_ :**  drops an ore from the player's forge
+- **!upgrade sword|armor **  upgrades the sword or armor if the necessary ores are present in the player's forge 
 - **!version :**  displays the running version of the bot
 
 ### List of admin commands
