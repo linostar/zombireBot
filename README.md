@@ -5,7 +5,7 @@ Zombire IRC bot: a multiplayer mini-RPG battle game between zombies and vampires
 ZombireBot works properly if run on Rizon IRC network. It would also work on other IRC networks that use Anope services.
 
 ## How to Install
-1. You need `Python3` and `pip3` installed on your system.
+1. You need `Python3` and `pip3` installed on your system, and an access to a MySQL database.
 
 2. Run: `pip3 install -r requirements.txt`
 
@@ -83,6 +83,28 @@ Summonic | no | yes | sacrifices 20 HP to summon the player's leader for 15 minu
 Maintainic | no | yes | increases the lifespan of a sword or an armor by 20
 
 The unused items will remain in the player inventory even after a round ends.
+
+**Chests and Equipment:**
+
+Each new player starts with a wooden sword and a wooden armor, both possessing a power of 0, and both upgradable. 
+
+Upon taking an action (attack, ambush or heal), there is a chance that the player will find a chest, which they can open or drop. The chest may contain one of the seven ores: Copper, Steel, Titanium, Quartz, Sapphire, Diamond and Bomb. The ores collected are stored in the player's forge, which has a maximum capacity of 3. Except for the Bomb that causes up to 5 HP damage to the player, the other ores can be used to upgrade one's sword or armor, using the `!upgrade` command, as follows:
+
+Swords:
+- Wooden sword + 3 Copper ---> Copper sword (power = 1)
+- Copper sword + 3 Steel ---> Steel sword (power = 2)
+- Steel sword + 3 Titanium ---> Titanium sword (power = 3)
+
+Armors:
+- Wooden armor + 3 Quartz ---> Quartz armor (power = 1)
+- Quartz armor + 3 Sapphire ---> Sapphire armor (power 2)
+- Sapphire armor + 3 Diamond ---> Diamond armor (power 3)
+
+Furthermore, each sword/armor (except for wooden ones) has lifespan that is decreased by 1 after each use of the sword/armor. If the lifespan reaches 0, the sword or armor will be destroyed and the player will get a wooden sword or armor instead. After successful upgrading, the lifespan of a sword/armor is reset to 40. Item `Maintainic` can also be used to increase the lifespan of a sword or an armor by 20.
+
+Swords and armors play an important role in battles (attacks and ambushes). After rolling dices, swords can help to increase the damage and armors to reduce it. The player with the more powerful equipment used will get the favor in damage increase/decrease.
+
+The sword and armor, along with their lifespans, will remain in the player equipment even after a round ends.
 
 **Special apperarences:**
 

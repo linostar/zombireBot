@@ -774,8 +774,8 @@ class UserCommand:
 				return
 			if ore == 7:
 				damage = User.bomb_player(source2.lower(), players)
-				self.connection.privmsg(self.channel, "\x02{}\x02 found an exploding bomb in the chest, which reduced his HP by \x02{}\x02."
-					.format(source, damage))
+				self.connection.privmsg(self.channel, ("\x02{}\x02 found an exploding bomb in the chest, which reduced " +
+					"his/her HP by \x02{}\x02.").format(source, damage))
 				return
 			if ore:
 				self.connection.notice(source, "You found a \x02{}\x02 in the chest.".format(User.ore_names[ore]))
