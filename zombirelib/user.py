@@ -35,7 +35,7 @@ class User:
 	4: "Quartz",
 	5: "Sapphire",
 	6: "Diamond",
-	7: "Stone",
+	7: "Bomb",
 	}
 	sword_names = {
 	0: "Wooden",
@@ -501,11 +501,13 @@ class User:
 				return True
 
 	@staticmethod
-	def add_to_forge(source, profiles):
+	def add_to_forge(source, players, profiles):
 		ores = User.get_forge(source, profiles)
 		if ores[0] and ores[1] and ores[2]:
 			return -1
 		new_ore = User.open_chest(source, profiles)
+		if new_ore == 7: # "A BOMB IT IS!" - Yoda
+			return new_ore
 		if new_ore:
 			if ores[0] and ores[1]:
 				ores[2] = new_ore
@@ -609,6 +611,17 @@ class User:
 				players[target]['hp'] += diff_weapon
 				players[source]['hp'] -= diff_weapon
 		return diff_weapon
+
+	@staticmethod
+	def bomb_player(source, players):
+		if players[source]['hp'] < 2:
+			damage = 0
+		elif players[source]['hp'] < 6:
+			damage = players[source]['hp'] - 1
+		else:
+			damage = 5
+		players[source]['hp'] -= damage
+		return damage
 
 	@staticmethod
 	def check_if_round_ended(players):

@@ -759,7 +759,7 @@ class UserCommand:
 		except ValueError:
 			self.connection.notice(source, "You can only enter a number between 1 and 3 after this command.")
 
-	def chest(self, action, source):
+	def chest(self, action, source, players):
 		source2 = source.replace("[", "..").replace("]", ",,")
 		if not action in ("open", "drop"):
 			self.connection.notice(source, "Error: unrecognized action on chest.")
@@ -768,9 +768,14 @@ class UserCommand:
 			self.connection.notice(source, "You don't have any chest in your possession.")
 			return
 		if action == "open":
-			ore = User.add_to_forge(source2.lower(), self.profiles)
+			ore = User.add_to_forge(source2.lower(), players, self.profiles)
 			if ore == -1:
 				self.connection.notice(source, "You couldn't open the chest because there is no empty space in your forge.")
+				return
+			if ore == 7:
+				damage = User.bomb_player(source2.lower(), players)
+				self.connection.privmsg(self.channel, "\x02{}\x02 found an exploding bomb in the chest, which reduced his HP by \x02{}\x02."
+					.format(source, damage))
 				return
 			if ore:
 				self.connection.notice(source, "You found a \x02{}\x02 in the chest.".format(User.ore_names[ore]))
@@ -883,7 +888,7 @@ class UserCommand:
 		elif cmd == "drop" and len(args) == 1:
 			self.drop(event.source.nick, args[0])
 		elif cmd == "chest" and len(args) == 1:
-			self.chest(args[0].lower(), event.source.nick)
+			self.chest(args[0].lower(), event.source.nick, players)
 		elif cmd == "forge" and not args:
 			self.forge_list(event.source.nick)
 		elif cmd == "forge" and len(args) == 2:
