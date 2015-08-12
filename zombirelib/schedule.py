@@ -77,7 +77,8 @@ class Schedule:
 							if User.check_gt(self.players, nick, 'mp', 0):
 								utype = self.players[nick]['type']
 								otype = "v" if utype == "z" else "z"
-								if self.profiles[nick]['auto'] & 2: # auto-heal
+								# auto-heal
+								if self.profiles[nick]['auto'] & 2:
 									if User.check_gt(self.players, nick, 'hp', 2):
 										pfilter = {x:self.players[x]['hp'] for x in self.players
 											if self.players[x]['type'] == utype and x != nick}
@@ -91,7 +92,8 @@ class Schedule:
 											target1 = target.replace("..", "[").replace(",,", "]")
 											self.connection.privmsg(self.channel, "\x03{0}{1}\x03 auto-healed \x03{0}{2}\x03."
 												.format(self.colors[utype], nick1, target1))
-								elif self.profiles[nick]['auto'] & 32: # auto-search
+								# auto-search
+								elif self.profiles[nick]['auto'] & 32:
 									nick1 = nick.replace("..", "[").replace(",,", "]")
 									new_item = User.add_item(nick, self.profiles, self.players)
 									if new_item == -1:
@@ -101,7 +103,8 @@ class Schedule:
 											.format(User.item_names[new_item]))
 									else:
 										self.connection.notice(nick1, "Auto-search: You did not find any item this time.")
-								elif self.profiles[nick]['auto'] & 8: # auto-attack
+								# auto-attack
+								elif self.profiles[nick]['auto'] & 8:
 									pfilter = {x:self.players[x]['hp'] for x in self.players
 										if self.players[x]['type'] != utype}
 									if list(pfilter):
@@ -116,6 +119,12 @@ class Schedule:
 											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 auto-attacked \x03{2}{3}\x03" +
 												" and succeeded, gaining \x02{4} HP\x02 in the process.").format(self.colors[utype],
 												nick1, self.colors[otype], target1, diff_dice))
+											# check for weapon degradation
+											if User.degrade_sword(nick):
+												self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(nick1))
+											if User.degrade_armor(target):
+												self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(target1))
+											# check for player transformation
 											if User.transform(target, self.players, nick):
 												newtype = self.colored_types[utype]
 												self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
@@ -126,6 +135,12 @@ class Schedule:
 											self.connection.privmsg(self.channel, ("\x03{0}{1}\x03 auto-attacked \x03{2}{3}\x03" +
 												" and failed, losing \x02{4} HP\x02 in the process.").format(self.colors[utype],
 												nick1, self.colors[otype], target1, -diff_dice))
+											# check for weapon degradation
+											if User.degrade_armor(nick):
+												self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(nick1))
+											if User.degrade_sword(target):
+												self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(target1))
+											# check for player transformation
 											if User.transform(nick, self.players):
 												newtype = self.colored_types[otype]
 												self.connection.privmsg(self.channel, ("\x02{}\x02 has lost all of his/her HP " +
