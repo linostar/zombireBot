@@ -530,7 +530,7 @@ class User:
 
 	@staticmethod
 	def upgrade_sword(source, profiles, arsenals):
-		ores = get_forge(source, profiles)
+		ores = User.get_forge(source, profiles)
 		sword = arsenals[source]['sword']
 		if len(set(ores)) == 1 and ores[0] == sword + 1:
 			arsenals[source]['sword'] += 1
@@ -540,7 +540,7 @@ class User:
 
 	@staticmethod
 	def upgrade_armor(source, profiles, arsenals):
-		ores = get_forge(source, profiles)
+		ores = User.get_forge(source, profiles)
 		armor = arsenals[source]['armor']
 		if len(set(ores)) == 1 and ores[0] == armor + 4:
 			arsenals[source]['armor'] += 1
