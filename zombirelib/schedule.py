@@ -195,8 +195,8 @@ class Schedule:
 			Schedule.is_bonus_on = False
 			User.reset_players(self.players)
 			# in case there are players with auto register on
-			self.auto_register()
-			#self.dbc.save(self.players, self.profiles)
+			if not self.auto_register():
+				self.dbc.save(self.players, self.profiles, self.arsenals)
 			return True
 
 	def auto_register(self):
@@ -215,6 +215,7 @@ class Schedule:
 		if len(list_nicks):
 			self.connection.privmsg(self.channel, "The following players have been auto-registered:")
 			self.connection.privmsg(self.channel, "\x02{}\x02".format(", ".join(list_nicks)))
+			return True
 
 	def misc_tasks(self):
 		while self.loop:

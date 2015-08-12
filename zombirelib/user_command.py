@@ -113,7 +113,7 @@ class UserCommand:
 			elif utype == "z" and Utils.bosses[1]['on']:
 				bonus_text = "Power substantially increased due to \x02Zombilo\x02 presence."
 		a = self.arsenals[target2.lower()]
-		self.connection.privmsg(self.channel, ("\x02{}\x02 is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}" +
+		self.connection.privmsg(self.channel, ("\x02{}\x02 is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {} " +
 			"Equipment: {} sword ({}) and {} armor ({}). {}").format(target, self.colored_types[utype], hp, mp, mmp, score,
 			bonus_text, User.sword_names[a['sword']], a['slife'], User.armor_names[a['armor']], a['alife'], chest_text))
 
@@ -392,8 +392,8 @@ class UserCommand:
 			Schedule.is_bonus_on = False
 			User.reset_players(players)
 			# in case there are players with auto register on
-			self.auto_register(players)
-			#self.dbc.save(players, self.profiles)
+			if not self.auto_register(players):
+				self.dbc.save(players, self.profiles, self.arsenals)
 			return True
 
 	def auto_register(self, players):
@@ -412,6 +412,7 @@ class UserCommand:
 		if len(list_nicks):
 			self.connection.privmsg(self.channel, "The following players have been auto-registered:")
 			self.connection.privmsg(self.channel, "\x02{}\x02".format(", ".join(list_nicks)))
+			return True
 
 	def print_version(self):
 		self.connection.privmsg(self.channel, "Zombire Bot version: {}".format(Utils.VERSION))
@@ -795,7 +796,7 @@ class UserCommand:
 		for i in range(3):
 			if not ores[i]:
 				break
-			msg += "\x02{}- {}.\x02".format(i+1, User.ore_names[ores[i]])
+			msg += "\x02{}- {}.\x02 ".format(i+1, User.ore_names[ores[i]])
 		self.connection.notice(source, msg)
 
 	def forge_change(self, source, action, ore_index):
