@@ -731,9 +731,19 @@ class UserCommand:
 		source2 = source.replace("[", "..").replace("]", ",,")
 		weapon = weapon.lower()
 		if weapon == "sword":
-			pass
+			sword = User.upgrade_sword(source2.lower(), self.profiles, self.arsenals)
+			if sword:
+				self.connection.privmsg(self.channel, "\x02{}\x02 has upgraded his sword to \x02{} sword\x02."
+					.format(source, User.sword_names[sword]))
+			else:
+				self.connection.notice(source, "You don't have the necessary ores to upgrade your sword.")
 		elif weapon == "armor":
-			pass
+			armor = User.upgrade_armor(source2.lower(), self.profiles, self.arsenals)
+			if armor:
+				self.connection.privmsg(self.channel, "\x02{}\x02 has upgraded his armor to \x02{} armor\x02."
+					.format(source, User.armor_names[armor]))
+			else:
+				self.connection.notice(source, "You don't have the necessary ores to upgrade your armor.")
 		else:
 			self.connection.notice(source, "Incorrect !upgrade command syntax.")
 
