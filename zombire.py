@@ -159,7 +159,7 @@ class Zombire(CustomSingleServerIRCBot):
 			r"\!(topscores)", r"\!(highscores)", r"\!(howtoplay)", r"\!(ambush\s+.+)",
 			r"\!(auto\s+(attack|heal|register|search)(\s+.+)?)", r"\!(challenge)",
 			r"\!(search|inventory)", r"\!((use|drop)\s+.+)", r"\!(chest\s+.+)",
-			r"\!(forge(\s.+)?)")
+			r"\!(forge(\s.+)?)", r"\!(upgrade\s+.+)")
 		for expr in re_exprs:
 			try:
 				detected = re.match(expr, e.arguments[0], re.IGNORECASE)
@@ -168,7 +168,8 @@ class Zombire(CustomSingleServerIRCBot):
 				if detected:
 					detected_command = detected.group(1).strip()
 					if detected_command.lower().startswith(("unregister", "attack", "heal", "ambush",
-						"challenge", "auto", "search", "inventory", "use", "drop", "chest", "forge")):
+						"challenge", "auto", "search", "inventory", "use", "drop", "chest", "forge",
+						"upgrade")):
 						# user needs to be registered to use those commands
 						for chname, chobj in self.channels.items():
 							voiced_users = list(chobj.voiced()) + list(chobj.opers()) + list(chobj.halfops())

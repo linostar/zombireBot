@@ -525,6 +525,58 @@ class User:
 		return True
 
 	@staticmethod
+	def clear_forge(source, profiles):
+		User.save_forge([0, 0, 0], source, profiles)
+
+	@staticmethod
+	def upgrade_sword(source, profiles, arsenals):
+		ores = get_forge(source, profiles)
+		sword = arsenals[source]['sword']
+		if len(set(ores)) == 1 and ores[0] == sword + 1:
+			arsenals[source]['sword'] += 1
+			arsenals[source]['slife'] = 40
+			User.clear_forge(source, profiles)
+			return arsenals[source]['sword']
+
+	@staticmethod
+	def upgrade_armor(source, profiles, arsenals):
+		ores = get_forge(source, profiles)
+		armor = arsenals[source]['armor']
+		if len(set(ores)) == 1 and ores[0] == armor + 4:
+			arsenals[source]['armor'] += 1
+			arsenals[source]['alife'] = 40
+			User.clear_forge(source, profiles)
+			return arsenals[source]['armor']
+
+	@staticmethod
+	def degrade_sword(source, arsenals):
+		if arsenals[source]['sword'] > 0:
+			arsenals[source]['slife'] -= 1
+			if arsenals[source]['slife'] <= 0:
+				arsenals[source]['sword'] = 0
+				arsenals[source]['slife'] = 0
+				return True
+
+	@staticmethod
+	def degrade_armor(source, arsenals):
+		if arsenals[source]['armor'] > 0:
+			arsenals[source]['alife'] -= 1
+			if arsenals[source]['alife'] <= 0:
+				arsenals[source]['armor'] = 0
+				arsenals[source]['alife'] = 0
+				return True
+
+	@staticmethod
+	def increase_sword_life(source, arsenals, value):
+		if not arsenals[source]['sword']:
+			arsenals[source]['slife'] += value
+
+	@staticmethod
+	def increase_armor_life(source, arsenals, value):
+		if not arsenals[source]['armor']:
+			arsenals[source]['alife'] += value
+
+	@staticmethod
 	def check_if_round_ended(players):
 		len_vamp = len([nick for nick in players if players[nick]['type'] == "v"])
 		if len(players) > 0:

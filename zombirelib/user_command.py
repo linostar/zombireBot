@@ -727,6 +727,16 @@ class UserCommand:
 		else:
 			self.connection.notice(source, "Incorrect !forge command syntax.")
 
+	def arsenal_upgrade(self, source, weapon):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		weapon = weapon.lower()
+		if weapon == "sword":
+			pass
+		elif weapon == "armor":
+			pass
+		else:
+			self.connection.notice(source, "Incorrect !upgrade command syntax.")
+
 	def execute(self, event, command, players):
 		command = command.strip()
 		first_space = command.find(" ")
@@ -783,3 +793,5 @@ class UserCommand:
 			self.forge_list(event.source.nick)
 		elif cmd == "forge" and len(args) == 2:
 			self.forge_change(event.source.nick, args[0], args[1])
+		elif cmd == "upgrade" and len(args) == 1:
+			self.arsenal_upgrade(event.source.nick, args[0])
