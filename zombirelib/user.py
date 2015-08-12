@@ -577,13 +577,13 @@ class User:
 
 	@staticmethod
 	def increase_sword_life(source, arsenals, value):
-		if not arsenals[source]['sword']:
+		if arsenals[source]['sword']:
 			arsenals[source]['slife'] += value
 			return True
 
 	@staticmethod
 	def increase_armor_life(source, arsenals, value):
-		if not arsenals[source]['armor']:
+		if arsenals[source]['armor']:
 			arsenals[source]['alife'] += value
 			return True
 

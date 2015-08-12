@@ -609,8 +609,9 @@ class UserCommand:
 							self.connection.notice(source, "You need to specify a target for this item use.")
 							return
 						target2 = target.replace("[", "..").replace("]", ",,")
-						if target2.lower() in players:
-							type2 = players[target2.lower()]['type']
+						if (target2.lower() in players) or item == 15:
+							if item != 15:
+								type2 = players[target2.lower()]['type']
 							# check restrictions on some items before using them
 							if item not in (10, 11, 15):
 								User.use_item2(item, source2.lower(), target2.lower(), players)
@@ -672,8 +673,9 @@ class UserCommand:
 							elif item == 15:
 								if target2.lower() in ("sword", "armor"):
 									if User.use_item3(item, source2.lower(), target2.lower(), self.arsenals):
+										User.drop_item(item_index-1, source2.lower(), self.profiles)
 										self.connection.privmsg(self.channel, ("\x02{}\x02 used \x02Maintainic\x02 on his {}, " +
-											"increasing its life by \x0220\x02.").format(source, target.lower()))
+											"increasing its lifespan by \x0220\x02.").format(source, target.lower()))
 									else:
 										self.connection.notice(source, "You cannot use Maintainic on a wooden sword or armor.")
 								else:
