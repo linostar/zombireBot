@@ -33,7 +33,7 @@
 <a id="how-to-install" class="anchor" href="#how-to-install" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to Install</h2>
 
 <ol>
-<li><p>You need <code>Python3</code> and <code>pip3</code> installed on your system.</p></li>
+<li><p>You need <code>Python3</code> and <code>pip3</code> installed on your system, and an access to a MySQL database.</p></li>
 <li><p>Run: <code>pip3 install -r requirements.txt</code></p></li>
 <li><p>Register the bot nick on the IRC network you want it to run on, and gives it the ability to change the channel access.</p></li>
 <li><p>Copy <code>conf/config.example.yml</code> to <code>conf/config.yml</code> and change the configuration parameters according to your needs.</p></li>
@@ -63,6 +63,8 @@
 <strong>Score :</strong>  score points awarded for healings and successful attacks</li>
 <li>
 <strong>Bonus :</strong>  if present, it will give a positive or negative boost to the player attack/defense</li>
+<li>
+<strong>Equipment :</strong>  sword and armor equipped by the player</li>
 </ul>
 
 <p>Each player upon registration will have an HP of 10, and an MP and Maximum MP of 5.</p>
@@ -78,7 +80,7 @@
 <strong>!ambush :</strong>  Player will attack 2 enemies simultaneously. If the ambush succeeds, he/she will gain 6 HP and the other two will loose 3 HP each. If not, he/she will loose 6 HP and the other two gain 3 HP each. The player needs at least 6 HP to make this action, and it will consume 2 MP from his/her stats.</li>
 </ul>
 
-<p><strong>Each one hour</strong>, the MP of all players will be regenerated and filled up to their respective Maximum MP.</p>
+<p><strong>Every one hour</strong>, the MP of all players will be regenerated and filled up to their respective Maximum MP.</p>
 
 <p><strong>About Maximum MP</strong>, if a player makes 5 successful attacks/ambushes in a row (with no ties in between), his/her Maximum MP will go up by 1 point. However, if he/she makes 5 failed attacks/ambushes in row, his/her Maximum MP will go down by 1 point.</p>
 
@@ -112,6 +114,8 @@
 
 <p>Players can search for items and use them. Searching for items using the <code>!search</code> command will consume 1 MP. The chance of finding an item is 25%. Be aware that the player inventory has a limited capacity of 3 items.</p>
 
+<p>Some of the items are considered <strong>rare items</strong>. A player cannot have more than 1 unit of the same rare item in his/her inventory.</p>
+
 <p>Here is a full list of the items that can be found:</p>
 
 <table>
@@ -119,6 +123,7 @@
 <tr>
 <th>Item</th>
 <th>Can be used on others?</th>
+<th>Rare?</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -126,62 +131,163 @@
 <tr>
 <td>Small apple</td>
 <td>no</td>
+<td>no</td>
 <td>+2 HP</td>
 </tr>
 <tr>
 <td>Medium apple</td>
+<td>no</td>
 <td>no</td>
 <td>+5 HP</td>
 </tr>
 <tr>
 <td>Large apple</td>
 <td>no</td>
+<td>no</td>
 <td>+10 HP</td>
 </tr>
 <tr>
 <td>Small lemon</td>
+<td>no</td>
 <td>no</td>
 <td>+1 MP (MP will not go over Maximum MP)</td>
 </tr>
 <tr>
 <td>Medium lemon</td>
 <td>no</td>
+<td>no</td>
 <td>+2 MP (MP will not go over Maximum MP)</td>
 </tr>
 <tr>
 <td>Large lemon</td>
+<td>no</td>
 <td>no</td>
 <td>+3 MP (MP will not go over Maximum MP)</td>
 </tr>
 <tr>
 <td>Transformic</td>
 <td>no</td>
+<td>yes</td>
 <td>tranforms the player to the opposite type without affecting his/her stats</td>
 </tr>
 <tr>
 <td>Explodic</td>
+<td>yes</td>
 <td>yes</td>
 <td>suicidal attack (renders the HP of the user and the target to 1)</td>
 </tr>
 <tr>
 <td>Neutralic</td>
 <td>yes</td>
+<td>yes</td>
 <td>removes any bonus effect of a particular player</td>
 </tr>
 <tr>
 <td>Switchic</td>
 <td>yes</td>
-<td>switches the HP stats between player and target</td>
+<td>yes</td>
+<td>switches the HP stats between player and target (consumes the full MP of the player)</td>
 </tr>
 <tr>
 <td>Drainic</td>
 <td>yes</td>
-<td>sacrifices 1 MP to decrease a target's HP by 5</td>
+<td>yes</td>
+<td>sacrifices 1 MP to decrease the target's HP by 5</td>
+</tr>
+<tr>
+<td>Revealic</td>
+<td>yes</td>
+<td>yes</td>
+<td>reveals the inventory contents of the target</td>
+</tr>
+<tr>
+<td>Thievic</td>
+<td>yes</td>
+<td>yes</td>
+<td>steals a random item from the target (if the target has any)</td>
+</tr>
+<tr>
+<td>Summonic</td>
+<td>no</td>
+<td>yes</td>
+<td>sacrifices 20 HP to summon the player's leader for 15 minutes</td>
+</tr>
+<tr>
+<td>Maintainic</td>
+<td>no</td>
+<td>yes</td>
+<td>increases the lifespan of a sword or an armor by 20</td>
 </tr>
 </tbody>
 </table>
 
 <p>The unused items will remain in the player inventory even after a round ends.</p>
+
+<p><strong>Chests and Equipment:</strong></p>
+
+<p>Each new player starts with a wooden sword and a wooden armor, both possessing a power of 0, and both upgradable. </p>
+
+<p>Upon taking an action (attack, ambush or heal), there is a chance that the player will find a chest, which they can open or drop. The chest may contain one of the seven ores: <code>Copper</code>, <code>Steel</code>, <code>Titanium</code>, <code>Quartz</code>, <code>Sapphire</code>, <code>Diamond</code> and <code>Bomb</code>. The ores collected are stored in the player's forge, which has a maximum capacity of 3. Except for <code>Bomb</code>, which causes up to 5 HP damage to the player, the other ores can be used to upgrade one's sword or armor, using the <code>!upgrade</code> command, as follows:</p>
+
+<table>
+<thead>
+<tr>
+<th>Sword</th>
+<th>Ores in forge</th>
+<th>Upgraded form</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wooden sword</td>
+<td>3 Copper</td>
+<td>Copper sword (power = 1)</td>
+</tr>
+<tr>
+<td>Copper sword</td>
+<td>3 Steel</td>
+<td>Steel sword (power = 2)</td>
+</tr>
+<tr>
+<td>Steel sword</td>
+<td>3 Titanium</td>
+<td>Titanium sword (power = 3)</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+<th>Armor</th>
+<th>Ores in forge</th>
+<th>Upgraded form</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wooden armor</td>
+<td>3 Quartz</td>
+<td>Quartz armor (power = 1)</td>
+</tr>
+<tr>
+<td>Quartz armor</td>
+<td>3 Sapphire</td>
+<td>Sapphire armor (power = 2)</td>
+</tr>
+<tr>
+<td>Sapphire armor</td>
+<td>3 Diamond</td>
+<td>Diamond armor (power = 3)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Furthermore, each sword/armor (except for wooden ones) has lifespan that is decreased by 1 after each use of the sword/armor. If the lifespan reaches 0, the sword or armor will be destroyed and the player will get a wooden sword or armor instead. After successful upgrading, the lifespan of a sword/armor is reset to 40. Item <code>Maintainic</code> can also be used to increase the lifespan of a sword or an armor by 20.</p>
+
+<p>Swords and armors play an important role in battles (attacks and ambushes). After rolling dices, swords can help to increase the damage and armors to reduce it. The player with the more powerful equipment used will get the favor in damage increase/decrease.</p>
+
+<p>The sword and armor, along with their lifespans, will remain in the player equipment even after a round ends.</p>
 
 <p><strong>Special apperarences:</strong></p>
 
@@ -238,6 +344,14 @@
 <strong>!use <em>number</em> <em>target</em> :</strong>  uses item in your inventory on a target (applies only on few certain items)</li>
 <li>
 <strong>!drop <em>number</em> :</strong>  drops an item from your inventory (number can be: 1, 2 or 3)</li>
+<li>
+<strong>!chest open|drop :</strong>  for opening a chest or dropping it after finding one</li>
+<li>
+<strong>!forge :</strong>  lists all the ores in the forge of the player (max. capacity of the forge is 3)</li>
+<li>
+<strong>!forge drop <em>number</em> :</strong>  drops an ore from the player's forge</li>
+<li>
+<strong>!upgrade sword|armor :</strong>  upgrades the sword or armor if the necessary ores are present in the player's forge </li>
 <li>
 <strong>!version :</strong>  displays the running version of the bot</li>
 </ul>
