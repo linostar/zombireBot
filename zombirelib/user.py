@@ -8,7 +8,7 @@ class User:
 	CUMULATIVE = 5
 	MMP_MAX = 60
 	MMP_MIN = 1
-	rare_items = (7, 8, 9, 10, 11, 12, 13, 14)
+	rare_items = (7, 8, 9, 10, 11, 12, 13, 14, 15)
 	item_names = {
 	0: "",
 	1: "small apple",   # +2 HP
@@ -25,6 +25,7 @@ class User:
 	12: "Revealic",     # reveals the inventory contents of a target
 	13: "Thievic",      # steals a random item from target (if he has any)
 	14: "Summonic",     # sacrifices 20 HP to summon the player's leader
+	15: "Maintainic",   # increase sword/armor life by 20
 	}
 	ore_names = {
 	0: "",
@@ -428,6 +429,14 @@ class User:
 			pass # no stats will be affected
 
 	@staticmethod
+	def use_item3(item, source, weapon, arsenals):
+		if item == 15:
+			if weapon == "sword":
+				return User.increase_sword_life(source, arsenals, 20)
+			elif weapon == "armor":
+				return User.increase_armor_life(source, arsenals, 20)
+
+	@staticmethod
 	def summon_boss(boss_index):
 		if Utils.bosses[boss_index]['on']:
 			return False
@@ -570,11 +579,13 @@ class User:
 	def increase_sword_life(source, arsenals, value):
 		if not arsenals[source]['sword']:
 			arsenals[source]['slife'] += value
+			return True
 
 	@staticmethod
 	def increase_armor_life(source, arsenals, value):
 		if not arsenals[source]['armor']:
 			arsenals[source]['alife'] += value
+			return True
 
 	@staticmethod
 	def clash_weapons(res, source, target, players, arsenals):

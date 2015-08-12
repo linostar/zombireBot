@@ -604,7 +604,7 @@ class UserCommand:
 			if source2.lower() in self.profiles:
 				item = User.get_item(item_index-1, source2.lower(), self.profiles)
 				if item:
-					if item in (8, 9, 10, 11, 12, 13): # needs a target
+					if item in (8, 9, 10, 11, 12, 13, 15): # needs a target
 						if not target:
 							self.connection.notice(source, "You need to specify a target for this item use.")
 							return
@@ -612,7 +612,7 @@ class UserCommand:
 						if target2.lower() in players:
 							type2 = players[target2.lower()]['type']
 							# check restrictions on some items before using them
-							if item not in (10, 11):
+							if item not in (10, 11, 15):
 								User.use_item2(item, source2.lower(), target2.lower(), players)
 							msg = "\x03{0}{1}\x03 used \x02{2}\x02 on \x03{3}{4}\x03. "
 							if item == 8:
@@ -669,8 +669,17 @@ class UserCommand:
 										self.colors[type1], source, User.item_names[item], self.colors[type2], target))
 									self.connection.privmsg(self.channel, ("\x02{}\x02 couldn't steal anything because " +
 										"\x02{}\x02's inventory was empty.").format(source, target))
+							elif item == 15:
+								if target2.lower() in ("sword", "armor"):
+									if User.use_item3(item, source2.lower(), target2.lower(), self.arsenals):
+										self.connection.privmsg(self.channel, ("\x02{}\x02 used \x02Maintainic\x02 on his {}, " +
+											"increasing its life by \x0220\x02.").format(source, target.lower()))
+									else:
+										self.connection.notice(source, "You cannot use Maintainic on a wooden sword or armor.")
+								else:
+									self.connection.notice(source, "You can only use Maintainic on a sword or an armor.")
 							# remove item after it was consumed
-							if item not in (12, 13):
+							if item not in (12, 13, 15):
 								User.drop_item(item_index-1, source2.lower(), self.profiles)
 								self.connection.privmsg(self.channel, msg.format(
 									self.colors[type1], source, User.item_names[item], self.colors[type2], target))
