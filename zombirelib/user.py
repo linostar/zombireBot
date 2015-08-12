@@ -528,8 +528,10 @@ class User:
 		if ore_index == 0:
 			ores[0] = ores[1]
 			ores[1] = ores[2]
+			ores[2] = 0
 		elif ore_index == 1:
 			ores[1] = ores[2]
+			ores[2] = 0
 		else:
 			ores[2] = 0
 		User.save_forge(ores, source, profiles)
