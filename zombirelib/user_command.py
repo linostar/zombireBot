@@ -109,9 +109,9 @@ class UserCommand:
 			chest_text = ""
 		if Utils.bosses:
 			if utype == "v" and Utils.bosses[0]['on']:
-				bonus_text = "Power substantially increased due to \x02Dracula\x02 presence."
+				bonus_text = "Power substantially increased due to \x02Dracula\x02 presence. "
 			elif utype == "z" and Utils.bosses[1]['on']:
-				bonus_text = "Power substantially increased due to \x02Zombilo\x02 presence."
+				bonus_text = "Power substantially increased due to \x02Zombilo\x02 presence. "
 		a = self.arsenals[target2.lower()]
 		self.connection.privmsg(self.channel, ("\x02{}\x02 is a \x03{}\x03. HP: {}. MP: {}/{}. Score: {}. {}" +
 			"Equipment: {} sword ({}) and {} armor ({}). {}").format(target, self.colored_types[utype], hp, mp, mmp, score,

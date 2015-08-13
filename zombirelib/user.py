@@ -557,25 +557,25 @@ class User:
 			arsenals[source]['sword'] += 1
 			arsenals[source]['slife'] = 100
 			if nb_of_yes_ores == 4:
-				User.save_forge([sword + 1, 0, 0, 0], profiles)
+				User.save_forge([sword + 1, 0, 0, 0], source, profiles)
 			else:
 				tmp_ores = [x for x in ores if x != sword + 1]
-				User.save_forge([tmp_ores[0], 0, 0, 0], profiles)
+				User.save_forge([(tmp_ores[0]), 0, 0, 0], source, profiles)
 			return arsenals[source]['sword']
 
 	@staticmethod
 	def upgrade_armor(source, profiles, arsenals):
 		ores = User.get_forge(source, profiles)
 		armor = arsenals[source]['armor']
-		nb_of_yes_ores = len([x for x in ores if x == armor + 1])
+		nb_of_yes_ores = len([x for x in ores if x == armor + 4])
 		if nb_of_yes_ores >= 3:
 			arsenals[source]['armor'] += 1
 			arsenals[source]['alife'] = 100
 			if nb_of_yes_ores == 4:
-				User.save_forge([armor + 1, 0, 0, 0], profiles)
+				User.save_forge([armor + 4, 0, 0, 0], source, profiles)
 			else:
-				tmp_ores = [x for x in ores if x != armor + 1]
-				User.save_forge([tmp_ores[0], 0, 0, 0], profiles)
+				tmp_ores = [x for x in ores if x != armor + 4]
+				User.save_forge([(tmp_ores[0]), 0, 0, 0], source, profiles)
 			return arsenals[source]['armor']
 
 	@staticmethod

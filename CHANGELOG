@@ -1,5 +1,8 @@
 CHANGELOG
 ---------
+v1.3.3
+- Fixed a bug in armor upgrade
+
 v1.3.2
 - Increased the lifespan of upgraded swords/armors from 40 to 100
 - Increased the maximum forge capacity from 3 to 4
