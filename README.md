@@ -89,7 +89,7 @@ The unused items will remain in the player inventory even after a round ends.
 
 Every new player starts with a wooden sword and a wooden armor, both possessing a power of 0, and both upgradable. 
 
-Upon taking an action (attack, ambush or heal), there is a chance that the player will find a chest, which they can open or drop. The chest may contain one of the seven ores: `Copper`, `Steel`, `Titanium`, `Quartz`, `Sapphire`, `Diamond` and `Bomb`. The ores collected are stored in the player's forge, which has a maximum capacity of 3. Except for `Bomb`, which causes up to 5 HP damage to the player, the other ores can be used to upgrade one's sword or armor, using the `!upgrade` command, as follows:
+Upon taking an action (attack, ambush or heal), there is a chance that the player will find a chest, which they can open or drop. The chest may contain one of the seven ores: `Copper`, `Steel`, `Titanium`, `Quartz`, `Sapphire`, `Diamond` and `Bomb`. The ores collected are stored in the player's forge, which has a maximum capacity of 4. Except for `Bomb`, which causes up to 5 HP damage to the player, the other ores can be used to upgrade one's sword or armor, using the `!upgrade` command, as follows:
 
 Sword | Ores in forge | Upgraded form
 ----- | ------------- | -------------
@@ -103,7 +103,7 @@ Wooden armor | 3 Quartz | Quartz armor (power = 1)
 Quartz armor | 3 Sapphire | Sapphire armor (power = 2)
 Sapphire armor | 3 Diamond | Diamond armor (power = 3)
 
-Furthermore, each sword/armor (except for wooden ones) has lifespan that is decreased by 1 after each use of the sword/armor. If the lifespan reaches 0, the sword or armor will be destroyed and the player will get a wooden sword or armor instead. After successful upgrading, the lifespan of a sword/armor is reset to 40. Item `Maintainic` can also be used to increase the lifespan of a sword or an armor by 20.
+Furthermore, each sword/armor (except for wooden ones) has lifespan that is decreased by 1 after each use of the sword/armor. If the lifespan reaches 0, the sword or armor will be destroyed and the player will get a wooden sword or armor instead. After successful upgrading, the lifespan of a sword/armor is reset to 100. Item `Maintainic` can also be used to increase the lifespan of a sword or an armor by 20.
 
 Swords and armors play an important role in battles (attacks and ambushes). After rolling dices, swords can help to increase the damage and armors to reduce it. The player with the more powerful equipment used will get the favor in damage increase/decrease.
 
@@ -141,7 +141,7 @@ The game will end when all players become vampires, or all players become zombie
 - **!use _number_ _target_ :**  uses item in your inventory on a target (applies only on few certain items)
 - **!drop _number_ :**  drops an item from your inventory (number can be: 1, 2 or 3)
 - **!chest open|drop :**  for opening a chest or dropping it after finding one
-- **!forge :**  lists all the ores in the forge of the player (max. capacity of the forge is 3)
+- **!forge :**  lists all the ores in the forge of the player (max. capacity of the forge is 4)
 - **!forge drop _number_ :**  drops an ore from the player's forge
 - **!upgrade sword|armor :**  upgrades the sword or armor if the necessary ores are present in the player's forge 
 - **!version :**  displays the running version of the bot

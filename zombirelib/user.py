@@ -455,19 +455,19 @@ class User:
 
 	@staticmethod
 	def get_forge(source, profiles):
-		# bits 13..21 from extras, where each ore is 3 bits
+		# bits 13..24 from extras, where each ore is 3 bits
 		ores = []
-		arsenal = (profiles[source]['extras'] >> 13) & 511
-		for i in range(3):
+		arsenal = (profiles[source]['extras'] >> 13) & 4095
+		for i in range(4):
 			ores.append((arsenal >> 3*i) & 7)
 		return ores
 
 	@staticmethod
 	def save_forge(ores, source, profiles):
 		arsenal = 0
-		for i in range(3):
+		for i in range(4):
 			arsenal += ores[i] << 3*i
-		profiles[source]['extras'] &= ~(511 << 13)
+		profiles[source]['extras'] &= ~(4095 << 13)
 		profiles[source]['extras'] |= arsenal << 13
 
 	@staticmethod
@@ -503,13 +503,15 @@ class User:
 	@staticmethod
 	def add_to_forge(source, players, profiles):
 		ores = User.get_forge(source, profiles)
-		if ores[0] and ores[1] and ores[2]:
+		if ores[0] and ores[1] and ores[2] and ores[3]:
 			return -1
 		new_ore = User.open_chest(source, profiles)
 		if new_ore == 7: # "A BOMB IT IS!" - Yoda
 			return new_ore
 		if new_ore:
-			if ores[0] and ores[1]:
+			if ores[0] and ores[1] and ores[2]:
+				ores[3] = new_ore
+			elif ores[0] and ores[1]:
 				ores[2] = new_ore
 			elif ores[0]:
 				ores[1] = new_ore
@@ -520,7 +522,7 @@ class User:
 
 	@staticmethod
 	def drop_from_forge(ore_index, source, profiles):
-		# ore_index can be 1, 2 or 3
+		# ore_index can be 1, 2, 3 or 4
 		ore_index -= 1
 		ores = User.get_forge(source, profiles)
 		if not ores[ore_index]:
@@ -528,37 +530,52 @@ class User:
 		if ore_index == 0:
 			ores[0] = ores[1]
 			ores[1] = ores[2]
-			ores[2] = 0
+			ores[2] = ores[3]
+			ores[3] = 0
 		elif ore_index == 1:
 			ores[1] = ores[2]
-			ores[2] = 0
-		else:
-			ores[2] = 0
+			ores[2] = ores[3]
+			ores[3] = 0
+		elif ore_index == 2:
+			ores[2] = ores[3]
+			ores[3] = 0
+		elif ore_index == 3:
+			ores[3] = 0
 		User.save_forge(ores, source, profiles)
 		return True
 
 	@staticmethod
 	def clear_forge(source, profiles):
-		User.save_forge([0, 0, 0], source, profiles)
+		User.save_forge([0, 0, 0, 0], source, profiles)
 
 	@staticmethod
 	def upgrade_sword(source, profiles, arsenals):
 		ores = User.get_forge(source, profiles)
 		sword = arsenals[source]['sword']
-		if len(set(ores)) == 1 and ores[0] == sword + 1:
+		nb_of_yes_ores = len([x for x in ores if x == sword + 1])
+		if nb_of_yes_ores >= 3:
 			arsenals[source]['sword'] += 1
-			arsenals[source]['slife'] = 40
-			User.clear_forge(source, profiles)
+			arsenals[source]['slife'] = 100
+			if nb_of_yes_ores == 4:
+				User.save_forge([sword + 1, 0, 0, 0], profiles)
+			else:
+				tmp_ores = [x for x in ores if x != sword + 1]
+				User.save_forge([tmp_ores[0], 0, 0, 0], profiles)
 			return arsenals[source]['sword']
 
 	@staticmethod
 	def upgrade_armor(source, profiles, arsenals):
 		ores = User.get_forge(source, profiles)
 		armor = arsenals[source]['armor']
-		if len(set(ores)) == 1 and ores[0] == armor + 4:
+		nb_of_yes_ores = len([x for x in ores if x == armor + 1])
+		if nb_of_yes_ores >= 3:
 			arsenals[source]['armor'] += 1
-			arsenals[source]['alife'] = 40
-			User.clear_forge(source, profiles)
+			arsenals[source]['alife'] = 100
+			if nb_of_yes_ores == 4:
+				User.save_forge([armor + 1, 0, 0, 0], profiles)
+			else:
+				tmp_ores = [x for x in ores if x != armor + 1]
+				User.save_forge([tmp_ores[0], 0, 0, 0], profiles)
 			return arsenals[source]['armor']
 
 	@staticmethod

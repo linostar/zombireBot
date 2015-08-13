@@ -794,7 +794,7 @@ class UserCommand:
 			self.connection.notice(source, "Your forge is empty.")
 			return
 		msg = "Your forge contains: "
-		for i in range(3):
+		for i in range(4):
 			if not ores[i]:
 				break
 			msg += "\x02{}- {}.\x02 ".format(i+1, User.ore_names[ores[i]])
@@ -805,8 +805,8 @@ class UserCommand:
 		if action.lower() == "drop":
 			try:
 				ore_index = int(ore_index)
-				if ore_index not in (1, 2, 3):
-					self.connection.notice(source, "You can only enter a number between 1 and 3 after !forge drop.")
+				if ore_index not in (1, 2, 3, 4):
+					self.connection.notice(source, "You can only enter a number between 1 and 4 after !forge drop.")
 					return
 				if User.drop_from_forge(ore_index, source2.lower(), self.profiles):
 					self.connection.notice(source, "Ore \x02#{}\x02 was dropped from your forge."
@@ -815,7 +815,7 @@ class UserCommand:
 					self.connection.notice(source, "Ore \x02#{}\x02 does not exist in your forge."
 						.format(ore_index))
 			except ValueError:
-				self.connection.notice(source, "You can only enter a number between 1 and 3 after !forge drop.")
+				self.connection.notice(source, "You can only enter a number between 1 and 4 after !forge drop.")
 		else:
 			self.connection.notice(source, "Incorrect !forge command syntax.")
 
