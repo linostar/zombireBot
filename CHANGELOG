@@ -1,5 +1,8 @@
 CHANGELOG
 ---------
+v1.3.4
+- Fixed a bug in HP not reaching 0 when player has superior armor
+
 v1.3.3
 - Fixed a bug in armor upgrade
 
