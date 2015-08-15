@@ -4,7 +4,7 @@ import datetime
 
 
 class Utils:
-	VERSION = "1.3.4"
+	VERSION = "1.3.5"
 	MAX_MSG_LENGTH = 220
 	HOW_TO_PLAY = "https://linostar.github.io/zombireBot"
 	round_starttime = datetime.datetime.now()

@@ -1,5 +1,8 @@
 CHANGELOG
 ---------
+v1.3.5
+- Fixed a crash error in !challenge command
+
 v1.3.4
 - Fixed a bug in HP not reaching 0 when player has superior armor
 

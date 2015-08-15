@@ -564,7 +564,7 @@ class UserCommand:
 					self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
 						"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source1, new_mmp))
 			else:
-				self.connection.profiles(self.channel, "\x02{}:\x02 You do not have enough MP.".format(source1))
+				self.connection.privmsg(self.channel, "\x02{}:\x02 You do not have enough MP.".format(source1))
 
 	def search(self, source, players):
 		source2 = source.replace("[", "..").replace("]", ",,")
