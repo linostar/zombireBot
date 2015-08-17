@@ -2,6 +2,7 @@ CHANGELOG
 ---------
 v1.3.6
 - Added the !auto chest command
+- Added the possibilty of finding chests after auto attacking/healing
 - Fixed some messages
 
 v1.3.5

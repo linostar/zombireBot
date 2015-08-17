@@ -64,6 +64,33 @@ class Schedule:
 				e.set()
 			time.sleep(Schedule.Y_SECONDS)
 
+	def auto_chest(self, source):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		if self.profiles[source2]['auto'] & 64:
+			if User.has_chest(source2, self.profiles):
+				if self.profiles[source2]['auto'] & 128:
+					# auto-drop chest
+					User.drop_chest(source2, self.profiles)
+					self.connection.privmsg(self.channel, "\x02{}\x02 auto-dropped his/her chest."
+						.format(source))
+				else:
+					# auto-open chest
+					ore = User.add_to_forge(source2, self.players, self.profiles)
+					if ore == -1:
+						self.connection.notice(source, "You could not auto-open the chest because" +
+							"your forge is full.")
+					elif ore == 7:
+						damage = User.bomb_player(source2, self.players)
+						User.drop_chest(source2, self.profiles)
+						self.connection.privmsg(self.channel, ("\x02{}\x02 found an exploding bomb " +
+							"in the auto-opened chest, which reduced his/her HP by \x02{}\x02.").format(source, damage))
+					elif ore:
+						User.drop_chest(source2, self.profiles)
+						self.connection.notice(source, "You found a \x02{}\x02 in the auto-opened chest.".format(User.ore_names[ore]))
+					else:
+						User.drop_chest(source2, self.profiles)
+						self.connection.notice(source, "The auto-opened chest was empty.")
+
 	def auto_action(self):
 		while self.loop:
 			if len(self.players) > 1:
@@ -92,6 +119,11 @@ class Schedule:
 											target1 = target.replace("..", "[").replace(",,", "]")
 											self.connection.privmsg(self.channel, "\x03{0}{1}\x03 auto-healed \x03{0}{2}\x03."
 												.format(self.colors[utype], nick1, target1))
+											# will a chest appear?
+											if User.chest_appearing(nick, self.profiles):
+												self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(nick1))
+											# auto-chest
+											self.auto_chest(nick1)
 								# auto-search
 								elif self.profiles[nick]['auto'] & 32:
 									nick1 = nick.replace("..", "[").replace(",,", "]")
@@ -182,6 +214,11 @@ class Schedule:
 										elif got_new_mmp == -1:
 											self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
 												"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, nick1, new_mmp))
+										# will a chest appear?
+										if User.chest_appearing(nick, self.profiles):
+											self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(nick1))
+										# auto-chest
+										self.auto_chest(nick1)
 			time.sleep(5)
 
 	def check_end(self):
