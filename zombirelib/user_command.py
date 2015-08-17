@@ -451,6 +451,15 @@ class UserCommand:
 				res = "on"
 			else:
 				res = "off"
+		elif prop == "chest":
+			# bit 7 for open/drop, bit 6 for on/off
+			if self.profiles[nick2]['auto'] & 64:
+				if self.profiles[nick2]['auto'] & 128:
+					res = "drop"
+				else:
+					res = "open"
+			else:
+				res = "off"
 		if res:
 			self.connection.notice(nick, "Your auto-{} is \x02{}\x02.".format(prop, res))
 		else:
@@ -475,11 +484,13 @@ class UserCommand:
 			elif val == "lowest":
 				self.profiles[nick2]['auto'] &= ~8 # turn auto-attack off
 				self.profiles[nick2]['auto'] &= ~32 # turn auto-search off
+				self.profiles[nick2]['auto'] &= ~64 # turn auto-chest off
 				self.profiles[nick2]['auto'] |= 2
 				self.profiles[nick2]['auto'] &= ~4
 			elif val == "highest":
 				self.profiles[nick2]['auto'] &= ~8 # turn auto-attack off
 				self.profiles[nick2]['auto'] &= ~32 # turn auto-search off
+				self.profiles[nick2]['auto'] &= ~64 # turn auto-chest off
 				self.profiles[nick2]['auto'] |= 2
 				self.profiles[nick2]['auto'] |= 4
 			else:
@@ -490,11 +501,13 @@ class UserCommand:
 			elif val == "lowest":
 				self.profiles[nick2]['auto'] &= ~2 # turn auto-heal off
 				self.profiles[nick2]['auto'] &= ~32 # turn auto-search off
+				self.profiles[nick2]['auto'] &= ~64 # turn auto-chest off
 				self.profiles[nick2]['auto'] |= 8
 				self.profiles[nick2]['auto'] &= ~16
 			elif val == "highest":
 				self.profiles[nick2]['auto'] &= ~2 # turn auto-heal off
 				self.profiles[nick2]['auto'] &= ~32 # turn auto-search off
+				self.profiles[nick2]['auto'] &= ~64 # turn auto-chest off
 				self.profiles[nick2]['auto'] |= 8
 				self.profiles[nick2]['auto'] |= 16
 			else:
@@ -503,9 +516,27 @@ class UserCommand:
 			if val == "on":
 				self.profiles[nick2]['auto'] &= ~2 # turn auto-heal off
 				self.profiles[nick2]['auto'] &= ~8 # turn auto-attack off
+				self.profiles[nick2]['auto'] &= ~64 # turn auto-chest off
 				self.profiles[nick2]['auto'] |= 32
 			elif val == "off":
 				self.profiles[nick2]['auto'] &= ~32
+			else:
+				res = False
+		elif prop == "chest":
+			if val == "off":
+				self.profiles[nick2]['auto'] &= ~64
+			elif val == "open":
+				self.profiles[nick2]['auto'] &= ~2 # turn auto-heal off
+				self.profiles[nick2]['auto'] &= ~8 # turn auto-attack off
+				self.profiles[nick2]['auto'] &= ~32 # turn auto-search off
+				self.profiles[nick2]['auto'] |= 64
+				self.profiles[nick2]['auto'] &= ~128
+			elif val == "drop":
+				self.profiles[nick2]['auto'] &= ~2 # turn auto-heal off
+				self.profiles[nick2]['auto'] &= ~8 # turn auto-attack off
+				self.profiles[nick2]['auto'] &= ~32 # turn auto-search off
+				self.profiles[nick2]['auto'] |= 64
+				self.profiles[nick2]['auto'] |= 128
 			else:
 				res = False
 		else:

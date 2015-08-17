@@ -86,7 +86,7 @@ class Zombire(CustomSingleServerIRCBot):
 
 	def read_config(self, filename):
 		if not os.path.exists(filename):
-			print('Error: config.yml cannot be found.')
+			print('Error: config.yml could not be found.')
 			sys.exit(1)
 		with open(filename, 'r') as config_fd:
 			self.config = yaml.load(config_fd)
@@ -157,7 +157,7 @@ class Zombire(CustomSingleServerIRCBot):
 		re_exprs = (r"\!(register)", r"\!(unregister)", r"\!(status(\s+.+)?)",
 			r"\!(attack\s+.+)", r"\!(heal\s+.+)", r"\!(vampires|zombies)", r"\!(version)",
 			r"\!(topscores)", r"\!(highscores)", r"\!(howtoplay)", r"\!(ambush\s+.+)",
-			r"\!(auto\s+(attack|heal|register|search)(\s+.+)?)", r"\!(challenge)",
+			r"\!(auto\s+(attack|heal|register|search|chest)(\s+.+)?)", r"\!(challenge)",
 			r"\!(search|inventory)", r"\!((use|drop)\s+.+)", r"\!(chest\s+.+)",
 			r"\!(forge(\s.+)?)", r"\!(upgrade\s+.+)")
 		for expr in re_exprs:
