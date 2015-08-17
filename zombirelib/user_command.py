@@ -141,7 +141,7 @@ class UserCommand:
 					# auto-open chest
 					ore = User.add_to_forge(source2.lower(), players, self.profiles)
 					if ore == -1:
-						self.connection.notice(source, "You could not auto-open the chest because" +
+						self.connection.notice(source, "You could not auto-open the chest because " +
 							"your forge is full.")
 					elif ore == 7:
 						damage = User.bomb_player(source2.lower(), players)
@@ -187,8 +187,9 @@ class UserCommand:
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
 						.format(target, -diff_weapon))
 				else:
-					self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
-						"were equally powerful and cancelled each other effect.").format(source, target))
+					if not User.are_weapons_wooden(source2.lower(), target2.lower(), self.arsenals):
+						self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
+							"were equally powerful and cancelled each other effect.").format(source, target))
 				# check for weapon degradation
 				if User.degrade_sword(source2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(source))
@@ -217,8 +218,9 @@ class UserCommand:
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
 						.format(source, -diff_weapon))
 				else:
-					self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
-						"were equally powerful and cancelled each other effect.").format(target, source))
+					if not User.are_weapons_wooden(target2.lower(), source2.lower(), self.arsenals):
+						self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
+							"were equally powerful and cancelled each other effect.").format(target, source))
 				# check for weapon degradation
 				if User.degrade_armor(source2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(source))
@@ -325,8 +327,9 @@ class UserCommand:
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
 						.format(ftarget, -diff_weapon))
 				else:
-					self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
-						"were equally powerful and cancelled each other effect.").format(source, ftarget))
+					if not User.are_weapons_wooden(source2.lower(), ftarget2.lower(), self.arsenals):
+						self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
+							"were equally powerful and cancelled each other effect.").format(source, ftarget))
 				diff_weapon = User.clash_weapons(3, source2.lower(), starget2.lower(), players, self.arsenals)
 				if diff_weapon > 0:
 					self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage on \x02{}\x02 by \x02{}\x02."
@@ -335,8 +338,9 @@ class UserCommand:
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
 						.format(starget, -diff_weapon))
 				else:
-					self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
-						"were equally powerful and cancelled each other effect.").format(source, starget))
+					if not User.are_weapons_wooden(source2.lower(), starget2.lower(), self.arsenals):
+						self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
+							"were equally powerful and cancelled each other effect.").format(source, starget))
 				# check for weapon degradation
 				if User.degrade_sword(source2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(source))
@@ -372,8 +376,9 @@ class UserCommand:
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
 						.format(source, -diff_weapon))
 				else:
-					self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
-						"were equally powerful and cancelled each other effect.").format(ftarget, source))
+					if not User.are_weapons_wooden(ftarget2.lower(), source2.lower(), self.arsenals):
+						self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
+							"were equally powerful and cancelled each other effect.").format(ftarget, source))
 				diff_weapon = User.clash_weapons(-3, source2.lower(), starget2.lower(), players, self.arsenals)
 				if diff_weapon > 0:
 					self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage on \x02{}\x02 by \x02{}\x02."
@@ -382,8 +387,9 @@ class UserCommand:
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
 						.format(source, -diff_weapon))
 				else:
-					self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
-						"were equally powerful and cancelled each other effect.").format(starget, source))
+					if not User.are_weapons_wooden(starget2.lower(), source2.lower(), self.arsenals):
+						self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
+							"were equally powerful and cancelled each other effect.").format(starget, source))
 				# check for weapon degradation
 				if User.degrade_armor(source2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(source))

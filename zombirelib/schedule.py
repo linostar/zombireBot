@@ -77,7 +77,7 @@ class Schedule:
 					# auto-open chest
 					ore = User.add_to_forge(source2, self.players, self.profiles)
 					if ore == -1:
-						self.connection.notice(source, "You could not auto-open the chest because" +
+						self.connection.notice(source, "You could not auto-open the chest because " +
 							"your forge is full.")
 					elif ore == 7:
 						damage = User.bomb_player(source2, self.players)
@@ -160,8 +160,9 @@ class Schedule:
 												self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
 													.format(target1, -diff_weapon))
 											else:
-												self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
-													"were equally powerful and cancelled each other effect.").format(nick1, target1))
+												if not User.are_weapons_wooden(nick, target, self.arsenals):
+													self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
+														"were equally powerful and cancelled each other effect.").format(nick1, target1))
 											# check for weapon degradation
 											if User.degrade_sword(nick, self.arsenals):
 												self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(nick1))
@@ -187,8 +188,9 @@ class Schedule:
 												self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
 													.format(nick1, -diff_weapon))
 											else:
-												self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
-													"were equally powerful and cancelled each other effect.").format(target1, nick1))
+												if not User.are_weapons_wooden(target, nick, self.arsenals):
+													self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
+														"were equally powerful and cancelled each other effect.").format(target1, nick1))
 											# check for weapon degradation
 											if User.degrade_armor(nick, self.arsenals):
 												self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(nick1))

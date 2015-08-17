@@ -579,6 +579,14 @@ class User:
 			return arsenals[source]['armor']
 
 	@staticmethod
+	def are_weapons_wooden(source, target, arsenals):
+		p1 = arsenals[source]
+		p2 = arsenals[target]
+		or_weapons = p1['sword'] | p1['slife'] | p2['armor'] | p2['alife']
+		if not or_weapons:
+			return True
+
+	@staticmethod
 	def degrade_sword(source, arsenals):
 		if arsenals[source]['sword'] > 0:
 			arsenals[source]['slife'] -= 1
