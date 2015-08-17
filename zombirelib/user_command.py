@@ -128,6 +128,33 @@ class UserCommand:
 		else:
 			self.connection.privmsg(self.channel, "No topscores yet.")
 
+	def auto_chest(self, source, players):
+		source2 = source.replace("[", "..").replace("]", ",,")
+		if self.profiles[source2.lower()]['auto'] & 64:
+			if User.has_chest(source2.lower(), self.profiles):
+				if self.profiles[source2.lower()]['auto'] & 128:
+					# auto-drop chest
+					User.drop_chest(source2.lower(), self.profiles)
+					self.connection.privmsg(self.channel, "\x02{}\x02 auto-dropped his/her chest."
+						.format(source))
+				else:
+					# auto-open chest
+					ore = User.add_to_forge(source2.lower(), players, self.profiles)
+					if ore == -1:
+						self.connection.notice(source, "You could not auto-open the chest because" +
+							"your forge is full.")
+					elif ore == 7:
+						damage = User.bomb_player(source2.lower(), players)
+						User.drop_chest(source2.lower(), self.profiles)
+						self.connection.privmsg(self.channel, ("\x02{}\x02 found an exploding bomb " +
+							"in the auto-opened chest, which reduced his/her HP by \x02{}\x02.").format(source, damage))
+					elif ore:
+						User.drop_chest(source2.lower(), self.profiles)
+						self.connection.notice(source, "You found a \x02{}\x02 in the auto-opened chest.".format(User.ore_names[ore]))
+					else:
+						User.drop_chest(source2.lower(), self.profiles)
+						self.connection.notice(source, "The auto-opened chest was empty.")
+
 	def attack(self, source, target, players):
 		source2 = source.replace("[", "..").replace("]", ",,")
 		target2 = target.replace("[", "..").replace("]", ",,")
@@ -218,6 +245,8 @@ class UserCommand:
 			# will a chest appear?
 			if User.chest_appearing(source2.lower(), self.profiles):
 				self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(source))
+			# auto-chest
+			self.auto_chest(source, players)
 		else:
 			self.connection.privmsg(self.channel, "\x02{}:\x02 You don't have enough MP to attack other players."
 				.format(source))
@@ -244,6 +273,8 @@ class UserCommand:
 			# will a chest appear?
 			if User.chest_appearing(source2.lower(), self.profiles):
 				self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(source))
+			# auto-chest
+			self.auto_chest(source, players)
 		elif User.check_gt(players, source2.lower(), 'mp', 0):
 			self.connection.privmsg(self.channel, "\x02{}:\x02 You need at least 3 HP to be able to heal others."
 				.format(source))
@@ -381,6 +412,8 @@ class UserCommand:
 			# will a chest appear?
 			if User.chest_appearing(source2.lower(), self.profiles):
 				self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(source))
+			# auto-chest
+			self.auto_chest(source, players)
 
 	def list_players(self, utype, players):
 		zombires = [nick.replace("..", "[").replace(",,", "]") for nick in players if players[nick]['type'] == utype]

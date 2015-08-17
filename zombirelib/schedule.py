@@ -92,32 +92,6 @@ class Schedule:
 											target1 = target.replace("..", "[").replace(",,", "]")
 											self.connection.privmsg(self.channel, "\x03{0}{1}\x03 auto-healed \x03{0}{2}\x03."
 												.format(self.colors[utype], nick1, target1))
-								# auto-chest
-								if self.profiles[nick]['auto'] & 64:
-									if User.has_chest(nick, self.profiles):
-										nick1 = nick.replace("..", "[").replace(",,", "]")
-										if self.profiles[nick]['auto'] & 128:
-											# auto-drop chest
-											User.drop_chest(nick, self.profiles)
-											self.connection.privmsg(self.channel, "\x02{}\x02 auto-dropped his/her chest."
-												.format(nick1))
-										else:
-											# auto-open chest
-											ore = User.add_to_forge(nick, self.players, self.profiles)
-											if ore == -1:
-												self.connection.notice(nick1, "You could not auto-open the chest because" +
-													"your forge is full.")
-											elif ore == 7:
-												damage = User.bomb_player(nick, self.players)
-												User.drop_chest(nick, self.profiles)
-												self.connection.privmsg(self.channel, ("\x02{}\x02 found an exploding bomb " +
-													"in the auto-opened chest, which reduced his/her HP by \x02{}\x02.").format(nick1, damage))
-											elif ore:
-												User.drop_chest(nick, self.profiles)
-												self.connection.notice(nick1, "You found a \x02{}\x02 in the auto-opened chest.".format(User.ore_names[ore]))
-											else:
-												User.drop_chest(nick, self.profiles)
-												self.connection.notice(nick1, "The auto-opened chest was empty.")
 								# auto-search
 								elif self.profiles[nick]['auto'] & 32:
 									nick1 = nick.replace("..", "[").replace(",,", "]")
