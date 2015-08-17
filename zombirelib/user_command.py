@@ -344,6 +344,9 @@ class UserCommand:
 				# check for weapon degradation
 				if User.degrade_sword(source2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(source))
+				# 2 times degradation of the sword
+				if User.degrade_sword(source2.lower(), self.arsenals):
+					self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(source))
 				if User.degrade_armor(ftarget2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(ftarget))
 				if User.degrade_armor(starget2.lower(), self.arsenals):
@@ -391,6 +394,9 @@ class UserCommand:
 						self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
 							"were equally powerful and cancelled each other effect.").format(starget, source))
 				# check for weapon degradation
+				if User.degrade_armor(source2.lower(), self.arsenals):
+					self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(source))
+				# 2 times degradation of the armor
 				if User.degrade_armor(source2.lower(), self.arsenals):
 					self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(source))
 				if User.degrade_sword(ftarget2.lower(), self.arsenals):
