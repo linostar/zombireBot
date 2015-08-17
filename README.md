@@ -55,7 +55,7 @@ Each player can take 3 types of **actions** against other players:
 - `!auto heal` command, if set to `lowest`, will make the player automatically heals the ally with the lowest HP, before the current hour ends. If set to `highest`, the target of healing will be the ally with the highest HP. The player should at least 1 MP remaining for that auto-action to take place.
 - `!auto attack` command, similarly to `!auto heal`, allows the player to attack the enemy with the lowest or highest HP, before the current hour ends.
 - `!auto search` command, will allow the player to auto-spend 1 MP (if available) to search for an item. It won't work of the user inventory is already full.
-- `!auto chest` command, will allow the player to automatically open/drop the chests.
+- `!auto chest` command, will allow the player to automatically open/drop the chests right after obtaining them.
 - Note that enabling `!auto attack` will cancel `!auto heal` and `!auto search`, and vice versa.
 
 **Items:**
