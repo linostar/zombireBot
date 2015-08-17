@@ -149,10 +149,13 @@ class Schedule:
 											diff_weapon = User.clash_weapons(diff_dice, nick, target, self.players, self.arsenals)
 											if diff_weapon > 0:
 												self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage by \x02{}\x02."
-													.format(nick, diff_weapon))
+													.format(nick1, diff_weapon))
 											elif diff_weapon < 0:
 												self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
-													.format(target, -diff_weapon))
+													.format(target1, -diff_weapon))
+											else:
+												self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
+													"were equally powerful and cancelled each other effect.").format(nick1, target1))
 											# check for weapon degradation
 											if User.degrade_sword(nick, self.arsenals):
 												self.connection.privmsg(self.channel, "\x02{}\x02's sword was destroyed.".format(nick1))
@@ -173,10 +176,13 @@ class Schedule:
 											diff_weapon = User.clash_weapons(diff_dice, nick, target, self.players, self.arsenals)
 											if diff_weapon > 0:
 												self.connection.privmsg(self.channel, "\x02{}\x02's sword increased the damage by \x02{}\x02."
-													.format(target, diff_weapon))
+													.format(target1, diff_weapon))
 											elif diff_weapon < 0:
 												self.connection.privmsg(self.channel, "\x02{}\x02's armor reduced the damage by \x02{}\x02."
-													.format(nick, -diff_weapon))
+													.format(nick1, -diff_weapon))
+											else:
+												self.connection.privmsg(self.channel, ("\x02{}\x02's sword and \x02{}\x02's armor " +
+													"were equally powerful and cancelled each other effect.").format(target1, nick1))
 											# check for weapon degradation
 											if User.degrade_armor(nick, self.arsenals):
 												self.connection.privmsg(self.channel, "\x02{}\x02's armor was destroyed.".format(nick1))
