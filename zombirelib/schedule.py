@@ -122,8 +122,8 @@ class Schedule:
 											# will a chest appear?
 											if User.chest_appearing(nick, self.profiles):
 												self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(nick1))
-											# auto-chest
-											self.auto_chest(nick1)
+												# auto-chest
+												self.auto_chest(nick1)
 								# auto-search
 								elif self.profiles[nick]['auto'] & 32:
 									nick1 = nick.replace("..", "[").replace(",,", "]")
@@ -217,8 +217,8 @@ class Schedule:
 										# will a chest appear?
 										if User.chest_appearing(nick, self.profiles):
 											self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(nick1))
-										# auto-chest
-										self.auto_chest(nick1)
+											# auto-chest
+											self.auto_chest(nick1)
 			time.sleep(5)
 
 	def check_end(self):

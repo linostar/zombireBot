@@ -245,8 +245,8 @@ class UserCommand:
 			# will a chest appear?
 			if User.chest_appearing(source2.lower(), self.profiles):
 				self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(source))
-			# auto-chest
-			self.auto_chest(source, players)
+				# auto-chest
+				self.auto_chest(source, players)
 		else:
 			self.connection.privmsg(self.channel, "\x02{}:\x02 You don't have enough MP to attack other players."
 				.format(source))
@@ -273,8 +273,8 @@ class UserCommand:
 			# will a chest appear?
 			if User.chest_appearing(source2.lower(), self.profiles):
 				self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(source))
-			# auto-chest
-			self.auto_chest(source, players)
+				# auto-chest
+				self.auto_chest(source, players)
 		elif User.check_gt(players, source2.lower(), 'mp', 0):
 			self.connection.privmsg(self.channel, "\x02{}:\x02 You need at least 3 HP to be able to heal others."
 				.format(source))
@@ -412,8 +412,8 @@ class UserCommand:
 			# will a chest appear?
 			if User.chest_appearing(source2.lower(), self.profiles):
 				self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(source))
-			# auto-chest
-			self.auto_chest(source, players)
+				# auto-chest
+				self.auto_chest(source, players)
 
 	def list_players(self, utype, players):
 		zombires = [nick.replace("..", "[").replace(",,", "]") for nick in players if players[nick]['type'] == utype]
