@@ -1,5 +1,9 @@
 CHANGELOG
 ---------
+v1.3.6
+- Added the !auto chest command
+- Fixed some messages
+
 v1.3.5
 - Fixed a crash error in !challenge command
 
