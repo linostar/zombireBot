@@ -74,6 +74,8 @@ class UserCommand:
 		if nick2 in players:
 			if self.dbc.unregister_user(nick2):
 				del players[nick2]
+				# turn auto-register off for that player
+				self.profiles[nick2]['auto'] &= ~1
 				self.connection.notice(nick, "You have been removed from the game.")
 				if self.access == "xop":
 					self.connection.privmsg("chanserv", "vop {} del {}".format(self.channel, nick))

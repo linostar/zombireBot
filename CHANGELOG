@@ -1,5 +1,8 @@
 CHANGELOG
 ---------
+v1.4.0
+- Turn auto-register off for players who !unregister
+
 v1.3.6
 - Added the !auto chest command
 - Added the possibilty of finding chests after auto attacking/healing
