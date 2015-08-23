@@ -648,6 +648,11 @@ class UserCommand:
 				elif got_new_mmp == -1:
 					self.connection.privmsg(self.channel, ("After {} failed attacks in a row, {} received " +
 						"a level-down, and his/her maximum MP became \x02{}\x02.").format(User.CUMULATIVE, source1, new_mmp))
+				# will a chest appear?
+				if User.chest_appearing(source.lower(), self.profiles):
+					self.connection.privmsg(self.channel, "\x02{}\x02 found a closed chest!".format(source1))
+					# auto-chest
+					self.auto_chest(source1, players)
 			else:
 				self.connection.privmsg(self.channel, "\x02{}:\x02 You do not have enough MP.".format(source1))
 
