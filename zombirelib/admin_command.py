@@ -49,6 +49,7 @@ class AdminCommand:
 				if nick:
 					if nick2 in players:
 						del players[nick2]
+						self.dbc.unregister_user(nick2)
 						if terminate:
 							del self.profiles[nick2]
 							self.dbc.delete_profile(nick2)
