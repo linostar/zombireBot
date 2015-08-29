@@ -1,6 +1,7 @@
 CHANGELOG
 ---------
 v1.4.0
+- Generate JSOV files for player stats and stuff
 - Turn auto-register off for players who !unregister
 - Allow chests to appear after !challenge command
 - Unregister users when they are kicked/terminated by admin (issue #8)
