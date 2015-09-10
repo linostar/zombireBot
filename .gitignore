@@ -59,3 +59,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Others
+sftp-config.json
